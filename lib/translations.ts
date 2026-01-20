@@ -196,7 +196,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'login.title': 'Connexion',
     'login.registerTitle': 'Inscription',
     'login.signIn': 'Connectez-vous à votre compte',
-    'login.createAccount': 'Créez un nouveau compte pour commencer à prédire',
+    'login.createAccount': 'Créez un nouveau compte pour commencer la malice',
     'login.name': 'Nom',
     'login.username': 'Nom d\'utilisateur',
     'login.email': 'Email',
