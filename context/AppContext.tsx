@@ -117,36 +117,34 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [fetchData]);
 
   const updateTeam = useCallback(async (teamId: string, updates: Partial<Team>) => {
-    try {
-      const { players, ...teamUpdates } = updates;
-      const res = await fetch(`/api/teams/${teamId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...teamUpdates, players }),
-      });
+    const { players, ...teamUpdates } = updates;
+    const res = await fetch(`/api/teams/${teamId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...teamUpdates, players }),
+    });
 
-      if (res.ok) {
-        await fetchData();
-      }
-    } catch (error) {
-      console.error('Error updating team:', error);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `Failed to update team: ${res.statusText}`);
     }
+
+    await fetchData();
   }, [fetchData]);
 
   const createTeam = useCallback(async (team: Omit<Team, 'id'>) => {
-    try {
-      const res = await fetch('/api/teams', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(team),
-      });
+    const res = await fetch('/api/teams', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(team),
+    });
 
-      if (res.ok) {
-        await fetchData();
-      }
-    } catch (error) {
-      console.error('Error creating team:', error);
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `Failed to create team: ${res.statusText}`);
     }
+
+    await fetchData();
   }, [fetchData]);
 
   const updateMatch = useCallback(async (matchId: string, updates: Partial<Match>) => {

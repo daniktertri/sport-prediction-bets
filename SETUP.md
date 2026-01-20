@@ -26,21 +26,52 @@ JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
 
 ## 4. Create Initial Admin User
 
-Run this SQL in your Neon SQL editor (replace with your desired username and password):
+You have **3 options** to create an admin user:
+
+### Option 1: Register a user, then promote to admin (Easiest)
+
+1. Start your dev server: `npm run dev`
+2. Go to `http://localhost:3000/login`
+3. Register a new account (e.g., username: `admin`, password: `admin123`)
+4. Go to your Neon SQL editor and run:
 
 ```sql
--- Create admin user (password: admin123)
--- You should change this password after first login!
+-- Promote your registered user to admin
+-- Replace 'admin' with your actual username
+UPDATE users 
+SET is_admin = true 
+WHERE username = 'admin';
+```
+
+5. Log out and log back in - you'll now have admin access!
+
+### Option 2: Create admin user via SQL (Requires password hash)
+
+If you want to create an admin user directly via SQL, you need to hash the password first. You can use Node.js:
+
+```bash
+node -e "const bcrypt = require('bcryptjs'); bcrypt.hash('your-password', 10).then(hash => console.log(hash))"
+```
+
+Then use the hash in SQL:
+
+```sql
 INSERT INTO users (username, password_hash, name, is_admin)
 VALUES (
   'admin',
-  '$2a$10$rOzJqZqZqZqZqZqZqZqZqOqZqZqZqZqZqZqZqZqZqZqZqZqZqZqZq', -- This is 'admin123' hashed
+  '<paste-hash-from-above>',
   'Admin User',
   true
 );
 ```
 
-Or use the register endpoint to create a user, then manually set `is_admin = true` in the database.
+### Option 3: Use the create-admin script
+
+```bash
+npx tsx scripts/create-admin.ts admin admin123 "Admin User"
+```
+
+**Note:** Make sure to change the default password after first login!
 
 ## 5. Create Initial Competition
 
@@ -65,6 +96,24 @@ npm run dev
 - Visit `http://localhost:3000`
 - Click "Login" to sign in
 - Register a new account or use the admin account you created
+
+## 8. Access the Admin Panel
+
+Once you have an admin account:
+
+1. **Log in** with your admin credentials
+2. You'll see an **"Admin"** link in the navigation bar (only visible to admins)
+3. Click **"Admin"** to access the admin panel at `/admin`
+4. From there you can:
+   - Manage Teams (`/admin/teams`)
+   - Assign Groups (`/admin/groups`)
+   - Manage Matches (`/admin/matches`)
+   - Set Match Results (`/admin/results`)
+
+**Note:** If you don't see the Admin link after logging in, make sure:
+- Your user has `is_admin = true` in the database
+- You've logged out and logged back in (to refresh your session)
+- Clear your browser cache if needed
 
 ## Features
 

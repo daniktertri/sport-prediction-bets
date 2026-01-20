@@ -46,10 +46,16 @@ export async function PATCH(
 ) {
   try {
     const user = await getAuthUser(request);
-    if (!user?.isAdmin) {
+    if (!user) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { error: 'You must be logged in to perform this action' },
         { status: 401 }
+      );
+    }
+    if (!user.isAdmin) {
+      return NextResponse.json(
+        { error: 'Admin access required. If you were recently promoted to admin, please log out and log back in to refresh your session.' },
+        { status: 403 }
       );
     }
 

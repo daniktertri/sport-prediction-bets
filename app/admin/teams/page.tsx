@@ -12,6 +12,8 @@ export default function AdminTeamsPage() {
   const { teams, createTeam, updateTeam, currentUser } = useApp();
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -33,29 +35,38 @@ export default function AdminTeamsPage() {
     );
   }
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
     
-    if (editingTeam) {
-      updateTeam(editingTeam.id, {
-        name: formData.name,
-        logo: formData.logo || undefined,
-        group: formData.group || null,
-        players: formData.players,
-      });
-    } else {
-      createTeam({
-        name: formData.name,
-        logo: formData.logo || undefined,
-        group: formData.group || null,
-        players: formData.players,
-        flag: formData.logo || undefined,
-      });
+    try {
+      if (editingTeam) {
+        await updateTeam(editingTeam.id, {
+          name: formData.name,
+          logo: formData.logo || undefined,
+          group: formData.group || null,
+          players: formData.players,
+        });
+      } else {
+        await createTeam({
+          name: formData.name,
+          logo: formData.logo || undefined,
+          group: formData.group || null,
+          players: formData.players,
+          flag: formData.logo || undefined,
+        });
+      }
+      
+      setFormData({ name: '', logo: '', group: '', players: [] });
+      setEditingTeam(null);
+      setShowForm(false);
+    } catch (err: any) {
+      setError(err.message || 'Failed to save team. Please try again.');
+      console.error('Error saving team:', err);
+    } finally {
+      setLoading(false);
     }
-    
-    setFormData({ name: '', logo: '', group: '', players: [] });
-    setEditingTeam(null);
-    setShowForm(false);
   };
   
   const startEdit = (team: Team) => {
@@ -107,6 +118,11 @@ export default function AdminTeamsPage() {
         {showForm && (
           <Card className="p-6 mb-6">
             <h2 className="text-xl font-semibold mb-4 text-text-primary">{editingTeam ? 'Edit Team' : 'Create Team'}</h2>
+            {error && (
+              <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
+                {error}
+              </div>
+            )}
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1 text-text-primary">Team Name</label>
@@ -180,8 +196,10 @@ export default function AdminTeamsPage() {
               </div>
               
               <div className="flex gap-2">
-                <Button type="submit">{editingTeam ? 'Update' : 'Create'}</Button>
-                <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditingTeam(null); }}>
+                <Button type="submit" disabled={loading}>
+                  {loading ? 'Saving...' : editingTeam ? 'Update' : 'Create'}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditingTeam(null); setError(null); }} disabled={loading}>
                   Cancel
                 </Button>
               </div>
