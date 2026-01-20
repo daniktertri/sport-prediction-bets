@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import ImageUpload from '@/components/ui/ImageUpload';
 import { Team, Player } from '@/types';
 
 export default function AdminTeamsPage() {
@@ -135,12 +136,28 @@ export default function AdminTeamsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-text-primary">Logo (emoji or URL)</label>
-                <input
-                  type="text"
-                  value={formData.logo}
-                  onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                <label className="block text-sm font-medium mb-1 text-text-primary">Logo (emoji, URL, or upload image)</label>
+                <div className="mb-2">
+                  <input
+                    type="text"
+                    placeholder="Or enter emoji/URL"
+                    value={formData.logo}
+                    onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                  />
+                </div>
+                <ImageUpload
+                  currentImage={formData.logo?.startsWith('data:image') ? formData.logo : undefined}
+                  onImageChange={(base64) => {
+                    if (base64) {
+                      setFormData({ ...formData, logo: base64 });
+                    } else if (!formData.logo?.startsWith('data:image')) {
+                      // Only clear if it's not a text/emoji
+                      setFormData({ ...formData, logo: '' });
+                    }
+                  }}
+                  label="Or upload team logo"
+                  maxSizeMB={2}
                 />
               </div>
               <div>
@@ -163,34 +180,44 @@ export default function AdminTeamsPage() {
                   <label className="block text-sm font-medium text-text-primary">Players</label>
                   <Button type="button" size="sm" onClick={addPlayer}>+ Add Player</Button>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-4">
                   {formData.players.map((player, index) => (
-                    <div key={index} className="flex gap-2">
-                      <input
-                        type="text"
-                        placeholder="Player name"
-                        value={player.name}
-                        onChange={(e) => updatePlayer(index, { name: e.target.value })}
-                        className="flex-1 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Position"
-                        value={player.position || ''}
-                        onChange={(e) => updatePlayer(index, { position: e.target.value })}
-                        className="w-32 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                      />
-                      <input
-                        type="number"
-                        placeholder="Number"
-                        value={player.number || ''}
-                        onChange={(e) => updatePlayer(index, { number: parseInt(e.target.value) || undefined })}
-                        className="w-24 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                      />
-                      <Button type="button" variant="danger" size="sm" onClick={() => removePlayer(index)}>
-                        Remove
-                      </Button>
-                    </div>
+                    <Card key={index} className="p-4">
+                      <div className="space-y-3">
+                        <div className="flex gap-2">
+                          <input
+                            type="text"
+                            placeholder="Player name"
+                            value={player.name}
+                            onChange={(e) => updatePlayer(index, { name: e.target.value })}
+                            className="flex-1 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Position"
+                            value={player.position || ''}
+                            onChange={(e) => updatePlayer(index, { position: e.target.value })}
+                            className="w-32 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                          />
+                          <input
+                            type="number"
+                            placeholder="Number"
+                            value={player.number || ''}
+                            onChange={(e) => updatePlayer(index, { number: parseInt(e.target.value) || undefined })}
+                            className="w-24 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                          />
+                          <Button type="button" variant="danger" size="sm" onClick={() => removePlayer(index)}>
+                            Remove
+                          </Button>
+                        </div>
+                        <ImageUpload
+                          currentImage={player.image || undefined}
+                          onImageChange={(base64) => updatePlayer(index, { image: base64 || undefined })}
+                          label="Player Image"
+                          maxSizeMB={2}
+                        />
+                      </div>
+                    </Card>
                   ))}
                 </div>
               </div>
@@ -212,7 +239,15 @@ export default function AdminTeamsPage() {
             <Card key={team.id} className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl">{team.logo || team.flag}</span>
+                  {team.logo && team.logo.startsWith('data:image') ? (
+                    <img
+                      src={team.logo}
+                      alt={team.name}
+                      className="w-12 h-12 object-cover rounded-lg border border-border"
+                    />
+                  ) : (
+                    <span className="text-3xl">{team.logo || team.flag || '⚽'}</span>
+                  )}
                   <div>
                     <h3 className="font-semibold text-lg text-text-primary">{team.name}</h3>
                     {team.group && <span className="text-sm text-text-secondary">Group {team.group}</span>}

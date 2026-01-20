@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS players (
   name VARCHAR(100) NOT NULL,
   position VARCHAR(50),
   number INTEGER,
+  image TEXT,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

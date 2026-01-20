@@ -93,9 +93,25 @@ export default function Navigation() {
             
             {currentUser ? (
               <div className="flex items-center gap-2 ml-2">
-                <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline">
-                  {currentUser.name}
-                </span>
+                <Link
+                  href="/profile"
+                  className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-bg-tertiary transition-colors duration-200"
+                >
+                  {currentUser.avatar ? (
+                    <img
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                      className="w-8 h-8 rounded-full object-cover border border-border"
+                    />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-sm">
+                      {currentUser.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                  <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline">
+                    {currentUser.name}
+                  </span>
+                </Link>
                 <button
                   onClick={handleLogout}
                   disabled={loggingOut}

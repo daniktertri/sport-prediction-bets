@@ -6,6 +6,7 @@ export type Player = {
   name: string;
   position?: string;
   number?: number;
+  image?: string; // base64 or URL
 };
 
 export type Team = {
@@ -51,6 +52,7 @@ export type Prediction = {
 
 export type User = {
   id: string;
+  username?: string;
   name: string;
   email?: string;
   avatar?: string;
