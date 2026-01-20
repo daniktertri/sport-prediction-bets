@@ -30,7 +30,7 @@ export async function getUserByUsername(username: string) {
 
 export async function getUserById(id: string) {
   const result = await pool.query(
-    'SELECT id, username, name, email, avatar, is_admin FROM users WHERE id = $1',
+    'SELECT id, username, name, email, avatar, instagram, is_admin FROM users WHERE id = $1',
     [id]
   );
   return result.rows[0] || null;

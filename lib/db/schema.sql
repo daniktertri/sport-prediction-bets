@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(100) NOT NULL,
   email VARCHAR(255),
   avatar TEXT,
+  instagram VARCHAR(255),
   is_admin BOOLEAN DEFAULT FALSE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS players (
   position VARCHAR(50),
   number INTEGER,
   image TEXT,
+  instagram VARCHAR(255),
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

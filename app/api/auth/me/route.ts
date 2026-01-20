@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
+        instagram: user.instagram,
         isAdmin: user.is_admin,
       },
     });

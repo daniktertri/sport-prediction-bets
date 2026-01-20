@@ -12,7 +12,7 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const { name, avatar } = await request.json();
+    const { name, avatar, instagram } = await request.json();
 
     if (!name || name.trim().length === 0) {
       return NextResponse.json(
@@ -23,10 +23,10 @@ export async function PATCH(request: NextRequest) {
 
     const result = await pool.query(
       `UPDATE users 
-       SET name = $1, avatar = $2
-       WHERE id = $3
-       RETURNING id, username, name, email, avatar, is_admin`,
-      [name.trim(), avatar || null, user.userId]
+       SET name = $1, avatar = $2, instagram = $3
+       WHERE id = $4
+       RETURNING id, username, name, email, avatar, instagram, is_admin`,
+      [name.trim(), avatar || null, instagram || null, user.userId]
     );
 
     if (result.rows.length === 0) {
@@ -44,6 +44,7 @@ export async function PATCH(request: NextRequest) {
         name: updatedUser.name,
         email: updatedUser.email,
         avatar: updatedUser.avatar,
+        instagram: updatedUser.instagram,
         isAdmin: updatedUser.is_admin,
       },
     });

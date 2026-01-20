@@ -201,6 +201,18 @@ export default function AdminTeamsPage() {
                           label="Player Image"
                           maxSizeMB={10}
                         />
+                        <div>
+                          <label className="block text-sm font-medium mb-1 text-text-primary">
+                            Instagram Handle
+                          </label>
+                          <input
+                            type="text"
+                            placeholder="@username"
+                            value={player.instagram || ''}
+                            onChange={(e) => updatePlayer(index, { instagram: e.target.value || undefined })}
+                            className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                          />
+                        </div>
                       </div>
                     </Card>
                   ))}

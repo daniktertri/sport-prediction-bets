@@ -18,7 +18,8 @@ export async function GET() {
               'name', p.name,
               'position', p.position,
               'number', p.number,
-              'image', p.image
+              'image', p.image,
+              'instagram', p.instagram
             )
           ) FILTER (WHERE p.id IS NOT NULL),
           '[]'
@@ -80,9 +81,9 @@ export async function POST(request: NextRequest) {
       for (const player of players) {
         if (player.name) {
           await pool.query(
-            `INSERT INTO players (team_id, name, position, number, image)
-             VALUES ($1, $2, $3, $4, $5)`,
-            [team.id, player.name, player.position || null, player.number || null, player.image || null]
+            `INSERT INTO players (team_id, name, position, number, image, instagram)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
+            [team.id, player.name, player.position || null, player.number || null, player.image || null, player.instagram || null]
           );
         }
       }

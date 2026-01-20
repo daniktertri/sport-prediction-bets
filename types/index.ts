@@ -7,6 +7,7 @@ export type Player = {
   position?: string;
   number?: number;
   image?: string; // base64 or URL
+  instagram?: string;
 };
 
 export type Team = {
@@ -56,6 +57,7 @@ export type User = {
   name: string;
   email?: string;
   avatar?: string;
+  instagram?: string;
   totalPoints: number;
   exactScores: number; // count of correct exact scores
   winnerOnly: number; // count of correct winner-only predictions

@@ -18,6 +18,7 @@ export default function ProfilePage() {
   const [formData, setFormData] = useState({
     name: '',
     avatar: null as string | null,
+    instagram: '',
   });
 
   useEffect(() => {
@@ -29,6 +30,7 @@ export default function ProfilePage() {
     setFormData({
       name: currentUser.name || '',
       avatar: currentUser.avatar || null,
+      instagram: currentUser.instagram || '',
     });
   }, [currentUser, router]);
 
@@ -48,6 +50,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           name: formData.name,
           avatar: formData.avatar,
+          instagram: formData.instagram,
         }),
       });
 
@@ -130,6 +133,22 @@ export default function ProfilePage() {
                   label="Profile Picture"
                   maxSizeMB={10}
                 />
+
+                <div>
+                  <label className="block text-sm font-medium mb-1 text-text-primary">
+                    Instagram Handle
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="@username"
+                    value={formData.instagram}
+                    onChange={(e) => setFormData({ ...formData, instagram: e.target.value })}
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                  />
+                  <p className="text-xs text-text-secondary mt-1">
+                    Enter your Instagram username (with or without @)
+                  </p>
+                </div>
 
                 <div className="flex gap-2">
                   <Button type="submit" disabled={loading}>
