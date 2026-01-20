@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
         avatar: user.avatar,
         instagram: user.instagram,
         isAdmin: user.is_admin,
+        language: user.language || 'fr', // Default to French if not set
       },
     });
   } catch (error) {

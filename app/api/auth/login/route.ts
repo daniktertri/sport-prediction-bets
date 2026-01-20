@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         avatar: user.avatar,
         isAdmin: user.is_admin,
+        language: user.language || 'fr', // Default to French if not set
       },
     });
 

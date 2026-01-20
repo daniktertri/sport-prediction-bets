@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         avatar: user.avatar,
         isAdmin: user.is_admin,
+        language: 'fr', // Default to French for new users
       },
     });
 

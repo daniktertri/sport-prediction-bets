@@ -58,6 +58,7 @@ export type User = {
   email?: string;
   avatar?: string;
   instagram?: string;
+  language?: 'fr' | 'en'; // User's preferred language, default is 'fr'
   totalPoints: number;
   exactScores: number; // count of correct exact scores
   winnerOnly: number; // count of correct winner-only predictions

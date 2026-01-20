@@ -22,7 +22,7 @@ export async function createUser(username: string, password: string, name: strin
 
 export async function getUserByUsername(username: string) {
   const result = await pool.query(
-    'SELECT id, username, password_hash, name, email, avatar, is_admin FROM users WHERE username = $1',
+    'SELECT id, username, password_hash, name, email, avatar, is_admin, language FROM users WHERE username = $1',
     [username]
   );
   return result.rows[0] || null;
@@ -30,7 +30,7 @@ export async function getUserByUsername(username: string) {
 
 export async function getUserById(id: string) {
   const result = await pool.query(
-    'SELECT id, username, name, email, avatar, instagram, is_admin FROM users WHERE id = $1',
+    'SELECT id, username, name, email, avatar, instagram, is_admin, language FROM users WHERE id = $1',
     [id]
   );
   return result.rows[0] || null;
