@@ -6,6 +6,7 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { useApp } from '@/context/AppContext';
+import { setUserCache } from '@/utils/cache';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -43,7 +44,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Refresh current user in context
+      // Cache user data immediately for instant UI
+      if (data.user) {
+        setUserCache(data.user);
+      }
+      
+      // Refresh current user in context (will also update cache)
       await refreshCurrentUser();
       
       // Redirect to home

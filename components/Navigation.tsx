@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
+import { clearUserCache } from '@/utils/cache';
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -36,6 +37,10 @@ export default function Navigation() {
     setLoggingOut(true);
     try {
       await fetch('/api/auth/logout', { method: 'POST' });
+      
+      // Clear user cache
+      clearUserCache();
+      
       router.push('/login');
       router.refresh();
     } catch (error) {

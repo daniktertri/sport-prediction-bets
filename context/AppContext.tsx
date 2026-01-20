@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { Team, Match, User, Prediction, Competition } from '@/types';
+import { getUserFromCache, setUserCache, clearUserCache } from '@/utils/cache';
 
 interface AppContextType {
   // Data
@@ -33,22 +34,35 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [competition, setCompetition] = useState<Competition | null>(null);
-  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
+  // Initialize with cached user for instant UI
+  const [currentUser, setCurrentUser] = useState<User | undefined>(() => {
+    if (typeof window !== 'undefined') {
+      return getUserFromCache() || undefined;
+    }
+    return undefined;
+  });
   const [loading, setLoading] = useState(true);
 
-  // Fetch current user
+  // Fetch current user from server and update cache
   const fetchCurrentUser = useCallback(async () => {
     try {
       const res = await fetch('/api/auth/me');
       const data = await res.json();
       if (data.user) {
         setCurrentUser(data.user);
+        setUserCache(data.user); // Update cache
       } else {
         setCurrentUser(undefined);
+        clearUserCache(); // Clear cache if no user
       }
     } catch (error) {
       console.error('Error fetching current user:', error);
-      setCurrentUser(undefined);
+      // On error, keep cached user if available, otherwise clear
+      const cachedUser = getUserFromCache();
+      if (!cachedUser) {
+        setCurrentUser(undefined);
+        clearUserCache();
+      }
     }
   }, []);
 
@@ -87,6 +101,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // Load cached user immediately for instant UI
+    const cachedUser = getUserFromCache();
+    if (cachedUser) {
+      setCurrentUser(cachedUser);
+    }
+    
+    // Then verify with server in background
     fetchCurrentUser();
     fetchData();
   }, [fetchCurrentUser, fetchData]);
