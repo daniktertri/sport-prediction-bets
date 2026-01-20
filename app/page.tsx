@@ -46,7 +46,7 @@ export default function Home() {
             </div>
           </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-text-primary tracking-tight">
-            {competition.name}
+            {competition?.name || 'Sports Prediction Championship'}
           </h1>
           <p className="text-base sm:text-lg text-text-secondary mb-8 px-4 max-w-2xl mx-auto">
             Predict match results and compete for points

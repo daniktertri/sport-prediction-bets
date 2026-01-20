@@ -3,13 +3,22 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Lottie from 'lottie-react';
 
 export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
   const { currentUser } = useApp();
   const [loggingOut, setLoggingOut] = useState(false);
+  const [footballAnimation, setFootballAnimation] = useState(null);
+  
+  useEffect(() => {
+    fetch('/lottie/football.json')
+      .then(response => response.json())
+      .then(data => setFootballAnimation(data))
+      .catch(error => console.error('Error loading Lottie animation:', error));
+  }, []);
   
   const isActive = (path: string) => pathname === path;
   
@@ -44,7 +53,13 @@ export default function Navigation() {
             href="/" 
             className="flex items-center space-x-2 sm:space-x-3"
           >
-            <span className="text-xl sm:text-2xl">⚽</span>
+            <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
+              {footballAnimation ? (
+                <Lottie animationData={footballAnimation} loop={true} />
+              ) : (
+                <span className="text-xl sm:text-2xl">⚽</span>
+              )}
+            </div>
             <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
               Sports Predictions
             </span>
