@@ -8,7 +8,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import TeamLogo from '@/components/TeamLogo';
 export default function AdminResultsPage() {
-  const { matches, teams, updateMatch, currentUser } = useApp();
+  const { matches, teams, updateMatch, currentUser, refreshData } = useApp();
   
   const [selectedMatchId, setSelectedMatchId] = useState<string>('');
   const [score1, setScore1] = useState<string>('');
@@ -54,7 +54,7 @@ export default function AdminResultsPage() {
   
   const allPlayers = [...team1Players, ...team2Players];
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!selectedMatchId || !score1 || !score2) {
@@ -62,7 +62,7 @@ export default function AdminResultsPage() {
       return;
     }
     
-    updateMatch(selectedMatchId, {
+    await updateMatch(selectedMatchId, {
       status: 'finished',
       score1: parseInt(score1),
       score2: parseInt(score2),
@@ -74,6 +74,9 @@ export default function AdminResultsPage() {
     setScore2('');
     setManOfTheMatch('');
     setSelectedMatchId('');
+    
+    // Refresh data after update
+    await refreshData();
     
     setTimeout(() => setSubmitted(false), 2000);
   };

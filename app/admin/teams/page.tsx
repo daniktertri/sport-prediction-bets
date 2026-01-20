@@ -1,7 +1,7 @@
 // Admin Teams page - Create and edit teams
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
@@ -11,7 +11,7 @@ import TeamLogo from '@/components/TeamLogo';
 import { Team, Player } from '@/types';
 
 export default function AdminTeamsPage() {
-  const { teams, createTeam, updateTeam, currentUser } = useApp();
+  const { teams, createTeam, updateTeam, currentUser, refreshData } = useApp();
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +63,8 @@ export default function AdminTeamsPage() {
       setFormData({ name: '', logo: '', group: '', players: [] });
       setEditingTeam(null);
       setShowForm(false);
+      // Refresh data after update
+      await refreshData();
     } catch (err: any) {
       setError(err.message || 'Failed to save team. Please try again.');
       console.error('Error saving team:', err);

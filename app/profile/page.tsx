@@ -86,20 +86,20 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen py-12 bg-bg-primary">
+    <div className="min-h-screen py-6 sm:py-12 bg-bg-primary">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <Link href="/" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200">
+        <div className="mb-6 sm:mb-8">
+          <Link href="/" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200 text-sm sm:text-base">
             ← Back to Home
           </Link>
-          <h1 className="text-3xl md:text-4xl font-semibold mb-2 text-text-primary">My Profile</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2 text-text-primary">My Profile</h1>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Profile Form */}
           <div className="lg:col-span-2">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-6 text-text-primary">Edit Profile</h2>
+            <Card className="p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-semibold mb-4 sm:mb-6 text-text-primary">Edit Profile</h2>
               
               {error && (
                 <div className="mb-4 p-3 bg-danger/10 border border-danger/20 rounded-lg text-danger text-sm">
@@ -113,7 +113,7 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-1 text-text-primary">
                     Name
@@ -165,8 +165,8 @@ export default function ProfilePage() {
           {/* Stats & Info */}
           <div className="space-y-6">
             {/* User Stats */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 text-text-primary">Statistics</h3>
+            <Card className="p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-text-primary">Statistics</h3>
               <div className="space-y-4">
                 <div>
                   <div className="text-3xl font-semibold text-accent mb-1">
@@ -192,8 +192,8 @@ export default function ProfilePage() {
             </Card>
 
             {/* Account Info */}
-            <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4 text-text-primary">Account Info</h3>
+            <Card className="p-4 sm:p-6">
+              <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-text-primary">Account Info</h3>
               <div className="space-y-3 text-sm">
                 <div>
                   <div className="text-text-secondary mb-1">Username</div>
@@ -216,7 +216,7 @@ export default function ProfilePage() {
             </Card>
 
             {/* Logout */}
-            <Card className="p-6">
+            <Card className="p-4 sm:p-6">
               <Button variant="danger" className="w-full" onClick={handleLogout}>
                 Logout
               </Button>

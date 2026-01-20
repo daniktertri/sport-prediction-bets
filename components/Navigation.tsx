@@ -40,6 +40,24 @@ const MatchesIcon = ({ isActive }: { isActive: boolean }) => (
   </svg>
 );
 
+const BrowseIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+  </svg>
+);
+
 const LeaderboardIcon = ({ isActive }: { isActive: boolean }) => (
   <svg
     width="24"
@@ -111,6 +129,7 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: 'Home', icon: HomeIcon },
     { href: '/matches', label: 'Matches', icon: MatchesIcon },
+    { href: '/browse', label: 'Browse', icon: BrowseIcon },
     { href: '/leaderboard', label: 'Leaderboard', icon: LeaderboardIcon },
   ];
   
@@ -225,39 +244,41 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {/* Mobile Navigation - Bottom Bar (iOS Style) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-bg-secondary/95 backdrop-blur-xl border-t border-border safe-area-inset-bottom">
-        <div className="px-2 py-2 pb-safe">
-          <div className="flex items-center justify-around max-w-md mx-auto">
-            {bottomNavItems.map((item) => {
-              const Icon = item.icon;
-              const active = isActive(item.href);
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`
-                    flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl
-                    transition-all duration-200 min-w-[60px] relative
-                    ${active
-                      ? 'bg-bg-tertiary/60 text-accent'
-                      : 'text-text-primary active:opacity-70'
-                    }
-                  `}
-                >
-                  {active && (
-                    <div className="absolute inset-0 rounded-xl bg-accent/10 blur-sm" />
-                  )}
-                  <div className={`relative z-10 ${active ? 'text-accent' : 'text-text-primary'}`}>
-                    <Icon isActive={active} />
-                  </div>
-                  <span className={`relative z-10 text-[10px] font-medium leading-tight ${active ? 'text-accent' : 'text-text-primary'}`}>
-                    {item.label}
-                  </span>
-                </Link>
-              );
-            })}
+      {/* Mobile Navigation - Bottom Bar (iOS Style - Floating) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none pb-safe">
+        <div className="px-4 pb-4">
+          <div className="max-w-md mx-auto bg-bg-secondary/80 backdrop-blur-2xl rounded-3xl border border-border/50 shadow-2xl pointer-events-auto">
+            <div className="flex items-center justify-around px-2 py-3">
+              {bottomNavItems.map((item) => {
+                const Icon = item.icon;
+                const active = isActive(item.href);
+                
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`
+                      flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl
+                      transition-all duration-200 min-w-[60px] relative
+                      ${active
+                        ? 'bg-bg-tertiary/70 text-accent'
+                        : 'text-text-primary active:opacity-70'
+                      }
+                    `}
+                  >
+                    {active && (
+                      <div className="absolute inset-0 rounded-2xl bg-accent/15" />
+                    )}
+                    <div className={`relative z-10 ${active ? 'text-accent' : 'text-text-primary'}`}>
+                      <Icon isActive={active} />
+                    </div>
+                    <span className={`relative z-10 text-[10px] font-medium leading-tight ${active ? 'text-accent' : 'text-text-primary'}`}>
+                      {item.label}
+                    </span>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         </div>
       </nav>

@@ -1,7 +1,7 @@
 // Admin Matches page - Create and edit matches
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
@@ -10,7 +10,7 @@ import TeamLogo from '@/components/TeamLogo';
 import { Match } from '@/types';
 
 export default function AdminMatchesPage() {
-  const { teams, matches, createMatch, updateMatch, currentUser } = useApp();
+  const { teams, matches, createMatch, updateMatch, currentUser, refreshData } = useApp();
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [showForm, setShowForm] = useState(false);
   
@@ -35,7 +35,7 @@ export default function AdminMatchesPage() {
     );
   }
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     const matchData: Omit<Match, 'id'> = {
@@ -48,14 +48,16 @@ export default function AdminMatchesPage() {
     };
     
     if (editingMatch) {
-      updateMatch(editingMatch.id, matchData);
+      await updateMatch(editingMatch.id, matchData);
     } else {
-      createMatch(matchData);
+      await createMatch(matchData);
     }
     
     setFormData({ team1Id: '', team2Id: '', date: '', phase: 'group', group: '' });
     setEditingMatch(null);
     setShowForm(false);
+    // Refresh data after update
+    await refreshData();
   };
   
   const startEdit = (match: Match) => {

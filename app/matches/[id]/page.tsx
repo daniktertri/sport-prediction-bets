@@ -13,7 +13,7 @@ export default function MatchDetailPage() {
   const router = useRouter();
   const matchId = params.id as string;
   
-  const { matches, teams, getUserPredictionForMatch, addPrediction, currentUser } = useApp();
+  const { matches, teams, getUserPredictionForMatch, addPrediction, currentUser, refreshData } = useApp();
   const match = matches.find((m) => m.id === matchId);
   const existingPrediction = getUserPredictionForMatch(matchId);
   
@@ -100,6 +100,8 @@ export default function MatchDetailPage() {
     }
     
     setSubmitted(true);
+    // Refresh data after prediction
+    await refreshData();
     setTimeout(() => {
       router.push('/matches');
     }, 1500);
