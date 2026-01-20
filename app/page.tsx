@@ -34,35 +34,56 @@ export default function Home() {
   
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-        <div className="text-center">
-          <div className="flex justify-center mb-6">
-            <div className="w-24 h-24 sm:w-32 sm:h-32">
-              {tropheeAnimation ? (
-                <Lottie animationData={tropheeAnimation} loop={true} />
-              ) : (
-                <div className="text-5xl sm:text-6xl">🏆</div>
-              )}
+      {/* Hero Section with Background Video */}
+      <div className="relative w-full overflow-hidden min-h-[500px] sm:min-h-[600px] flex items-center">
+        {/* Background Video */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+          style={{ zIndex: 0 }}
+        >
+          <source src="/videos/introvideo.mp4" type="video/mp4" />
+        </video>
+        
+        {/* Overlay for better text readability */}
+        <div 
+          className="absolute inset-0 bg-bg-primary/75 backdrop-blur-[2px]"
+          style={{ zIndex: 1 }}
+        />
+        
+        {/* Hero Content */}
+        <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16" style={{ zIndex: 2 }}>
+          <div className="text-center">
+            <div className="flex justify-center mb-6">
+              <div className="w-24 h-24 sm:w-32 sm:h-32">
+                {tropheeAnimation ? (
+                  <Lottie animationData={tropheeAnimation} loop={true} />
+                ) : (
+                  <div className="text-5xl sm:text-6xl">🏆</div>
+                )}
+              </div>
             </div>
-          </div>
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-text-primary tracking-tight">
-            {competition?.name || 'Sports Prediction Championship'}
-          </h1>
-          <p className="text-base sm:text-lg text-text-secondary mb-8 px-4 max-w-2xl mx-auto">
-            Predict match results and compete for points
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/matches">
-              <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                View Matches
-              </Button>
-            </Link>
-            <Link href="/leaderboard">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                Leaderboard
-              </Button>
-            </Link>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-text-primary tracking-tight">
+              {competition?.name || 'Sports Prediction Championship'}
+            </h1>
+            <p className="text-base sm:text-lg text-text-secondary mb-8 px-4 max-w-2xl mx-auto">
+              Predict match results and compete for points
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link href="/matches">
+                <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                  View Matches
+                </Button>
+              </Link>
+              <Link href="/leaderboard">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                  Leaderboard
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </div>
