@@ -22,6 +22,7 @@ interface AppContextType {
   recalculatePoints: () => Promise<void>;
   getUserPredictionForMatch: (matchId: string) => Prediction | undefined;
   refreshData: () => Promise<void>;
+  refreshCurrentUser: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -42,11 +43,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const data = await res.json();
       if (data.user) {
         setCurrentUser(data.user);
+      } else {
+        setCurrentUser(undefined);
       }
     } catch (error) {
       console.error('Error fetching current user:', error);
+      setCurrentUser(undefined);
     }
   }, []);
+
+  const refreshCurrentUser = useCallback(async () => {
+    await fetchCurrentUser();
+  }, [fetchCurrentUser]);
 
   // Fetch all data
   const fetchData = useCallback(async () => {
@@ -212,6 +220,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         recalculatePoints,
         getUserPredictionForMatch,
         refreshData,
+        refreshCurrentUser,
       }}
     >
       {children}

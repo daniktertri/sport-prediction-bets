@@ -5,9 +5,11 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
+import { useApp } from '@/context/AppContext';
 
 export default function LoginPage() {
   const router = useRouter();
+  const { refreshCurrentUser } = useApp();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -41,6 +43,9 @@ export default function LoginPage() {
         return;
       }
 
+      // Refresh current user in context
+      await refreshCurrentUser();
+      
       // Redirect to home
       router.push('/');
       router.refresh();
