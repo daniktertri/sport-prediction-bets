@@ -64,7 +64,7 @@ export default function MatchDetailPage() {
   
   const allPlayers = [...team1Players, ...team2Players];
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (new Date(match.date) < new Date()) {
@@ -77,7 +77,7 @@ export default function MatchDetailPage() {
         alert('Please enter both scores');
         return;
       }
-      addPrediction({
+      await addPrediction({
         userId: currentUser?.id || '',
         matchId: match.id,
         type: 'exact_score',
@@ -90,7 +90,7 @@ export default function MatchDetailPage() {
         alert('Please select a winner');
         return;
       }
-      addPrediction({
+      await addPrediction({
         userId: currentUser?.id || '',
         matchId: match.id,
         type: 'winner_only',
