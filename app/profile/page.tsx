@@ -128,7 +128,7 @@ export default function ProfilePage() {
                   currentImage={formData.avatar || undefined}
                   onImageChange={(base64) => setFormData({ ...formData, avatar: base64 })}
                   label="Profile Picture"
-                  maxSizeMB={2}
+                  maxSizeMB={10}
                 />
 
                 <div className="flex gap-2">

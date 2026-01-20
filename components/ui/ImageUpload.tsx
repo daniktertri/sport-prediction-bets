@@ -15,7 +15,7 @@ export default function ImageUpload({
   currentImage,
   onImageChange,
   label = 'Upload Image',
-  maxSizeMB = 2,
+  maxSizeMB = 10,
   className = '',
 }: ImageUploadProps) {
   const [preview, setPreview] = useState<string | null>(currentImage || null);
@@ -61,6 +61,11 @@ export default function ImageUpload({
     }
   };
 
+  const handleUploadClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className={className}>
       {label && (
@@ -96,13 +101,14 @@ export default function ImageUpload({
             className="hidden"
             id="image-upload"
           />
-          <label htmlFor="image-upload" className="cursor-pointer">
-            <span className="inline-block">
-              <Button type="button" size="sm" variant="outline">
-                {preview ? 'Change Image' : 'Upload Image'}
-              </Button>
-            </span>
-          </label>
+          <Button 
+            type="button" 
+            size="sm" 
+            variant="outline"
+            onClick={handleUploadClick}
+          >
+            {preview ? 'Change Image' : 'Upload Image'}
+          </Button>
           {preview && (
             <Button type="button" size="sm" variant="danger" onClick={handleRemove}>
               Remove

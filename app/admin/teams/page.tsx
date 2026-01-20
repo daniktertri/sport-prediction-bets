@@ -157,7 +157,7 @@ export default function AdminTeamsPage() {
                     }
                   }}
                   label="Or upload team logo"
-                  maxSizeMB={2}
+                  maxSizeMB={10}
                 />
               </div>
               <div>
@@ -214,7 +214,7 @@ export default function AdminTeamsPage() {
                           currentImage={player.image || undefined}
                           onImageChange={(base64) => updatePlayer(index, { image: base64 || undefined })}
                           label="Player Image"
-                          maxSizeMB={2}
+                          maxSizeMB={10}
                         />
                       </div>
                     </Card>
