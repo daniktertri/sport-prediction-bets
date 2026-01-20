@@ -31,7 +31,7 @@ export default function MatchDetailPage() {
     return (
       <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4 text-text-primary">Match not found</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Match not found</h1>
           <Button onClick={() => router.push('/matches')}>Back to Matches</Button>
         </div>
       </div>
@@ -108,9 +108,9 @@ export default function MatchDetailPage() {
             {/* Team 1 */}
             <div className="text-center flex-1">
               <div className="text-4xl sm:text-6xl mb-2 sm:mb-3">{team1.logo || team1.flag}</div>
-              <div className="text-lg sm:text-xl font-bold text-text-primary">{team1.name}</div>
+              <div className="text-lg sm:text-xl font-semibold text-text-primary">{team1.name}</div>
               {isFinished && match.score1 !== undefined && (
-                <div className="text-3xl sm:text-4xl font-bold mt-2 text-text-primary">{match.score1}</div>
+                <div className="text-3xl sm:text-4xl font-semibold mt-2 text-text-primary">{match.score1}</div>
               )}
             </div>
             
@@ -119,14 +119,14 @@ export default function MatchDetailPage() {
             {/* Team 2 */}
             <div className="text-center flex-1">
               <div className="text-4xl sm:text-6xl mb-2 sm:mb-3">{team2.logo || team2.flag}</div>
-              <div className="text-lg sm:text-xl font-bold text-text-primary">{team2.name}</div>
+              <div className="text-lg sm:text-xl font-semibold text-text-primary">{team2.name}</div>
               {isFinished && match.score2 !== undefined && (
-                <div className="text-3xl sm:text-4xl font-bold mt-2 text-text-primary">{match.score2}</div>
+                <div className="text-3xl sm:text-4xl font-semibold mt-2 text-text-primary">{match.score2}</div>
               )}
             </div>
           </div>
           
-          <div className="text-center border-t border-bg-tertiary pt-3 sm:pt-4">
+          <div className="text-center border-t border-border pt-3 sm:pt-4">
             <div className="text-xs sm:text-sm text-text-secondary">
               {matchDate.toLocaleDateString('en-US', { 
                 weekday: 'long', 
@@ -139,7 +139,7 @@ export default function MatchDetailPage() {
             {isFinished && match.manOfTheMatch && (
               <div className="mt-2 text-xs sm:text-sm">
                 <span className="text-text-secondary">MOTM: </span>
-                <span className="font-semibold text-text-primary">
+                <span className="font-medium text-text-primary">
                   {allPlayers.find(p => p.id === match.manOfTheMatch)?.name || match.manOfTheMatch}
                 </span>
               </div>
@@ -150,33 +150,33 @@ export default function MatchDetailPage() {
         {/* Prediction Form */}
         {!isFinished && (
           <Card className="p-6 sm:p-8">
-            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-text-primary">Make Your Prediction</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-text-primary">Make Your Prediction</h2>
             
             {submitted ? (
-              <div className="bg-neon-green/20 border border-neon-green/50 rounded-lg p-4 sm:p-6 text-center shadow-neon-green-sm">
-                <p className="text-neon-green font-semibold text-base sm:text-lg">
-                  ✅ Prediction submitted successfully!
+              <div className="bg-success/10 border border-success/20 rounded-lg p-4 sm:p-6 text-center">
+                <p className="text-success font-medium text-base sm:text-lg">
+                  ✓ Prediction submitted successfully!
                 </p>
-                <p className="text-neon-green/80 text-xs sm:text-sm mt-2">Redirecting to matches...</p>
+                <p className="text-text-secondary text-xs sm:text-sm mt-2">Redirecting to matches...</p>
               </div>
             ) : existingPrediction ? (
-              <div className="bg-neon-cyan/20 border border-neon-cyan/50 rounded-lg p-4 sm:p-6 shadow-neon-cyan-sm">
-                <p className="text-neon-cyan font-semibold mb-3 text-sm sm:text-base">
+              <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6">
+                <p className="text-accent font-medium mb-3 text-sm sm:text-base">
                   You already have a prediction for this match
                 </p>
                 {existingPrediction.type === 'exact_score' && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Score: <span className="text-neon-cyan font-semibold">{existingPrediction.score1} - {existingPrediction.score2}</span>
+                    Score: <span className="text-accent font-medium">{existingPrediction.score1} - {existingPrediction.score2}</span>
                   </p>
                 )}
                 {existingPrediction.winnerId && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Winner: <span className="text-neon-cyan font-semibold">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
+                    Winner: <span className="text-accent font-medium">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
                   </p>
                 )}
                 {existingPrediction.manOfTheMatch && (
                   <p className="text-xs sm:text-sm text-text-secondary">
-                    MOTM: <span className="text-neon-cyan font-semibold">{allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}</span>
+                    MOTM: <span className="text-accent font-medium">{allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}</span>
                   </p>
                 )}
               </div>
@@ -184,7 +184,7 @@ export default function MatchDetailPage() {
               <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                 {/* Prediction Type Selection */}
                 <div>
-                  <label className="block text-sm font-semibold mb-3 text-text-primary">
+                  <label className="block text-sm font-medium mb-3 text-text-primary">
                     Prediction Type
                   </label>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
@@ -192,15 +192,15 @@ export default function MatchDetailPage() {
                       type="button"
                       onClick={() => setPredictionType('exact_score')}
                       className={`
-                        p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 text-left relative overflow-hidden
+                        p-3 sm:p-4 rounded-lg border transition-colors duration-200 text-left
                         ${predictionType === 'exact_score'
-                          ? 'border-neon-green bg-neon-green/10 shadow-neon-green-sm'
-                          : 'border-neon-cyan/30 hover:border-neon-green/60 hover:bg-neon-green/5'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-border hover:border-accent hover:bg-accent/5'
                         }
                       `}
                     >
-                      <div className="font-semibold text-text-primary text-sm sm:text-base">Exact Score</div>
-                      <div className={`text-xs sm:text-sm mt-1 font-bold ${predictionType === 'exact_score' ? 'text-neon-green' : 'text-neon-cyan'}`}>
+                      <div className="font-medium text-text-primary text-sm sm:text-base">Exact Score</div>
+                      <div className={`text-xs sm:text-sm mt-1 font-medium ${predictionType === 'exact_score' ? 'text-accent' : 'text-text-secondary'}`}>
                         +10 points
                       </div>
                     </button>
@@ -208,15 +208,17 @@ export default function MatchDetailPage() {
                       type="button"
                       onClick={() => setPredictionType('winner_only')}
                       className={`
-                        p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 text-left relative overflow-hidden
+                        p-3 sm:p-4 rounded-lg border transition-colors duration-200 text-left
                         ${predictionType === 'winner_only'
-                          ? 'border-neon-cyan bg-neon-cyan/10 shadow-neon-cyan-sm'
-                          : 'border-neon-cyan/30 hover:border-neon-cyan/60 hover:bg-neon-cyan/5'
+                          ? 'border-accent bg-accent/10'
+                          : 'border-border hover:border-accent hover:bg-accent/5'
                         }
                       `}
                     >
-                      <div className="font-semibold text-text-primary text-sm sm:text-base">Winner Only</div>
-                      <div className="text-xs sm:text-sm text-neon-cyan mt-1 font-bold">+3 points</div>
+                      <div className="font-medium text-text-primary text-sm sm:text-base">Winner Only</div>
+                      <div className={`text-xs sm:text-sm mt-1 font-medium ${predictionType === 'winner_only' ? 'text-accent' : 'text-text-secondary'}`}>
+                        +3 points
+                      </div>
                     </button>
                   </div>
                 </div>
@@ -233,7 +235,7 @@ export default function MatchDetailPage() {
                         min="0"
                         value={score1}
                         onChange={(e) => setScore1(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
+                        className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                         required
                       />
                     </div>
@@ -246,7 +248,7 @@ export default function MatchDetailPage() {
                         min="0"
                         value={score2}
                         onChange={(e) => setScore2(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
+                        className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                         required
                       />
                     </div>
@@ -262,7 +264,7 @@ export default function MatchDetailPage() {
                     <select
                       value={winnerId}
                       onChange={(e) => setWinnerId(e.target.value)}
-                      className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
+                      className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                       required
                     >
                       <option value="">Select winner</option>
@@ -280,7 +282,7 @@ export default function MatchDetailPage() {
                   <select
                     value={manOfTheMatch}
                     onChange={(e) => setManOfTheMatch(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
+                    className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                   >
                     <option value="">Select player</option>
                     {team1Players.map((player) => (
@@ -297,19 +299,19 @@ export default function MatchDetailPage() {
                 </div>
                 
                 {/* Potential Points Display */}
-                <div className={`rounded-lg p-3 sm:p-4 border-2 ${
+                <div className={`rounded-lg p-3 sm:p-4 border ${
                   potentialPoints >= 13 
-                    ? 'bg-neon-green/20 border-neon-green/50 shadow-neon-green-sm' 
+                    ? 'bg-success/10 border-success/20' 
                     : potentialPoints >= 6
-                    ? 'bg-neon-cyan/20 border-neon-cyan/50 shadow-neon-cyan-sm'
-                    : 'bg-warning/20 border-warning/50'
+                    ? 'bg-accent/10 border-accent/20'
+                    : 'bg-bg-secondary border-border'
                 }`}>
-                  <p className={`text-xs sm:text-sm font-semibold ${
+                  <p className={`text-xs sm:text-sm font-medium ${
                     potentialPoints >= 13 
-                      ? 'text-neon-green' 
+                      ? 'text-success' 
                       : potentialPoints >= 6
-                      ? 'text-neon-cyan'
-                      : 'text-warning'
+                      ? 'text-accent'
+                      : 'text-text-secondary'
                   }`}>
                     <span>Potential Points:</span> <span className="text-lg">{potentialPoints}</span> points
                   </p>

@@ -13,7 +13,7 @@ export default function AdminPage() {
     return (
       <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4 text-text-primary">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
           <p className="text-text-secondary mb-6">
             You need admin privileges to access this page.
           </p>
@@ -56,7 +56,7 @@ export default function AdminPage() {
     <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-text-primary">Admin Panel</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold mb-2 text-text-primary">Admin Panel</h1>
           <p className="text-text-secondary">
             Manage teams, groups, matches, and results
           </p>
@@ -65,18 +65,18 @@ export default function AdminPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {adminSections.map((section) => (
             <Link key={section.href} href={section.href} className="group">
-              <Card hover className="p-6" glow="cyan">
+              <Card hover className="p-6">
                 <div className="flex items-start gap-4">
                   <div className="text-4xl">{section.icon}</div>
                   <div className="flex-1">
-                    <h2 className="text-xl font-bold mb-2 text-text-primary">
+                    <h2 className="text-xl font-semibold mb-2 text-text-primary">
                       {section.title}
                     </h2>
                     <p className="text-sm text-text-secondary">
                       {section.description}
                     </p>
                   </div>
-                  <div className="text-neon-cyan group-hover:text-neon-green transition-colors">→</div>
+                  <div className="text-accent group-hover:text-accent-hover transition-colors duration-200">→</div>
                 </div>
               </Card>
             </Link>

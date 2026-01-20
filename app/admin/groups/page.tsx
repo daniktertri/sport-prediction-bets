@@ -11,9 +11,9 @@ export default function AdminGroupsPage() {
   
   if (!currentUser?.isAdmin) {
     return (
-      <div className="min-h-screen py-12">
+      <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
           <Link href="/">
             <Button>Go Home</Button>
           </Link>
@@ -30,14 +30,14 @@ export default function AdminGroupsPage() {
   };
   
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <Link href="/admin" className="text-blue-600 hover:text-blue-700 mb-2 inline-block">
+          <Link href="/admin" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200">
             ← Back to Admin
           </Link>
-          <h1 className="text-3xl font-bold">Group Assignment</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-3xl font-semibold text-text-primary">Group Assignment</h1>
+          <p className="text-text-secondary mt-2">
             Assign teams to groups by selecting from the dropdown
           </p>
         </div>
@@ -48,18 +48,18 @@ export default function AdminGroupsPage() {
             
             return (
               <Card key={group} className="p-6">
-                <h2 className="text-xl font-bold mb-4">Group {group}</h2>
+                <h2 className="text-xl font-semibold mb-4 text-text-primary">Group {group}</h2>
                 <div className="space-y-3 mb-4">
                   {groupTeams.map((team) => (
-                    <div key={team.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                    <div key={team.id} className="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
                       <div className="flex items-center gap-2">
                         <span className="text-xl">{team.logo || team.flag}</span>
-                        <span className="font-medium">{team.name}</span>
+                        <span className="font-medium text-text-primary">{team.name}</span>
                       </div>
                       <select
                         value={group}
                         onChange={(e) => handleGroupChange(team.id, e.target.value as any || null)}
-                        className="text-sm border rounded px-2 py-1"
+                        className="text-sm border border-border rounded px-2 py-1 bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       >
                         <option value={group}>Group {group}</option>
                         <option value="">Remove</option>
@@ -72,7 +72,7 @@ export default function AdminGroupsPage() {
                 </div>
                 
                 {groupTeams.length === 0 && (
-                  <p className="text-sm text-gray-500 text-center py-4">No teams assigned</p>
+                  <p className="text-sm text-text-secondary text-center py-4">No teams assigned</p>
                 )}
               </Card>
             );
@@ -81,18 +81,18 @@ export default function AdminGroupsPage() {
         
         {unassignedTeams.length > 0 && (
           <Card className="mt-6 p-6">
-            <h2 className="text-xl font-bold mb-4">Unassigned Teams</h2>
+            <h2 className="text-xl font-semibold mb-4 text-text-primary">Unassigned Teams</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {unassignedTeams.map((team) => (
-                <div key={team.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div key={team.id} className="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
                   <div className="flex items-center gap-2">
                     <span className="text-xl">{team.logo || team.flag}</span>
-                    <span className="font-medium text-sm">{team.name}</span>
+                    <span className="font-medium text-sm text-text-primary">{team.name}</span>
                   </div>
                   <select
                     value=""
                     onChange={(e) => handleGroupChange(team.id, e.target.value as any || null)}
-                    className="text-sm border rounded px-2 py-1"
+                    className="text-sm border border-border rounded px-2 py-1 bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                   >
                     <option value="">Assign...</option>
                     {groups.map(g => (

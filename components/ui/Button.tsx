@@ -13,14 +13,14 @@ export default function Button({
   children,
   ...props
 }: ButtonProps) {
-  const baseStyles = 'font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-bg-primary disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden';
+  const baseStyles = 'font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-bg-primary disabled:opacity-50 disabled:cursor-not-allowed';
   
   const variants = {
-    primary: 'bg-gradient-to-r from-neon-cyan to-neon-green hover:from-neon-cyan-dark hover:to-neon-green-dark text-bg-primary focus:ring-neon-cyan shadow-lg shadow-neon-cyan/40 hover:shadow-xl hover:shadow-neon-cyan/60 hover:scale-105',
-    secondary: 'glass-strong border border-neon-cyan/30 hover:border-neon-cyan/60 text-text-primary hover:text-neon-cyan focus:ring-neon-cyan hover:glow-cyan-sm',
-    outline: 'border-2 border-neon-cyan/50 hover:border-neon-cyan text-text-primary hover:text-neon-cyan hover:bg-neon-cyan/10 focus:ring-neon-cyan hover:glow-cyan-sm',
-    danger: 'bg-gradient-to-r from-danger to-red-600 hover:from-red-600 hover:to-danger text-white focus:ring-danger shadow-lg shadow-danger/40 hover:shadow-xl hover:shadow-danger/60',
-    success: 'bg-gradient-to-r from-neon-green to-green-500 hover:from-green-500 hover:to-neon-green text-bg-primary focus:ring-neon-green shadow-lg shadow-neon-green/40 hover:shadow-xl hover:shadow-neon-green/60',
+    primary: 'bg-accent hover:bg-accent-hover text-white focus:ring-accent',
+    secondary: 'bg-bg-secondary hover:bg-bg-tertiary text-text-primary border border-border focus:ring-accent',
+    outline: 'border border-border hover:border-accent text-text-primary hover:text-accent focus:ring-accent',
+    danger: 'bg-danger hover:bg-red-600 text-white focus:ring-danger',
+    success: 'bg-success hover:bg-green-600 text-white focus:ring-success',
   };
   
   const sizes = {
@@ -34,10 +34,7 @@ export default function Button({
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${className}`}
       {...props}
     >
-      <span className="relative z-10 font-bold">{children}</span>
-      {(variant === 'primary' || variant === 'success') && (
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-100%] hover:translate-x-[100%] transition-transform duration-700" />
-      )}
+      {children}
     </button>
   );
 }

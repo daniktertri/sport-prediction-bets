@@ -22,9 +22,9 @@ export default function AdminTeamsPage() {
   
   if (!currentUser?.isAdmin) {
     return (
-      <div className="min-h-screen py-12">
+      <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
           <Link href="/">
             <Button>Go Home</Button>
           </Link>
@@ -90,14 +90,14 @@ export default function AdminTeamsPage() {
   };
   
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Link href="/admin" className="text-blue-600 hover:text-blue-700 mb-2 inline-block">
+            <Link href="/admin" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200">
               ← Back to Admin
             </Link>
-            <h1 className="text-3xl font-bold">Team Management</h1>
+            <h1 className="text-3xl font-semibold text-text-primary">Team Management</h1>
           </div>
           <Button onClick={() => { setShowForm(true); setEditingTeam(null); setFormData({ name: '', logo: '', group: '', players: [] }); }}>
             + New Team
@@ -106,33 +106,33 @@ export default function AdminTeamsPage() {
         
         {showForm && (
           <Card className="p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">{editingTeam ? 'Edit Team' : 'Create Team'}</h2>
+            <h2 className="text-xl font-semibold mb-4 text-text-primary">{editingTeam ? 'Edit Team' : 'Create Team'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium mb-1">Team Name</label>
+                <label className="block text-sm font-medium mb-1 text-text-primary">Team Name</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Logo (emoji or URL)</label>
+                <label className="block text-sm font-medium mb-1 text-text-primary">Logo (emoji or URL)</label>
                 <input
                   type="text"
                   value={formData.logo}
                   onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Group</label>
+                <label className="block text-sm font-medium mb-1 text-text-primary">Group</label>
                 <select
                   value={formData.group}
                   onChange={(e) => setFormData({ ...formData, group: e.target.value as any })}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                 >
                   <option value="">No Group</option>
                   <option value="A">Group A</option>
@@ -144,7 +144,7 @@ export default function AdminTeamsPage() {
               
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium">Players</label>
+                  <label className="block text-sm font-medium text-text-primary">Players</label>
                   <Button type="button" size="sm" onClick={addPlayer}>+ Add Player</Button>
                 </div>
                 <div className="space-y-2">
@@ -155,21 +155,21 @@ export default function AdminTeamsPage() {
                         placeholder="Player name"
                         value={player.name}
                         onChange={(e) => updatePlayer(index, { name: e.target.value })}
-                        className="flex-1 px-4 py-2 border rounded-lg"
+                        className="flex-1 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       />
                       <input
                         type="text"
                         placeholder="Position"
                         value={player.position || ''}
                         onChange={(e) => updatePlayer(index, { position: e.target.value })}
-                        className="w-32 px-4 py-2 border rounded-lg"
+                        className="w-32 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       />
                       <input
                         type="number"
                         placeholder="Number"
                         value={player.number || ''}
                         onChange={(e) => updatePlayer(index, { number: parseInt(e.target.value) || undefined })}
-                        className="w-24 px-4 py-2 border rounded-lg"
+                        className="w-24 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       />
                       <Button type="button" variant="danger" size="sm" onClick={() => removePlayer(index)}>
                         Remove
@@ -196,13 +196,13 @@ export default function AdminTeamsPage() {
                 <div className="flex items-center gap-3">
                   <span className="text-3xl">{team.logo || team.flag}</span>
                   <div>
-                    <h3 className="font-bold text-lg">{team.name}</h3>
-                    {team.group && <span className="text-sm text-gray-500">Group {team.group}</span>}
+                    <h3 className="font-semibold text-lg text-text-primary">{team.name}</h3>
+                    {team.group && <span className="text-sm text-text-secondary">Group {team.group}</span>}
                   </div>
                 </div>
                 <Button size="sm" onClick={() => startEdit(team)}>Edit</Button>
               </div>
-              <div className="text-sm text-gray-600">
+              <div className="text-sm text-text-secondary">
                 {team.players.length} players
               </div>
             </Card>

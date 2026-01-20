@@ -23,9 +23,9 @@ export default function AdminMatchesPage() {
   
   if (!currentUser?.isAdmin) {
     return (
-      <div className="min-h-screen py-12">
+      <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
           <Link href="/">
             <Button>Go Home</Button>
           </Link>
@@ -75,14 +75,14 @@ export default function AdminMatchesPage() {
   };
   
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Link href="/admin" className="text-neon-cyan hover:text-neon-green mb-2 inline-block transition-colors neon-underline">
+            <Link href="/admin" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200">
               ← Back to Admin
             </Link>
-            <h1 className="text-3xl font-bold">Match Management</h1>
+            <h1 className="text-3xl font-semibold text-text-primary">Match Management</h1>
           </div>
           <Button onClick={() => { 
             setShowForm(true); 
@@ -95,15 +95,15 @@ export default function AdminMatchesPage() {
         
         {showForm && (
           <Card className="p-6 mb-6">
-            <h2 className="text-xl font-bold mb-4">{editingMatch ? 'Edit Match' : 'Create Match'}</h2>
+            <h2 className="text-xl font-semibold mb-4 text-text-primary">{editingMatch ? 'Edit Match' : 'Create Match'}</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Team 1</label>
+                  <label className="block text-sm font-medium mb-1 text-text-primary">Team 1</label>
                   <select
                     value={formData.team1Id}
                     onChange={(e) => setFormData({ ...formData, team1Id: e.target.value })}
-                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                     required
                   >
                     <option value="">Select team</option>
@@ -113,11 +113,11 @@ export default function AdminMatchesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-1">Team 2</label>
+                  <label className="block text-sm font-medium mb-1 text-text-primary">Team 2</label>
                   <select
                     value={formData.team2Id}
                     onChange={(e) => setFormData({ ...formData, team2Id: e.target.value })}
-                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                     required
                   >
                     <option value="">Select team</option>
@@ -129,23 +129,23 @@ export default function AdminMatchesPage() {
               </div>
               
               <div>
-                <label className="block text-sm font-medium mb-1">Date & Time</label>
+                <label className="block text-sm font-medium mb-1 text-text-primary">Date & Time</label>
                 <input
                   type="datetime-local"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                   required
                 />
               </div>
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium mb-1">Phase</label>
+                  <label className="block text-sm font-medium mb-1 text-text-primary">Phase</label>
                   <select
                     value={formData.phase}
                     onChange={(e) => setFormData({ ...formData, phase: e.target.value as Match['phase'] })}
-                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                   >
                     <option value="group">Group Stage</option>
                     <option value="round16">Round of 16</option>
@@ -156,11 +156,11 @@ export default function AdminMatchesPage() {
                 </div>
                 {formData.phase === 'group' && (
                   <div>
-                    <label className="block text-sm font-medium mb-1">Group</label>
+                    <label className="block text-sm font-medium mb-1 text-text-primary">Group</label>
                     <select
                       value={formData.group}
                       onChange={(e) => setFormData({ ...formData, group: e.target.value as any })}
-                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                     >
                       <option value="">Select group</option>
                       <option value="A">Group A</option>
@@ -192,11 +192,11 @@ export default function AdminMatchesPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <span className="text-2xl">{team1?.logo || team1?.flag}</span>
-                    <span className="font-semibold">{team1?.name}</span>
-                    <span className="text-gray-400">vs</span>
-                    <span className="font-semibold">{team2?.name}</span>
+                    <span className="font-medium text-text-primary">{team1?.name}</span>
+                    <span className="text-text-secondary">vs</span>
+                    <span className="font-medium text-text-primary">{team2?.name}</span>
                     <span className="text-2xl">{team2?.logo || team2?.flag}</span>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-text-secondary">
                       {new Date(match.date).toLocaleDateString()} • {match.phase}
                     </span>
                   </div>

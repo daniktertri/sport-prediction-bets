@@ -19,9 +19,9 @@ export default function AdminResultsPage() {
   
   if (!currentUser?.isAdmin) {
     return (
-      <div className="min-h-screen py-12">
+      <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
           <Link href="/">
             <Button>Go Home</Button>
           </Link>
@@ -77,22 +77,22 @@ export default function AdminResultsPage() {
   };
   
   return (
-    <div className="min-h-screen py-12">
+    <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <Link href="/admin" className="text-neon-cyan hover:text-neon-green mb-2 inline-block transition-colors neon-underline">
+          <Link href="/admin" className="text-accent hover:text-accent-hover mb-2 inline-block transition-colors duration-200">
             ← Back to Admin
           </Link>
-          <h1 className="text-3xl font-bold">Match Results</h1>
-          <p className="text-gray-600 dark:text-gray-400 mt-2">
+          <h1 className="text-3xl font-semibold text-text-primary">Match Results</h1>
+          <p className="text-text-secondary mt-2">
             Set final scores and man of the match. Points will be automatically recalculated.
           </p>
         </div>
         
         {submitted && (
-          <Card className="p-4 mb-6 bg-neon-green/20 border-neon-green/50 shadow-neon-green-sm">
-            <p className="text-neon-green font-semibold">
-              ✅ Match result updated! Points have been recalculated.
+          <Card className="p-4 mb-6 bg-success/10 border-success/20">
+            <p className="text-success font-medium">
+              ✓ Match result updated! Points have been recalculated.
             </p>
           </Card>
         )}
@@ -100,11 +100,11 @@ export default function AdminResultsPage() {
         <Card className="p-6 mb-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label className="block text-sm font-medium mb-2">Select Match</label>
+              <label className="block text-sm font-medium mb-2 text-text-primary">Select Match</label>
               <select
                 value={selectedMatchId}
                 onChange={(e) => handleMatchSelect(e.target.value)}
-                className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                 required
               >
                 <option value="">Choose a match...</option>
@@ -122,26 +122,26 @@ export default function AdminResultsPage() {
             
             {selectedMatch && team1 && team2 && (
               <>
-                <Card className="p-4 bg-gray-50 dark:bg-gray-700">
+                <Card className="p-4 bg-bg-tertiary">
                   <div className="flex items-center justify-center gap-6">
                     <div className="text-center">
                       <div className="text-4xl mb-2">{team1.logo || team1.flag}</div>
-                      <div className="font-semibold">{team1.name}</div>
+                      <div className="font-medium text-text-primary">{team1.name}</div>
                     </div>
-                    <div className="text-2xl text-gray-400">vs</div>
+                    <div className="text-2xl text-text-secondary">vs</div>
                     <div className="text-center">
                       <div className="text-4xl mb-2">{team2.logo || team2.flag}</div>
-                      <div className="font-semibold">{team2.name}</div>
+                      <div className="font-medium text-text-primary">{team2.name}</div>
                     </div>
                   </div>
-                  <div className="text-center text-sm text-gray-500 mt-4">
+                  <div className="text-center text-sm text-text-secondary mt-4">
                     {new Date(selectedMatch.date).toLocaleDateString()}
                   </div>
                 </Card>
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium mb-2 text-text-primary">
                       {team1.name} Score
                     </label>
                     <input
@@ -149,12 +149,12 @@ export default function AdminResultsPage() {
                       min="0"
                       value={score1}
                       onChange={(e) => setScore1(e.target.value)}
-                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">
+                    <label className="block text-sm font-medium mb-2 text-text-primary">
                       {team2.name} Score
                     </label>
                     <input
@@ -162,20 +162,20 @@ export default function AdminResultsPage() {
                       min="0"
                       value={score2}
                       onChange={(e) => setScore2(e.target.value)}
-                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                      className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                       required
                     />
                   </div>
                 </div>
                 
                 <div>
-                  <label className="block text-sm font-medium mb-2">
+                  <label className="block text-sm font-medium mb-2 text-text-primary">
                     Man of the Match
                   </label>
                   <select
                     value={manOfTheMatch}
                     onChange={(e) => setManOfTheMatch(e.target.value)}
-                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
+                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
                   >
                     <option value="">Select player</option>
                     {team1Players.map((player) => (
@@ -200,7 +200,7 @@ export default function AdminResultsPage() {
         </Card>
         
         <div>
-          <h2 className="text-xl font-bold mb-4">Recent Finished Matches</h2>
+          <h2 className="text-xl font-semibold mb-4 text-text-primary">Recent Finished Matches</h2>
           <div className="space-y-2">
             {matches
               .filter((m) => m.status === 'finished')
@@ -217,15 +217,15 @@ export default function AdminResultsPage() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                         <span className="text-xl">{t1?.logo || t1?.flag}</span>
-                        <span className="font-semibold">{t1?.name}</span>
-                        <span className="font-bold text-lg">{match.score1}</span>
-                        <span className="text-gray-400">-</span>
-                        <span className="font-bold text-lg">{match.score2}</span>
-                        <span className="font-semibold">{t2?.name}</span>
+                        <span className="font-medium text-text-primary">{t1?.name}</span>
+                        <span className="font-semibold text-lg text-text-primary">{match.score1}</span>
+                        <span className="text-text-secondary">-</span>
+                        <span className="font-semibold text-lg text-text-primary">{match.score2}</span>
+                        <span className="font-medium text-text-primary">{t2?.name}</span>
                         <span className="text-xl">{t2?.logo || t2?.flag}</span>
                       </div>
                       {motmPlayer && (
-                        <span className="text-sm text-gray-500">
+                        <span className="text-sm text-text-secondary">
                           MOTM: {motmPlayer.name}
                         </span>
                       )}
