@@ -18,7 +18,7 @@ export default function RootLayout({
       <body className="antialiased bg-bg-primary min-h-screen">
         <AppProvider>
           <Navigation />
-          <main>{children}</main>
+          <main className="pb-20 md:pb-0">{children}</main>
         </AppProvider>
       </body>
     </html>

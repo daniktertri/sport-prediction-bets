@@ -50,3 +50,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #2A3142;
 }
+
+/* Safe area insets for mobile devices */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.pb-safe {
+  padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+}

@@ -7,6 +7,91 @@ import { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import { clearUserCache } from '@/utils/cache';
 
+// Icon components for bottom navigation
+const HomeIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
+  </svg>
+);
+
+const MatchesIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
+  </svg>
+);
+
+const LeaderboardIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+    <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+    <path d="M4 22h16" />
+    <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+    <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+    <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+  </svg>
+);
+
+const AdminIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    <path d="M9 12l2 2 4-4" />
+  </svg>
+);
+
+const ProfileIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
 export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
@@ -24,14 +109,19 @@ export default function Navigation() {
   const isActive = (path: string) => pathname === path;
   
   const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/matches', label: 'Matches' },
-    { href: '/leaderboard', label: 'Leaderboard' },
+    { href: '/', label: 'Home', icon: HomeIcon },
+    { href: '/matches', label: 'Matches', icon: MatchesIcon },
+    { href: '/leaderboard', label: 'Leaderboard', icon: LeaderboardIcon },
   ];
   
   if (currentUser?.isAdmin) {
-    navItems.push({ href: '/admin', label: 'Admin' });
+    navItems.push({ href: '/admin', label: 'Admin', icon: AdminIcon });
   }
+  
+  // Add profile to bottom nav if user is logged in
+  const bottomNavItems = currentUser
+    ? [...navItems, { href: '/profile', label: 'Profile', icon: ProfileIcon }]
+    : navItems;
   
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -51,86 +141,126 @@ export default function Navigation() {
   };
   
   return (
-    <nav className="bg-bg-secondary border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16">
-          <Link 
-            href="/" 
-            className="flex items-center space-x-2 sm:space-x-3"
-          >
-            <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-              {footballAnimation ? (
-                <Lottie animationData={footballAnimation} loop={true} />
+    <>
+      {/* Desktop Navigation - Top Bar */}
+      <nav className="hidden md:block bg-bg-secondary border-b border-border sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            <Link 
+              href="/" 
+              className="flex items-center space-x-2 sm:space-x-3"
+            >
+              <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
+                {footballAnimation ? (
+                  <Lottie animationData={footballAnimation} loop={true} />
+                ) : (
+                  <span className="text-xl sm:text-2xl">⚽</span>
+                )}
+              </div>
+              <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
+                Sports Predictions
+              </span>
+              <span className="font-semibold text-lg text-text-primary sm:hidden">
+                Predictions
+              </span>
+            </Link>
+            
+            <div className="flex items-center space-x-1 sm:space-x-2">
+              {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium 
+                    transition-colors duration-200
+                    ${isActive(item.href)
+                      ? 'text-accent bg-accent/10'
+                      : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
+                    }
+                  `}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              
+              {currentUser ? (
+                <div className="flex items-center gap-2 ml-2">
+                  <Link
+                    href="/profile"
+                    className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-bg-tertiary transition-colors duration-200"
+                  >
+                    {currentUser.avatar ? (
+                      <img
+                        src={currentUser.avatar}
+                        alt={currentUser.name}
+                        className="w-8 h-8 rounded-full object-cover border border-border"
+                      />
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-sm">
+                        {currentUser.name.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                    <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline">
+                      {currentUser.name}
+                    </span>
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors duration-200 disabled:opacity-50"
+                  >
+                    {loggingOut ? 'Logging out...' : 'Logout'}
+                  </button>
+                </div>
               ) : (
-                <span className="text-xl sm:text-2xl">⚽</span>
+                <Link
+                  href="/login"
+                  className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-accent hover:text-accent-hover hover:bg-accent/10 transition-colors duration-200 ml-2"
+                >
+                  Login
+                </Link>
               )}
             </div>
-            <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
-              Sports Predictions
-            </span>
-            <span className="font-semibold text-lg text-text-primary sm:hidden">
-              Predictions
-            </span>
-          </Link>
-          
-          <div className="flex items-center space-x-1 sm:space-x-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`
-                  px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium 
-                  transition-colors duration-200
-                  ${isActive(item.href)
-                    ? 'text-accent bg-accent/10'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-bg-tertiary'
-                  }
-                `}
-              >
-                {item.label}
-              </Link>
-            ))}
-            
-            {currentUser ? (
-              <div className="flex items-center gap-2 ml-2">
-                <Link
-                  href="/profile"
-                  className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-bg-tertiary transition-colors duration-200"
-                >
-                  {currentUser.avatar ? (
-                    <img
-                      src={currentUser.avatar}
-                      alt={currentUser.name}
-                      className="w-8 h-8 rounded-full object-cover border border-border"
-                    />
-                  ) : (
-                    <div className="w-8 h-8 rounded-full bg-accent/20 flex items-center justify-center text-accent font-semibold text-sm">
-                      {currentUser.name.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                  <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline">
-                    {currentUser.name}
-                  </span>
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  disabled={loggingOut}
-                  className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors duration-200 disabled:opacity-50"
-                >
-                  {loggingOut ? 'Logging out...' : 'Logout'}
-                </button>
-              </div>
-            ) : (
-              <Link
-                href="/login"
-                className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-accent hover:text-accent-hover hover:bg-accent/10 transition-colors duration-200 ml-2"
-              >
-                Login
-              </Link>
-            )}
           </div>
         </div>
-      </div>
-    </nav>
+      </nav>
+
+      {/* Mobile Navigation - Bottom Bar (iOS Style) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-bg-secondary/95 backdrop-blur-xl border-t border-border safe-area-inset-bottom">
+        <div className="px-2 py-2 pb-safe">
+          <div className="flex items-center justify-around max-w-md mx-auto">
+            {bottomNavItems.map((item) => {
+              const Icon = item.icon;
+              const active = isActive(item.href);
+              
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`
+                    flex flex-col items-center justify-center gap-1 px-3 py-2 rounded-xl
+                    transition-all duration-200 min-w-[60px] relative
+                    ${active
+                      ? 'bg-bg-tertiary/60 text-accent'
+                      : 'text-text-primary active:opacity-70'
+                    }
+                  `}
+                >
+                  {active && (
+                    <div className="absolute inset-0 rounded-xl bg-accent/10 blur-sm" />
+                  )}
+                  <div className={`relative z-10 ${active ? 'text-accent' : 'text-text-primary'}`}>
+                    <Icon isActive={active} />
+                  </div>
+                  <span className={`relative z-10 text-[10px] font-medium leading-tight ${active ? 'text-accent' : 'text-text-primary'}`}>
+                    {item.label}
+                  </span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </nav>
+    </>
   );
 }
