@@ -6,11 +6,13 @@ import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import Card from '@/components/ui/Card';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { setUserCache } from '@/utils/cache';
 
 export default function LoginPage() {
   const router = useRouter();
   const { refreshCurrentUser } = useApp();
+  const { t } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -39,7 +41,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || 'An error occurred');
+        setError(data.error || t('login.error'));
         setLoading(false);
         return;
       }
@@ -56,7 +58,7 @@ export default function LoginPage() {
       router.push('/');
       router.refresh();
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      setError(t('login.error'));
       setLoading(false);
     }
   };
@@ -66,12 +68,12 @@ export default function LoginPage() {
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-semibold text-text-primary mb-2">
-            {isLogin ? 'Login' : 'Register'}
+            {isLogin ? t('login.title') : t('login.registerTitle')}
           </h1>
           <p className="text-text-secondary">
             {isLogin
-              ? 'Sign in to your account'
-              : 'Create a new account to start predicting'}
+              ? t('login.signIn')
+              : t('login.createAccount')}
           </p>
         </div>
 
@@ -85,7 +87,7 @@ export default function LoginPage() {
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium mb-1 text-text-primary">
-                Name
+                {t('login.name')}
               </label>
               <input
                 type="text"
@@ -99,7 +101,7 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1 text-text-primary">
-              Username
+              {t('login.username')}
             </label>
             <input
               type="text"
@@ -113,7 +115,7 @@ export default function LoginPage() {
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium mb-1 text-text-primary">
-                Email (optional)
+                {t('login.emailOptional')}
               </label>
               <input
                 type="email"
@@ -126,7 +128,7 @@ export default function LoginPage() {
 
           <div>
             <label className="block text-sm font-medium mb-1 text-text-primary">
-              Password
+              {t('login.password')}
             </label>
             <input
               type="password"
@@ -142,7 +144,7 @@ export default function LoginPage() {
             className="w-full"
             disabled={loading}
           >
-            {loading ? 'Loading...' : isLogin ? 'Login' : 'Register'}
+            {loading ? t('common.loading') : isLogin ? t('login.submit') : t('login.register')}
           </Button>
         </form>
 
@@ -155,8 +157,8 @@ export default function LoginPage() {
             className="text-accent hover:text-accent-hover text-sm font-medium transition-colors duration-200"
           >
             {isLogin
-              ? "Don't have an account? Register"
-              : 'Already have an account? Login'}
+              ? t('login.noAccount')
+              : t('login.haveAccount')}
           </button>
         </div>
 
@@ -165,7 +167,7 @@ export default function LoginPage() {
             href="/"
             className="text-text-secondary hover:text-text-primary text-sm transition-colors duration-200"
           >
-            ← Back to home
+            {t('common.backToHome')}
           </Link>
         </div>
       </Card>

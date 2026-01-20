@@ -2,6 +2,7 @@
 'use client';
 
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import Card from '@/components/ui/Card';
 
 const formatInstagramUrl = (instagram: string | undefined) => {
@@ -14,6 +15,7 @@ const formatInstagramUrl = (instagram: string | undefined) => {
 
 export default function LeaderboardPage() {
   const { users, currentUser } = useApp();
+  const { t } = useLanguage();
   
   const getRankEmoji = (rank: number) => {
     if (rank === 1) return '🥇';
@@ -26,9 +28,9 @@ export default function LeaderboardPage() {
     <div className="min-h-screen py-6 sm:py-12 bg-bg-primary">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2 text-text-primary">Leaderboard</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2 text-text-primary">{t('leaderboard.title')}</h1>
           <p className="text-sm sm:text-base text-text-secondary">
-            Rankings based on total points earned
+            {t('leaderboard.rankings')}
           </p>
         </div>
         
@@ -67,7 +69,7 @@ export default function LeaderboardPage() {
                         </span>
                         {isCurrentUser && (
                           <span className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded border border-accent/20">
-                            You
+                            {t('common.you')}
                           </span>
                         )}
                         {user.instagram && (
@@ -85,7 +87,7 @@ export default function LeaderboardPage() {
                         )}
                       </div>
                       <div className="text-xs text-text-secondary mt-0.5">
-                        {user.exactScores || 0} exact • {user.winnerOnly || 0} winner
+                        {user.exactScores || 0} {t('leaderboard.exact')} • {user.winnerOnly || 0} {t('leaderboard.winner')}
                       </div>
                     </div>
                   </div>
@@ -93,7 +95,7 @@ export default function LeaderboardPage() {
                     <div className={`text-lg font-semibold ${isCurrentUser ? 'text-accent' : 'text-text-primary'}`}>
                       {user.totalPoints}
                     </div>
-                    <div className="text-xs text-text-secondary">points</div>
+                    <div className="text-xs text-text-secondary">{t('common.points')}</div>
                   </div>
                 </div>
               </Card>
@@ -108,19 +110,19 @@ export default function LeaderboardPage() {
               <thead className="bg-bg-tertiary border-b border-border">
                 <tr>
                   <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                    Rank
+                    {t('leaderboard.rank')}
                   </th>
                   <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-text-secondary uppercase tracking-wider">
-                    Player
+                    {t('leaderboard.player')}
                   </th>
                   <th className="px-4 lg:px-6 py-3 text-right text-xs font-medium text-text-secondary uppercase tracking-wider">
-                    Points
+                    {t('common.points')}
                   </th>
                   <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-text-secondary uppercase tracking-wider">
-                    Exact
+                    {t('leaderboard.exact')}
                   </th>
                   <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-text-secondary uppercase tracking-wider">
-                    Winner
+                    {t('leaderboard.winner')}
                   </th>
                 </tr>
               </thead>
@@ -162,7 +164,7 @@ export default function LeaderboardPage() {
                             </span>
                             {isCurrentUser && (
                               <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded border border-accent/20">
-                                You
+                                {t('common.you')}
                               </span>
                             )}
                             {user.instagram && (
@@ -207,23 +209,23 @@ export default function LeaderboardPage() {
         
         {/* Scoring Rules */}
         <Card className="mt-6 sm:mt-8">
-          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-text-primary">Scoring Rules</h2>
+          <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-text-primary">{t('leaderboard.scoringRules')}</h2>
           <ul className="space-y-2 text-xs sm:text-sm text-text-secondary">
             <li className="flex items-center gap-2">
               <span className="text-success">✓</span>
-              <span>Exact score: <span className="font-medium text-text-primary">+10 pts</span></span>
+              <span>{t('leaderboard.exactScore')}: <span className="font-medium text-text-primary">+10 {t('leaderboard.pts')}</span></span>
             </li>
             <li className="flex items-center gap-2">
               <span className="text-accent">✓</span>
-              <span>Winner only: <span className="font-medium text-text-primary">+3 pts</span></span>
+              <span>{t('leaderboard.winnerOnly')}: <span className="font-medium text-text-primary">+3 {t('leaderboard.pts')}</span></span>
             </li>
             <li className="flex items-center gap-2">
               <span className="text-success">✓</span>
-              <span>Man of match: <span className="font-medium text-text-primary">+3 pts</span> (bonus)</span>
+              <span>{t('leaderboard.manOfMatch')}: <span className="font-medium text-text-primary">+3 {t('leaderboard.pts')}</span> {t('leaderboard.bonus')}</span>
             </li>
             <li className="flex items-center gap-2">
               <span className="text-danger">✗</span>
-              <span>Wrong: <span className="font-medium text-text-primary">0 pts</span></span>
+              <span>{t('leaderboard.wrong')}: <span className="font-medium text-text-primary">0 {t('leaderboard.pts')}</span></span>
             </li>
           </ul>
         </Card>

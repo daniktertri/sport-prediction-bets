@@ -3,22 +3,24 @@
 
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 
 export default function AdminPage() {
   const { currentUser } = useApp();
+  const { t } = useLanguage();
   
   if (!currentUser?.isAdmin) {
     return (
       <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Access Denied</h1>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">{t('admin.accessDenied')}</h1>
           <p className="text-text-secondary mb-6">
-            You need admin privileges to access this page.
+            {t('admin.needPrivileges')}
           </p>
           <Link href="/">
-            <Button>Go Home</Button>
+            <Button>{t('admin.goHome')}</Button>
           </Link>
         </div>
       </div>
@@ -27,26 +29,26 @@ export default function AdminPage() {
   
   const adminSections = [
     {
-      title: 'Team Management',
-      description: 'Create and edit teams, add players',
+      title: t('admin.teamManagement'),
+      description: t('admin.teamManagementDesc'),
       href: '/admin/teams',
       icon: '👥',
     },
     {
-      title: 'Group Assignment',
-      description: 'Assign teams to groups',
+      title: t('admin.groupAssignment'),
+      description: t('admin.groupAssignmentDesc'),
       href: '/admin/groups',
       icon: '📊',
     },
     {
-      title: 'Match Management',
-      description: 'Create and edit matches',
+      title: t('admin.matchManagement'),
+      description: t('admin.matchManagementDesc'),
       href: '/admin/matches',
       icon: '⚽',
     },
     {
-      title: 'Match Results',
-      description: 'Set final scores and man of the match',
+      title: t('admin.matchResults'),
+      description: t('admin.matchResultsDesc'),
       href: '/admin/results',
       icon: '📝',
     },
@@ -56,9 +58,9 @@ export default function AdminPage() {
     <div className="min-h-screen py-12 bg-bg-primary">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-semibold mb-2 text-text-primary">Admin Panel</h1>
+          <h1 className="text-3xl md:text-4xl font-semibold mb-2 text-text-primary">{t('admin.panel')}</h1>
           <p className="text-text-secondary">
-            Manage teams, groups, matches, and results
+            {t('admin.manage')}
           </p>
         </div>
         

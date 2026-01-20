@@ -3,6 +3,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import MatchCard from '@/components/MatchCard';
 import Card from '@/components/ui/Card';
 
@@ -14,16 +15,17 @@ const phaseOrder: Array<'group' | 'round16' | 'quarter' | 'semi' | 'final'> = [
   'final',
 ];
 
-const phaseLabels: Record<string, string> = {
-  group: 'Group Stage',
-  round16: 'Round of 16',
-  quarter: 'Quarter Finals',
-  semi: 'Semi Finals',
-  final: 'Final',
-};
-
 export default function MatchesPage() {
   const { matches, refreshData } = useApp();
+  const { t } = useLanguage();
+  
+  const phaseLabels: Record<string, string> = {
+    group: t('matches.phase.group'),
+    round16: t('matches.phase.round16'),
+    quarter: t('matches.phase.quarter'),
+    semi: t('matches.phase.semi'),
+    final: t('matches.phase.final'),
+  };
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
   const [selectedPhase, setSelectedPhase] = useState<string>('all');
   const [timeFilter, setTimeFilter] = useState<'all' | 'upcoming' | 'past'>('all');
@@ -72,9 +74,9 @@ export default function MatchesPage() {
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary">Matches</h1>
+              <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary">{t('matches.title')}</h1>
               <p className="text-sm text-text-secondary mt-1">
-                Browse and predict match results
+                {t('common.browseAndPredict')}
               </p>
             </div>
             
@@ -88,7 +90,7 @@ export default function MatchesPage() {
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                List
+                {t('common.list')}
               </button>
               <button
                 onClick={() => setViewMode('grid')}
@@ -98,7 +100,7 @@ export default function MatchesPage() {
                     : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
-                Grid
+                {t('common.grid')}
               </button>
             </div>
           </div>
@@ -113,7 +115,7 @@ export default function MatchesPage() {
                   : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
               }`}
             >
-              All ({matches.length})
+              {t('common.all')} ({matches.length})
             </button>
             <button
               onClick={() => setTimeFilter('upcoming')}
@@ -123,7 +125,7 @@ export default function MatchesPage() {
                   : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
               }`}
             >
-              Upcoming ({upcomingMatches.length})
+              {t('common.upcoming')} ({upcomingMatches.length})
             </button>
             <button
               onClick={() => setTimeFilter('past')}
@@ -133,14 +135,14 @@ export default function MatchesPage() {
                   : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
               }`}
             >
-              Past ({pastMatches.length})
+              {t('common.past')} ({pastMatches.length})
             </button>
             {liveMatches.length > 0 && (
               <button
                 onClick={() => setTimeFilter('all')}
                 className="px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors duration-200 bg-danger/20 text-danger border border-danger/30 animate-pulse"
               >
-                🔴 Live ({liveMatches.length})
+                🔴 {t('common.live')} ({liveMatches.length})
               </button>
             )}
           </div>
@@ -155,7 +157,7 @@ export default function MatchesPage() {
                   : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
               }`}
             >
-              All Phases
+              {t('common.allPhases')}
             </button>
             {matchesByPhase.map(({ phase, label }) => {
               const count = timeFilteredMatches.filter(m => m.phase === phase).length;
@@ -180,7 +182,7 @@ export default function MatchesPage() {
         {/* Matches Display */}
         {filteredMatches.length === 0 ? (
           <Card className="p-8 text-center">
-            <p className="text-text-secondary">No matches found for the selected filters.</p>
+            <p className="text-text-secondary">{t('common.noMatchesFound')}</p>
           </Card>
         ) : viewMode === 'list' ? (
           <Card padding="none" className="overflow-hidden">

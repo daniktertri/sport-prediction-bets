@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import { clearUserCache } from '@/utils/cache';
@@ -114,6 +115,7 @@ export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
   const { currentUser } = useApp();
+  const { t } = useLanguage();
   const [loggingOut, setLoggingOut] = useState(false);
   const [footballAnimation, setFootballAnimation] = useState(null);
   
@@ -127,19 +129,19 @@ export default function Navigation() {
   const isActive = (path: string) => pathname === path;
   
   const navItems = [
-    { href: '/', label: 'Home', icon: HomeIcon },
-    { href: '/matches', label: 'Matches', icon: MatchesIcon },
-    { href: '/browse', label: 'Browse', icon: BrowseIcon },
-    { href: '/leaderboard', label: 'Leaderboard', icon: LeaderboardIcon },
+    { href: '/', label: t('common.home'), icon: HomeIcon },
+    { href: '/matches', label: t('common.matches'), icon: MatchesIcon },
+    { href: '/browse', label: t('common.browse'), icon: BrowseIcon },
+    { href: '/leaderboard', label: t('common.leaderboard'), icon: LeaderboardIcon },
   ];
   
   if (currentUser?.isAdmin) {
-    navItems.push({ href: '/admin', label: 'Admin', icon: AdminIcon });
+    navItems.push({ href: '/admin', label: t('common.admin'), icon: AdminIcon });
   }
   
   // Add profile to bottom nav if user is logged in
   const bottomNavItems = currentUser
-    ? [...navItems, { href: '/profile', label: 'Profile', icon: ProfileIcon }]
+    ? [...navItems, { href: '/profile', label: t('common.profile'), icon: ProfileIcon }]
     : navItems;
   
   const handleLogout = async () => {
@@ -177,10 +179,10 @@ export default function Navigation() {
                 )}
               </div>
               <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
-                Sports Predictions
+                {t('common.sportsPredictions')}
               </span>
               <span className="font-semibold text-lg text-text-primary sm:hidden">
-                Predictions
+                {t('common.predictions')}
               </span>
             </Link>
             
@@ -228,7 +230,7 @@ export default function Navigation() {
                     disabled={loggingOut}
                     className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors duration-200 disabled:opacity-50"
                   >
-                    {loggingOut ? 'Logging out...' : 'Logout'}
+                    {loggingOut ? t('common.loggingOut') : t('common.logout')}
                   </button>
                 </div>
               ) : (
@@ -236,7 +238,7 @@ export default function Navigation() {
                   href="/login"
                   className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-accent hover:text-accent-hover hover:bg-accent/10 transition-colors duration-200 ml-2"
                 >
-                  Login
+                  {t('common.login')}
                 </Link>
               )}
             </div>

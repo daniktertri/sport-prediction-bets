@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Match } from '@/types';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import TeamLogo from '@/components/TeamLogo';
 
 interface MatchCardProps {
@@ -12,6 +13,7 @@ interface MatchCardProps {
 
 export default function MatchCard({ match, compact = false }: MatchCardProps) {
   const { teams } = useApp();
+  const { t } = useLanguage();
   const team1 = teams.find(t => t.id === match.team1Id);
   const team2 = teams.find(t => t.id === match.team2Id);
   
@@ -53,7 +55,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
                 : 'bg-bg-tertiary text-text-secondary border border-border'
               }
             `}>
-              {isFinished ? 'FT' : isLive ? '🔴 Live' : formatTime(matchDate)}
+              {isFinished ? 'FT' : isLive ? `🔴 ${t('common.live')}` : formatTime(matchDate)}
             </div>
             
             {/* Teams */}
@@ -103,12 +105,12 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
             {/* Action */}
             {isUpcoming && (
               <div className="text-xs text-accent font-medium whitespace-nowrap">
-                Predict →
+                {t('common.predict')}
               </div>
             )}
             {isFinished && winner === 'draw' && (
               <div className="text-xs text-text-secondary font-medium whitespace-nowrap">
-                Draw
+                {t('common.draw')}
               </div>
             )}
           </div>
@@ -130,7 +132,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="text-xs font-medium text-text-secondary uppercase tracking-wider">
-              {match.phase === 'group' ? `Group ${match.group}` : match.phase}
+              {match.phase === 'group' ? `${t('common.group')} ${match.group}` : match.phase}
             </span>
           </div>
           <div className={`
@@ -142,7 +144,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
               : 'bg-bg-tertiary text-text-secondary border border-border'
             }
           `}>
-            {isFinished ? 'Finished' : isLive ? '🔴 Live' : 'Upcoming'}
+            {isFinished ? t('common.finished') : isLive ? `🔴 ${t('common.live')}` : t('common.upcoming')}
           </div>
         </div>
         
@@ -172,7 +174,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           </div>
           
           <div className="flex items-center justify-center">
-            <span className="text-text-secondary text-sm">vs</span>
+            <span className="text-text-secondary text-sm">{t('common.vs')}</span>
           </div>
           
           <div className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
@@ -200,7 +202,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           
           {isFinished && winner === 'draw' && (
             <div className="text-center py-2">
-              <span className="text-text-secondary text-sm font-medium">Draw</span>
+              <span className="text-text-secondary text-sm font-medium">{t('common.draw')}</span>
             </div>
           )}
         </div>
@@ -212,7 +214,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           </div>
           {isUpcoming && (
             <span className="text-xs font-medium text-accent">
-              Predict →
+              {t('common.predict')}
             </span>
           )}
           {isFinished && match.manOfTheMatch && (

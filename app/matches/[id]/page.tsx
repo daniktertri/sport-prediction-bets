@@ -4,6 +4,7 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
+import { useLanguage } from '@/context/LanguageContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import TeamLogo from '@/components/TeamLogo';
@@ -14,6 +15,7 @@ export default function MatchDetailPage() {
   const matchId = params.id as string;
   
   const { matches, teams, getUserPredictionForMatch, addPrediction, currentUser, refreshData } = useApp();
+  const { t } = useLanguage();
   const match = matches.find((m) => m.id === matchId);
   const existingPrediction = getUserPredictionForMatch(matchId);
   
@@ -48,8 +50,8 @@ export default function MatchDetailPage() {
     return (
       <div className="min-h-screen py-12 bg-bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-2xl font-semibold mb-4 text-text-primary">Match not found</h1>
-          <Button onClick={() => router.push('/matches')}>Back to Matches</Button>
+          <h1 className="text-2xl font-semibold mb-4 text-text-primary">{t('matchDetail.notFound')}</h1>
+          <Button onClick={() => router.push('/matches')}>{t('matchDetail.backToMatches')}</Button>
         </div>
       </div>
     );
@@ -68,13 +70,13 @@ export default function MatchDetailPage() {
     e.preventDefault();
     
     if (new Date(match.date) < new Date()) {
-      alert('This match has already started. Predictions are closed.');
+      alert(t('matchDetail.matchStarted'));
       return;
     }
     
     if (predictionType === 'exact_score') {
       if (!score1 || !score2) {
-        alert('Please enter both scores');
+        alert(t('matchDetail.enterBothScores'));
         return;
       }
       await addPrediction({
@@ -87,7 +89,7 @@ export default function MatchDetailPage() {
       });
     } else {
       if (!winnerId) {
-        alert('Please select a winner');
+        alert(t('matchDetail.selectWinner'));
         return;
       }
       await addPrediction({
@@ -114,7 +116,7 @@ export default function MatchDetailPage() {
         <Card className="p-6 sm:p-8 mb-6">
           <div className="text-center mb-4 sm:mb-6">
             <span className="text-xs sm:text-sm font-medium text-text-secondary uppercase tracking-wide">
-              {match.phase === 'group' ? `Group ${match.group}` : match.phase}
+              {match.phase === 'group' ? `${t('common.group')} ${match.group}` : match.phase}
             </span>
           </div>
           
@@ -130,7 +132,7 @@ export default function MatchDetailPage() {
               )}
             </div>
             
-            <div className="text-xl sm:text-2xl text-text-secondary">vs</div>
+            <div className="text-xl sm:text-2xl text-text-secondary">{t('common.vs')}</div>
             
             {/* Team 2 */}
             <div className="text-center flex-1">
@@ -156,7 +158,7 @@ export default function MatchDetailPage() {
             </div>
             {isFinished && match.manOfTheMatch && (
               <div className="mt-2 text-xs sm:text-sm">
-                <span className="text-text-secondary">MOTM: </span>
+                <span className="text-text-secondary">{t('matchDetail.motm')}: </span>
                 <span className="font-medium text-text-primary">
                   {allPlayers.find(p => p.id === match.manOfTheMatch)?.name || match.manOfTheMatch}
                 </span>
@@ -168,33 +170,33 @@ export default function MatchDetailPage() {
         {/* Prediction Form */}
         {!isFinished && (
           <Card className="p-6 sm:p-8">
-            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-text-primary">Make Your Prediction</h2>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-text-primary">{t('matchDetail.makePrediction')}</h2>
             
             {submitted ? (
               <div className="bg-success/10 border border-success/20 rounded-lg p-4 sm:p-6 text-center">
                 <p className="text-success font-medium text-base sm:text-lg">
-                  ✓ Prediction submitted successfully!
+                  ✓ {t('matchDetail.predictionSubmitted')}
                 </p>
-                <p className="text-text-secondary text-xs sm:text-sm mt-2">Redirecting to matches...</p>
+                <p className="text-text-secondary text-xs sm:text-sm mt-2">{t('matchDetail.redirecting')}</p>
               </div>
             ) : existingPrediction ? (
               <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6">
                 <p className="text-accent font-medium mb-3 text-sm sm:text-base">
-                  You already have a prediction for this match
+                  {t('matchDetail.existingPrediction')}
                 </p>
                 {existingPrediction.type === 'exact_score' && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Score: <span className="text-accent font-medium">{existingPrediction.score1} - {existingPrediction.score2}</span>
+                    {t('matchDetail.score')}: <span className="text-accent font-medium">{existingPrediction.score1} - {existingPrediction.score2}</span>
                   </p>
                 )}
                 {existingPrediction.winnerId && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Winner: <span className="text-accent font-medium">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
+                    {t('matchDetail.winner')}: <span className="text-accent font-medium">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
                   </p>
                 )}
                 {existingPrediction.manOfTheMatch && (
                   <p className="text-xs sm:text-sm text-text-secondary">
-                    MOTM: <span className="text-accent font-medium">{allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}</span>
+                    {t('matchDetail.motm')}: <span className="text-accent font-medium">{allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}</span>
                   </p>
                 )}
               </div>
@@ -203,7 +205,7 @@ export default function MatchDetailPage() {
                 {/* Prediction Type Selection */}
                 <div>
                   <label className="block text-sm font-medium mb-3 text-text-primary">
-                    Prediction Type
+                    {t('matchDetail.predictionType')}
                   </label>
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <button
@@ -217,9 +219,9 @@ export default function MatchDetailPage() {
                         }
                       `}
                     >
-                      <div className="font-medium text-text-primary text-sm sm:text-base">Exact Score</div>
+                      <div className="font-medium text-text-primary text-sm sm:text-base">{t('matchDetail.exactScore')}</div>
                       <div className={`text-xs sm:text-sm mt-1 font-medium ${predictionType === 'exact_score' ? 'text-accent' : 'text-text-secondary'}`}>
-                        +10 points
+                        {t('matchDetail.points10')}
                       </div>
                     </button>
                     <button
@@ -233,9 +235,9 @@ export default function MatchDetailPage() {
                         }
                       `}
                     >
-                      <div className="font-medium text-text-primary text-sm sm:text-base">Winner Only</div>
+                      <div className="font-medium text-text-primary text-sm sm:text-base">{t('matchDetail.winnerOnly')}</div>
                       <div className={`text-xs sm:text-sm mt-1 font-medium ${predictionType === 'winner_only' ? 'text-accent' : 'text-text-secondary'}`}>
-                        +3 points
+                        {t('matchDetail.points3')}
                       </div>
                     </button>
                   </div>
@@ -246,7 +248,7 @@ export default function MatchDetailPage() {
                   <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
                       <label className="block text-xs sm:text-sm font-medium mb-2 text-text-primary">
-                        {team1.name} Score
+                        {team1.name} {t('matchDetail.teamScore')}
                       </label>
                       <input
                         type="number"
@@ -259,7 +261,7 @@ export default function MatchDetailPage() {
                     </div>
                     <div>
                       <label className="block text-xs sm:text-sm font-medium mb-2 text-text-primary">
-                        {team2.name} Score
+                        {team2.name} {t('matchDetail.teamScore')}
                       </label>
                       <input
                         type="number"
@@ -277,7 +279,7 @@ export default function MatchDetailPage() {
                 {predictionType === 'winner_only' && (
                   <div>
                     <label className="block text-xs sm:text-sm font-medium mb-2 text-text-primary">
-                      Predicted Winner
+                      {t('matchDetail.predictedWinner')}
                     </label>
                     <select
                       value={winnerId}
@@ -285,7 +287,7 @@ export default function MatchDetailPage() {
                       className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                       required
                     >
-                      <option value="">Select winner</option>
+                      <option value="">{t('matchDetail.selectWinner')}</option>
                       <option value={team1.id}>{team1.name}</option>
                       <option value={team2.id}>{team2.name}</option>
                     </select>
@@ -295,14 +297,14 @@ export default function MatchDetailPage() {
                 {/* Man of the Match */}
                 <div>
                   <label className="block text-xs sm:text-sm font-medium mb-2 text-text-primary">
-                    Man of the Match <span className="text-text-secondary">(Optional, +3 pts)</span>
+                    {t('matchDetail.manOfTheMatch')} <span className="text-text-secondary">{t('matchDetail.optional3pts')}</span>
                   </label>
                   <select
                     value={manOfTheMatch}
                     onChange={(e) => setManOfTheMatch(e.target.value)}
                     className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                   >
-                    <option value="">Select player</option>
+                    <option value="">{t('matchDetail.selectPlayer')}</option>
                     {team1Players.map((player) => (
                       <option key={player.id} value={player.id}>
                         {player.name} ({team1.name})
@@ -331,12 +333,12 @@ export default function MatchDetailPage() {
                       ? 'text-accent'
                       : 'text-text-secondary'
                   }`}>
-                    <span>Potential Points:</span> <span className="text-lg">{potentialPoints}</span> points
+                    <span>{t('matchDetail.potentialPoints')}:</span> <span className="text-lg">{potentialPoints}</span> {t('common.points')}
                   </p>
                 </div>
                 
                 <Button type="submit" size="lg" className="w-full">
-                  Submit Prediction
+                  {t('matchDetail.submitPrediction')}
                 </Button>
               </form>
             )}
