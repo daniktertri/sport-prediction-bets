@@ -136,27 +136,12 @@ export default function AdminTeamsPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1 text-text-primary">Logo (emoji, URL, or upload image)</label>
-                <div className="mb-2">
-                  <input
-                    type="text"
-                    placeholder="Or enter emoji/URL"
-                    value={formData.logo}
-                    onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                    className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                  />
-                </div>
                 <ImageUpload
                   currentImage={formData.logo?.startsWith('data:image') ? formData.logo : undefined}
                   onImageChange={(base64) => {
-                    if (base64) {
-                      setFormData({ ...formData, logo: base64 });
-                    } else if (!formData.logo?.startsWith('data:image')) {
-                      // Only clear if it's not a text/emoji
-                      setFormData({ ...formData, logo: '' });
-                    }
+                    setFormData({ ...formData, logo: base64 || '' });
                   }}
-                  label="Or upload team logo"
+                  label="Team Logo"
                   maxSizeMB={10}
                 />
               </div>
