@@ -188,7 +188,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'common.browseAndPredict': 'Parcourir et prédire les résultats des matchs',
     // Home
     'home.championship': 'Championnat de Prédictions Sportives',
-    'home.predictAndCompete': 'Prédisez les résultats des matchs et concourez pour des points',
+    'home.predictAndCompete': 'Prédisez les résultats des matchs et devenez le plus malicieux',
     'home.viewMatches': 'Voir les Matchs',
     'home.upcomingMatches': 'Matchs à Venir',
     'home.groups': 'Groupes',
