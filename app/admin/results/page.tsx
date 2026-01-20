@@ -80,7 +80,7 @@ export default function AdminResultsPage() {
     <div className="min-h-screen py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <Link href="/admin" className="text-blue-600 hover:text-blue-700 mb-2 inline-block">
+          <Link href="/admin" className="text-neon-cyan hover:text-neon-green mb-2 inline-block transition-colors neon-underline">
             ← Back to Admin
           </Link>
           <h1 className="text-3xl font-bold">Match Results</h1>
@@ -90,8 +90,8 @@ export default function AdminResultsPage() {
         </div>
         
         {submitted && (
-          <Card className="p-4 mb-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
-            <p className="text-green-800 dark:text-green-400 font-semibold">
+          <Card className="p-4 mb-6 bg-neon-green/20 border-neon-green/50 shadow-neon-green-sm">
+            <p className="text-neon-green font-semibold">
               ✅ Match result updated! Points have been recalculated.
             </p>
           </Card>
@@ -104,7 +104,7 @@ export default function AdminResultsPage() {
               <select
                 value={selectedMatchId}
                 onChange={(e) => handleMatchSelect(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                 required
               >
                 <option value="">Choose a match...</option>
@@ -149,7 +149,7 @@ export default function AdminResultsPage() {
                       min="0"
                       value={score1}
                       onChange={(e) => setScore1(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                       required
                     />
                   </div>
@@ -162,7 +162,7 @@ export default function AdminResultsPage() {
                       min="0"
                       value={score2}
                       onChange={(e) => setScore2(e.target.value)}
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                       required
                     />
                   </div>
@@ -175,7 +175,7 @@ export default function AdminResultsPage() {
                   <select
                     value={manOfTheMatch}
                     onChange={(e) => setManOfTheMatch(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700"
+                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                   >
                     <option value="">Select player</option>
                     {team1Players.map((player) => (

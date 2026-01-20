@@ -64,8 +64,8 @@ export default function AdminPage() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {adminSections.map((section) => (
-            <Link key={section.href} href={section.href}>
-              <Card hover className="p-6">
+            <Link key={section.href} href={section.href} className="group">
+              <Card hover className="p-6" glow="cyan">
                 <div className="flex items-start gap-4">
                   <div className="text-4xl">{section.icon}</div>
                   <div className="flex-1">
@@ -76,7 +76,7 @@ export default function AdminPage() {
                       {section.description}
                     </p>
                   </div>
-                  <div className="text-text-secondary">→</div>
+                  <div className="text-neon-cyan group-hover:text-neon-green transition-colors">→</div>
                 </div>
               </Card>
             </Link>

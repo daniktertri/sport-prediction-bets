@@ -79,7 +79,7 @@ export default function AdminMatchesPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Link href="/admin" className="text-blue-600 hover:text-blue-700 mb-2 inline-block">
+            <Link href="/admin" className="text-neon-cyan hover:text-neon-green mb-2 inline-block transition-colors neon-underline">
               ← Back to Admin
             </Link>
             <h1 className="text-3xl font-bold">Match Management</h1>
@@ -103,7 +103,7 @@ export default function AdminMatchesPage() {
                   <select
                     value={formData.team1Id}
                     onChange={(e) => setFormData({ ...formData, team1Id: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                     required
                   >
                     <option value="">Select team</option>
@@ -117,7 +117,7 @@ export default function AdminMatchesPage() {
                   <select
                     value={formData.team2Id}
                     onChange={(e) => setFormData({ ...formData, team2Id: e.target.value })}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                     required
                   >
                     <option value="">Select team</option>
@@ -134,7 +134,7 @@ export default function AdminMatchesPage() {
                   type="datetime-local"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-4 py-2 border rounded-lg"
+                  className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                   required
                 />
               </div>
@@ -145,7 +145,7 @@ export default function AdminMatchesPage() {
                   <select
                     value={formData.phase}
                     onChange={(e) => setFormData({ ...formData, phase: e.target.value as Match['phase'] })}
-                    className="w-full px-4 py-2 border rounded-lg"
+                    className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                   >
                     <option value="group">Group Stage</option>
                     <option value="round16">Round of 16</option>
@@ -160,7 +160,7 @@ export default function AdminMatchesPage() {
                     <select
                       value={formData.group}
                       onChange={(e) => setFormData({ ...formData, group: e.target.value as any })}
-                      className="w-full px-4 py-2 border rounded-lg"
+                      className="w-full px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm transition-all duration-300"
                     >
                       <option value="">Select group</option>
                       <option value="A">Group A</option>

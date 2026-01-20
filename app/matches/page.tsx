@@ -51,23 +51,23 @@ export default function MatchesPage() {
             </div>
             
             {/* View Toggle - Mobile Hidden */}
-            <div className="hidden sm:flex items-center gap-2 bg-bg-secondary rounded-lg p-1 border border-bg-tertiary">
+            <div className="hidden sm:flex items-center gap-2 bg-bg-secondary rounded-lg p-1 border border-neon-cyan/20">
               <button
                 onClick={() => setViewMode('list')}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                   viewMode === 'list' 
-                    ? 'bg-accent text-white' 
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'bg-gradient-to-r from-neon-cyan to-neon-green text-bg-primary shadow-neon-cyan-sm' 
+                    : 'text-text-secondary hover:text-neon-cyan'
                 }`}
               >
                 List
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                className={`px-3 py-1.5 rounded text-sm font-medium transition-colors ${
+                className={`px-3 py-1.5 rounded-lg text-sm font-semibold transition-all duration-300 ${
                   viewMode === 'grid' 
-                    ? 'bg-accent text-white' 
-                    : 'text-text-secondary hover:text-text-primary'
+                    ? 'bg-gradient-to-r from-neon-cyan to-neon-green text-bg-primary shadow-neon-cyan-sm' 
+                    : 'text-text-secondary hover:text-neon-cyan'
                 }`}
               >
                 Grid
@@ -79,10 +79,10 @@ export default function MatchesPage() {
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0">
             <button
               onClick={() => setSelectedPhase('all')}
-              className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-300 ${
                 selectedPhase === 'all'
-                  ? 'bg-accent text-white'
-                  : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-bg-tertiary'
+                  ? 'bg-gradient-to-r from-neon-cyan to-neon-green text-bg-primary shadow-neon-cyan-sm'
+                  : 'bg-bg-secondary text-text-secondary hover:text-neon-cyan border border-neon-cyan/20 hover:border-neon-cyan/40 hover:glow-cyan-sm'
               }`}
             >
               All
@@ -94,10 +94,10 @@ export default function MatchesPage() {
                 <button
                   key={phase}
                   onClick={() => setSelectedPhase(phase)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all duration-300 ${
                     selectedPhase === phase
-                      ? 'bg-accent text-white'
-                      : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-bg-tertiary'
+                      ? 'bg-gradient-to-r from-neon-cyan to-neon-green text-bg-primary shadow-neon-cyan-sm'
+                      : 'bg-bg-secondary text-text-secondary hover:text-neon-cyan border border-neon-cyan/20 hover:border-neon-cyan/40 hover:glow-cyan-sm'
                   }`}
                 >
                   {label} ({count})

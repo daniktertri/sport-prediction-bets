@@ -5,7 +5,7 @@ interface CardProps {
   className?: string;
   hover?: boolean;
   padding?: 'sm' | 'md' | 'lg' | 'none';
-  glow?: boolean;
+  glow?: 'cyan' | 'green' | boolean;
 }
 
 export default function Card({ children, className = '', hover = false, padding = 'md', glow = false }: CardProps) {
@@ -16,25 +16,33 @@ export default function Card({ children, className = '', hover = false, padding 
     none: '',
   };
   
+  const glowClass = glow === 'cyan' 
+    ? 'hover:shadow-neon-cyan' 
+    : glow === 'green' 
+    ? 'hover:shadow-neon-green'
+    : glow === true
+    ? 'hover:shadow-neon-cyan'
+    : '';
+  
   return (
     <div
       className={`
         glass-card
         rounded-2xl
         ${paddingClasses[padding]}
-        ${hover ? 'hover:scale-[1.02] hover:border-white/20 transition-all duration-300 cursor-pointer' : ''}
-        ${glow ? 'shadow-[0_0_30px_rgba(0,122,255,0.3)]' : ''}
+        ${hover ? 'hover:scale-[1.02] transition-all duration-300 cursor-pointer' : ''}
+        ${glowClass}
         relative overflow-hidden
         ${className}
       `}
       style={{
-        background: 'rgba(255, 255, 255, 0.06)',
+        background: 'rgba(18, 19, 26, 0.7)',
         backdropFilter: 'blur(40px) saturate(180%)',
         WebkitBackdropFilter: 'blur(40px) saturate(180%)',
       }}
     >
-      {/* Glass highlight effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+      {/* Neon highlight effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 via-transparent to-neon-green/5 pointer-events-none" />
       <div className="relative z-10">{children}</div>
     </div>
   );

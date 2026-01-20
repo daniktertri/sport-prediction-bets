@@ -10,35 +10,56 @@ const config: Config = {
     extend: {
       colors: {
         bg: {
-          primary: '#000000',
-          secondary: 'rgba(255, 255, 255, 0.08)',
-          tertiary: 'rgba(255, 255, 255, 0.12)',
+          primary: '#0F0F1A',
+          secondary: '#12131A',
+          tertiary: '#1A1B26',
         },
         text: {
-          primary: '#ffffff',
+          primary: '#FFFFFF',
           secondary: 'rgba(255, 255, 255, 0.7)',
           muted: 'rgba(255, 255, 255, 0.5)',
         },
-        accent: {
-          DEFAULT: '#007AFF',
-          hover: '#0051D5',
-          light: '#5AC8FA',
+        neon: {
+          cyan: '#00E5FF',
+          green: '#00FF9D',
+          'cyan-dark': '#00B8CC',
+          'green-dark': '#00CC7D',
         },
-        success: '#34C759',
-        danger: '#FF3B30',
-        warning: '#FF9500',
-        purple: '#AF52DE',
-        pink: '#FF2D55',
+        accent: {
+          DEFAULT: '#00E5FF',
+          hover: '#00B8CC',
+          light: '#33EEFF',
+        },
+        success: '#00FF9D',
+        danger: '#FF4D4D',
+        warning: '#FFB84D',
       },
       fontFamily: {
-        sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'Roboto', 'sans-serif'],
+        sans: ['Inter', 'Satoshi', 'Manrope', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
       backdropBlur: {
         xs: '2px',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 0 0 rgba(255, 255, 255, 0.1)',
-        'glass-lg': '0 20px 60px 0 rgba(0, 0, 0, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.15)',
+        'neon-cyan': '0 0 20px rgba(0, 229, 255, 0.4), 0 0 40px rgba(0, 229, 255, 0.2)',
+        'neon-green': '0 0 20px rgba(0, 255, 157, 0.4), 0 0 40px rgba(0, 255, 157, 0.2)',
+        'neon-cyan-sm': '0 0 10px rgba(0, 229, 255, 0.3)',
+        'neon-green-sm': '0 0 10px rgba(0, 255, 157, 0.3)',
+        'glow': '0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 229, 255, 0.1)',
+      },
+      animation: {
+        'glow-pulse': 'glow-pulse 2s ease-in-out infinite',
+        'gradient-shift': 'gradient-shift 3s ease infinite',
+      },
+      keyframes: {
+        'glow-pulse': {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+        'gradient-shift': {
+          '0%, 100%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+        },
       },
     },
   },

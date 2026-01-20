@@ -29,9 +29,9 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
     return (
       <Link href={`/matches/${match.id}`}>
         <div 
-          className="glass-card border-b border-white/10 hover:border-accent/50 transition-all duration-300"
+          className="glass-card border-b border-neon-cyan/20 hover:border-neon-cyan/50 transition-all duration-300 hover:glow-cyan-sm"
           style={{
-            background: 'rgba(255, 255, 255, 0.04)',
+            background: 'rgba(18, 19, 26, 0.7)',
             backdropFilter: 'blur(20px) saturate(180%)',
             WebkitBackdropFilter: 'blur(20px) saturate(180%)',
           }}
@@ -41,10 +41,10 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
             <div className={`
               text-xs px-3 py-1.5 rounded-full font-semibold whitespace-nowrap
               ${isFinished 
-                ? 'bg-success/20 text-success border border-success/30' 
+                ? 'bg-neon-green/20 text-neon-green border border-neon-green/40 shadow-neon-green-sm' 
                 : isLive
-                ? 'bg-danger/20 text-danger border border-danger/30 animate-pulse'
-                : 'bg-accent/20 text-accent border border-accent/30'
+                ? 'bg-danger/20 text-danger border border-danger/40 animate-pulse shadow-[0_0_10px_rgba(255,77,77,0.5)]'
+                : 'bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/40 shadow-neon-cyan-sm'
               }
             `}>
               {isFinished ? 'FT' : isLive ? 'Live' : formatTime(matchDate)}
@@ -56,22 +56,22 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
                 <span className="text-xl">{team1.logo || team1.flag}</span>
                 <span className="text-sm font-semibold text-text-primary truncate">{team1.name}</span>
                 {isFinished && match.score1 !== undefined && (
-                  <span className="text-base font-bold text-text-primary ml-auto">{match.score1}</span>
+                  <span className="text-base font-bold text-neon-cyan ml-auto">{match.score1}</span>
                 )}
               </div>
               <div className="flex items-center gap-3">
                 <span className="text-xl">{team2.logo || team2.flag}</span>
                 <span className="text-sm font-semibold text-text-primary truncate">{team2.name}</span>
                 {isFinished && match.score2 !== undefined && (
-                  <span className="text-base font-bold text-text-primary ml-auto">{match.score2}</span>
+                  <span className="text-base font-bold text-neon-cyan ml-auto">{match.score2}</span>
                 )}
               </div>
             </div>
             
             {/* Action */}
             {isUpcoming && (
-              <div className="text-xs text-accent font-semibold whitespace-nowrap flex items-center gap-1">
-                Predict <span className="text-lg">→</span>
+              <div className="text-xs text-neon-cyan font-semibold whitespace-nowrap flex items-center gap-1 group-hover:text-neon-green transition-colors">
+                Predict <span className="text-lg group-hover:translate-x-1 transition-transform">→</span>
               </div>
             )}
           </div>
@@ -83,14 +83,14 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
   return (
     <Link href={`/matches/${match.id}`}>
       <div 
-        className="glass-card rounded-2xl p-5 hover:scale-[1.02] hover:border-white/20 transition-all duration-300 cursor-pointer relative overflow-hidden"
+        className="glass-card rounded-2xl p-5 hover:scale-[1.02] transition-all duration-300 cursor-pointer relative overflow-hidden group"
         style={{
-          background: 'rgba(255, 255, 255, 0.06)',
+          background: 'rgba(18, 19, 26, 0.7)',
           backdropFilter: 'blur(40px) saturate(180%)',
           WebkitBackdropFilter: 'blur(40px) saturate(180%)',
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-white/5 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-neon-cyan/5 via-transparent to-neon-green/5 pointer-events-none group-hover:from-neon-cyan/10 group-hover:to-neon-green/10 transition-opacity" />
         <div className="relative z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
@@ -102,10 +102,10 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           <div className={`
             text-xs px-3 py-1.5 rounded-full font-semibold
             ${isFinished 
-              ? 'bg-success/20 text-success border border-success/30' 
+              ? 'bg-neon-green/20 text-neon-green border border-neon-green/40 shadow-neon-green-sm' 
               : isLive
-              ? 'bg-danger/20 text-danger border border-danger/30 animate-pulse'
-              : 'bg-accent/20 text-accent border border-accent/30'
+              ? 'bg-danger/20 text-danger border border-danger/40 animate-pulse shadow-[0_0_10px_rgba(255,77,77,0.5)]'
+              : 'bg-neon-cyan/20 text-neon-cyan border border-neon-cyan/40 shadow-neon-cyan-sm'
             }
           `}>
             {isFinished ? 'Finished' : isLive ? 'Live' : 'Upcoming'}
@@ -120,7 +120,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
               <span className="font-bold text-text-primary">{team1.name}</span>
             </div>
             {isFinished && match.score1 !== undefined && (
-              <span className="font-black text-2xl text-text-primary">{match.score1}</span>
+              <span className="font-black text-2xl text-neon-cyan">{match.score1}</span>
             )}
           </div>
           
@@ -130,19 +130,19 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
               <span className="font-bold text-text-primary">{team2.name}</span>
             </div>
             {isFinished && match.score2 !== undefined && (
-              <span className="font-black text-2xl text-text-primary">{match.score2}</span>
+              <span className="font-black text-2xl text-neon-cyan">{match.score2}</span>
             )}
           </div>
         </div>
         
         {/* Footer */}
-        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+        <div className="flex items-center justify-between pt-4 border-t border-neon-cyan/20">
           <div className="text-xs text-text-secondary">
             {matchDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} • {formatTime(matchDate)}
           </div>
           {isUpcoming && (
-            <span className="text-xs font-semibold text-accent flex items-center gap-1">
-              Predict <span>→</span>
+            <span className="text-xs font-semibold text-neon-cyan flex items-center gap-1 group-hover:text-neon-green transition-colors">
+              Predict <span className="group-hover:translate-x-1 transition-transform">→</span>
             </span>
           )}
         </div>

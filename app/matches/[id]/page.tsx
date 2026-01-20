@@ -153,30 +153,30 @@ export default function MatchDetailPage() {
             <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-text-primary">Make Your Prediction</h2>
             
             {submitted ? (
-              <div className="bg-success/20 border border-success/50 rounded-lg p-4 sm:p-6 text-center">
-                <p className="text-success font-semibold text-base sm:text-lg">
+              <div className="bg-neon-green/20 border border-neon-green/50 rounded-lg p-4 sm:p-6 text-center shadow-neon-green-sm">
+                <p className="text-neon-green font-semibold text-base sm:text-lg">
                   ✅ Prediction submitted successfully!
                 </p>
-                <p className="text-success/80 text-xs sm:text-sm mt-2">Redirecting to matches...</p>
+                <p className="text-neon-green/80 text-xs sm:text-sm mt-2">Redirecting to matches...</p>
               </div>
             ) : existingPrediction ? (
-              <div className="bg-accent/20 border border-accent/50 rounded-lg p-4 sm:p-6">
-                <p className="text-accent font-semibold mb-3 text-sm sm:text-base">
+              <div className="bg-neon-cyan/20 border border-neon-cyan/50 rounded-lg p-4 sm:p-6 shadow-neon-cyan-sm">
+                <p className="text-neon-cyan font-semibold mb-3 text-sm sm:text-base">
                   You already have a prediction for this match
                 </p>
                 {existingPrediction.type === 'exact_score' && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Score: {existingPrediction.score1} - {existingPrediction.score2}
+                    Score: <span className="text-neon-cyan font-semibold">{existingPrediction.score1} - {existingPrediction.score2}</span>
                   </p>
                 )}
                 {existingPrediction.winnerId && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    Winner: {teams.find(t => t.id === existingPrediction.winnerId)?.name}
+                    Winner: <span className="text-neon-cyan font-semibold">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
                   </p>
                 )}
                 {existingPrediction.manOfTheMatch && (
                   <p className="text-xs sm:text-sm text-text-secondary">
-                    MOTM: {allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}
+                    MOTM: <span className="text-neon-cyan font-semibold">{allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name}</span>
                   </p>
                 )}
               </div>
@@ -192,29 +192,31 @@ export default function MatchDetailPage() {
                       type="button"
                       onClick={() => setPredictionType('exact_score')}
                       className={`
-                        p-3 sm:p-4 rounded-lg border-2 transition-all text-left
+                        p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 text-left relative overflow-hidden
                         ${predictionType === 'exact_score'
-                          ? 'border-accent bg-accent/10'
-                          : 'border-bg-tertiary hover:border-accent/50'
+                          ? 'border-neon-green bg-neon-green/10 shadow-neon-green-sm'
+                          : 'border-neon-cyan/30 hover:border-neon-green/60 hover:bg-neon-green/5'
                         }
                       `}
                     >
                       <div className="font-semibold text-text-primary text-sm sm:text-base">Exact Score</div>
-                      <div className="text-xs sm:text-sm text-accent mt-1">+10 points</div>
+                      <div className={`text-xs sm:text-sm mt-1 font-bold ${predictionType === 'exact_score' ? 'text-neon-green' : 'text-neon-cyan'}`}>
+                        +10 points
+                      </div>
                     </button>
                     <button
                       type="button"
                       onClick={() => setPredictionType('winner_only')}
                       className={`
-                        p-3 sm:p-4 rounded-lg border-2 transition-all text-left
+                        p-3 sm:p-4 rounded-lg border-2 transition-all duration-300 text-left relative overflow-hidden
                         ${predictionType === 'winner_only'
-                          ? 'border-accent bg-accent/10'
-                          : 'border-bg-tertiary hover:border-accent/50'
+                          ? 'border-neon-cyan bg-neon-cyan/10 shadow-neon-cyan-sm'
+                          : 'border-neon-cyan/30 hover:border-neon-cyan/60 hover:bg-neon-cyan/5'
                         }
                       `}
                     >
                       <div className="font-semibold text-text-primary text-sm sm:text-base">Winner Only</div>
-                      <div className="text-xs sm:text-sm text-accent mt-1">+3 points</div>
+                      <div className="text-xs sm:text-sm text-neon-cyan mt-1 font-bold">+3 points</div>
                     </button>
                   </div>
                 </div>
@@ -231,7 +233,7 @@ export default function MatchDetailPage() {
                         min="0"
                         value={score1}
                         onChange={(e) => setScore1(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 border border-bg-tertiary rounded-lg bg-bg-secondary text-text-primary focus:border-accent focus:outline-none text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
                         required
                       />
                     </div>
@@ -244,7 +246,7 @@ export default function MatchDetailPage() {
                         min="0"
                         value={score2}
                         onChange={(e) => setScore2(e.target.value)}
-                        className="w-full px-3 sm:px-4 py-2 border border-bg-tertiary rounded-lg bg-bg-secondary text-text-primary focus:border-accent focus:outline-none text-sm sm:text-base"
+                        className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
                         required
                       />
                     </div>
@@ -260,7 +262,7 @@ export default function MatchDetailPage() {
                     <select
                       value={winnerId}
                       onChange={(e) => setWinnerId(e.target.value)}
-                      className="w-full px-3 sm:px-4 py-2 border border-bg-tertiary rounded-lg bg-bg-secondary text-text-primary focus:border-accent focus:outline-none text-sm sm:text-base"
+                      className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
                       required
                     >
                       <option value="">Select winner</option>
@@ -278,7 +280,7 @@ export default function MatchDetailPage() {
                   <select
                     value={manOfTheMatch}
                     onChange={(e) => setManOfTheMatch(e.target.value)}
-                    className="w-full px-3 sm:px-4 py-2 border border-bg-tertiary rounded-lg bg-bg-secondary text-text-primary focus:border-accent focus:outline-none text-sm sm:text-base"
+                    className="w-full px-3 sm:px-4 py-2 border border-neon-cyan/30 rounded-lg bg-bg-secondary text-text-primary focus:border-neon-cyan focus:outline-none focus:ring-2 focus:ring-neon-cyan/50 focus:shadow-neon-cyan-sm text-sm sm:text-base transition-all duration-300"
                   >
                     <option value="">Select player</option>
                     {team1Players.map((player) => (
@@ -295,9 +297,21 @@ export default function MatchDetailPage() {
                 </div>
                 
                 {/* Potential Points Display */}
-                <div className="bg-warning/20 border border-warning/50 rounded-lg p-3 sm:p-4">
-                  <p className="text-xs sm:text-sm text-warning">
-                    <span className="font-semibold">Potential Points:</span> {potentialPoints} points
+                <div className={`rounded-lg p-3 sm:p-4 border-2 ${
+                  potentialPoints >= 13 
+                    ? 'bg-neon-green/20 border-neon-green/50 shadow-neon-green-sm' 
+                    : potentialPoints >= 6
+                    ? 'bg-neon-cyan/20 border-neon-cyan/50 shadow-neon-cyan-sm'
+                    : 'bg-warning/20 border-warning/50'
+                }`}>
+                  <p className={`text-xs sm:text-sm font-semibold ${
+                    potentialPoints >= 13 
+                      ? 'text-neon-green' 
+                      : potentialPoints >= 6
+                      ? 'text-neon-cyan'
+                      : 'text-warning'
+                  }`}>
+                    <span>Potential Points:</span> <span className="text-lg">{potentialPoints}</span> points
                   </p>
                 </div>
                 
