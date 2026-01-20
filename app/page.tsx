@@ -6,9 +6,19 @@ import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import MatchCard from '@/components/MatchCard';
+import Lottie from 'lottie-react';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
   const { teams, matches, competition } = useApp();
+  const [tropheeAnimation, setTropheeAnimation] = useState(null);
+  
+  useEffect(() => {
+    fetch('/lottie/trophee.json')
+      .then(response => response.json())
+      .then(data => setTropheeAnimation(data))
+      .catch(error => console.error('Error loading Lottie animation:', error));
+  }, []);
   
   const totalMatches = matches.length;
   const finishedMatches = matches.filter(m => m.status === 'finished').length;
@@ -26,7 +36,15 @@ export default function Home() {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="text-center">
-          <div className="text-5xl sm:text-6xl mb-6">{competition.logo || '🏆'}</div>
+          <div className="flex justify-center mb-6">
+            <div className="w-24 h-24 sm:w-32 sm:h-32">
+              {tropheeAnimation ? (
+                <Lottie animationData={tropheeAnimation} loop={true} />
+              ) : (
+                <div className="text-5xl sm:text-6xl">🏆</div>
+              )}
+            </div>
+          </div>
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-semibold mb-4 text-text-primary tracking-tight">
             {competition.name}
           </h1>

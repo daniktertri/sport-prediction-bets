@@ -1,12 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
+import { useState } from 'react';
 
 export default function Navigation() {
   const pathname = usePathname();
+  const router = useRouter();
   const { currentUser } = useApp();
+  const [loggingOut, setLoggingOut] = useState(false);
   
   const isActive = (path: string) => pathname === path;
   
@@ -19,6 +22,19 @@ export default function Navigation() {
   if (currentUser?.isAdmin) {
     navItems.push({ href: '/admin', label: 'Admin' });
   }
+  
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+      router.push('/login');
+      router.refresh();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setLoggingOut(false);
+    }
+  };
   
   return (
     <nav className="bg-bg-secondary border-b border-border sticky top-0 z-50">
@@ -54,6 +70,28 @@ export default function Navigation() {
                 {item.label}
               </Link>
             ))}
+            
+            {currentUser ? (
+              <div className="flex items-center gap-2 ml-2">
+                <span className="text-xs sm:text-sm text-text-secondary hidden sm:inline">
+                  {currentUser.name}
+                </span>
+                <button
+                  onClick={handleLogout}
+                  disabled={loggingOut}
+                  className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors duration-200 disabled:opacity-50"
+                >
+                  {loggingOut ? 'Logging out...' : 'Logout'}
+                </button>
+              </div>
+            ) : (
+              <Link
+                href="/login"
+                className="px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium text-accent hover:text-accent-hover hover:bg-accent/10 transition-colors duration-200 ml-2"
+              >
+                Login
+              </Link>
+            )}
           </div>
         </div>
       </div>

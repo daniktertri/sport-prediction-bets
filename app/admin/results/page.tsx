@@ -1,13 +1,11 @@
 // Admin Results page - Set match results and man of the match
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { getPlayersByTeam } from '@/mocks/teams';
-
 export default function AdminResultsPage() {
   const { matches, teams, updateMatch, currentUser } = useApp();
   
@@ -16,6 +14,29 @@ export default function AdminResultsPage() {
   const [score2, setScore2] = useState<string>('');
   const [manOfTheMatch, setManOfTheMatch] = useState<string>('');
   const [submitted, setSubmitted] = useState(false);
+  const [team1Players, setTeam1Players] = useState<any[]>([]);
+  const [team2Players, setTeam2Players] = useState<any[]>([]);
+  
+  const selectedMatch = matches.find((m) => m.id === selectedMatchId);
+  const team1 = selectedMatch ? teams.find(t => t.id === selectedMatch.team1Id) : null;
+  const team2 = selectedMatch ? teams.find(t => t.id === selectedMatch.team2Id) : null;
+  
+  useEffect(() => {
+    if (team1?.id) {
+      fetch(`/api/players?teamId=${team1.id}`)
+        .then(res => res.json())
+        .then(data => setTeam1Players(data || []));
+    } else {
+      setTeam1Players([]);
+    }
+    if (team2?.id) {
+      fetch(`/api/players?teamId=${team2.id}`)
+        .then(res => res.json())
+        .then(data => setTeam2Players(data || []));
+    } else {
+      setTeam2Players([]);
+    }
+  }, [team1?.id, team2?.id]);
   
   if (!currentUser?.isAdmin) {
     return (
@@ -30,12 +51,6 @@ export default function AdminResultsPage() {
     );
   }
   
-  const selectedMatch = matches.find((m) => m.id === selectedMatchId);
-  const team1 = selectedMatch ? teams.find(t => t.id === selectedMatch.team1Id) : null;
-  const team2 = selectedMatch ? teams.find(t => t.id === selectedMatch.team2Id) : null;
-  
-  const team1Players = team1 ? getPlayersByTeam(team1.id) : [];
-  const team2Players = team2 ? getPlayersByTeam(team2.id) : [];
   const allPlayers = [...team1Players, ...team2Players];
   
   const handleSubmit = (e: React.FormEvent) => {

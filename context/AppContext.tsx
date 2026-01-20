@@ -1,16 +1,7 @@
 'use client';
 
-// App Context for state management
-// TODO: Replace with Supabase real-time subscriptions and mutations
-
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
 import { Team, Match, User, Prediction, Competition } from '@/types';
-import { teams as initialTeams } from '@/mocks/teams';
-import { matches as initialMatches } from '@/mocks/matches';
-import { users as initialUsers, CURRENT_USER_ID } from '@/mocks/users';
-import { predictions as initialPredictions } from '@/mocks/predictions';
-import { competition as initialCompetition } from '@/mocks/competition';
-import { calculatePoints } from '@/utils/scoring';
 
 interface AppContextType {
   // Data
@@ -18,125 +9,185 @@ interface AppContextType {
   matches: Match[];
   users: User[];
   predictions: Prediction[];
-  competition: Competition;
+  competition: Competition | null;
   currentUser: User | undefined;
+  loading: boolean;
   
   // Actions
-  updateTeam: (teamId: string, updates: Partial<Team>) => void;
-  createTeam: (team: Omit<Team, 'id'>) => void;
-  updateMatch: (matchId: string, updates: Partial<Match>) => void;
-  createMatch: (match: Omit<Match, 'id'>) => void;
-  addPrediction: (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => void;
-  recalculatePoints: () => void;
+  updateTeam: (teamId: string, updates: Partial<Team>) => Promise<void>;
+  createTeam: (team: Omit<Team, 'id'>) => Promise<void>;
+  updateMatch: (matchId: string, updates: Partial<Match>) => Promise<void>;
+  createMatch: (match: Omit<Match, 'id'>) => Promise<void>;
+  addPrediction: (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => Promise<void>;
+  recalculatePoints: () => Promise<void>;
   getUserPredictionForMatch: (matchId: string) => Prediction | undefined;
+  refreshData: () => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-// Initialize with calculated points
-const initializePredictions = (preds: Prediction[], matches: Match[]): Prediction[] => {
-  return preds.map((pred) => {
-    const match = matches.find((m) => m.id === pred.matchId);
-    if (match && match.status === 'finished') {
-      const points = calculatePoints(pred, match);
-      return { ...pred, points };
-    }
-    return pred;
-  });
-};
-
-const initializeUsers = (preds: Prediction[], users: User[]): User[] => {
-  return users.map((user) => {
-    const userPreds = preds.filter((p) => p.userId === user.id);
-    const totalPoints = userPreds.reduce((sum, p) => sum + (p.points || 0), 0);
-    const exactScores = userPreds.filter((p) => p.type === 'exact_score' && (p.points || 0) >= 10).length;
-    const winnerOnly = userPreds.filter((p) => p.type === 'winner_only' && (p.points || 0) >= 3).length;
-    return { ...user, totalPoints, exactScores, winnerOnly };
-  }).sort((a, b) => b.totalPoints - a.totalPoints);
-};
-
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const [teams, setTeams] = useState<Team[]>(initialTeams);
-  const [matches, setMatches] = useState<Match[]>(initialMatches);
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [predictions, setPredictions] = useState<Prediction[]>(() => 
-    initializePredictions(initialPredictions, initialMatches)
-  );
-  const [competition] = useState<Competition>(initialCompetition);
-  
-  const currentUser = users.find(u => u.id === CURRENT_USER_ID);
-  
-  // Recalculate points when matches or predictions change
-  const recalculatePoints = useCallback(() => {
-    setPredictions((prevPreds) => {
-      const updated = prevPreds.map((pred) => {
-        const match = matches.find((m) => m.id === pred.matchId);
-        if (!match || match.status !== 'finished') {
-          return pred;
-        }
-        const points = calculatePoints(pred, match);
-        return { ...pred, points };
-      });
-      
-      // Update user stats
-      setUsers((prevUsers) => {
-        return prevUsers.map((user) => {
-          const userPreds = updated.filter((p) => p.userId === user.id);
-          const totalPoints = userPreds.reduce((sum, p) => sum + (p.points || 0), 0);
-          const exactScores = userPreds.filter((p) => p.type === 'exact_score' && (p.points || 0) >= 10).length;
-          const winnerOnly = userPreds.filter((p) => p.type === 'winner_only' && (p.points || 0) >= 3).length;
-          return { ...user, totalPoints, exactScores, winnerOnly };
-        }).sort((a, b) => b.totalPoints - a.totalPoints);
-      });
-      
-      return updated;
-    });
-  }, [matches]);
-  
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [competition, setCompetition] = useState<Competition | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | undefined>(undefined);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch current user
+  const fetchCurrentUser = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me');
+      const data = await res.json();
+      if (data.user) {
+        setCurrentUser(data.user);
+      }
+    } catch (error) {
+      console.error('Error fetching current user:', error);
+    }
+  }, []);
+
+  // Fetch all data
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      const [teamsRes, matchesRes, usersRes, competitionRes, predictionsRes] = await Promise.all([
+        fetch('/api/teams'),
+        fetch('/api/matches'),
+        fetch('/api/users'),
+        fetch('/api/competition'),
+        fetch('/api/predictions'),
+      ]);
+
+      const teamsData = await teamsRes.json();
+      const matchesData = await matchesRes.json();
+      const usersData = await usersRes.json();
+      const competitionData = await competitionRes.json();
+      const predictionsData = await predictionsRes.json();
+
+      setTeams(teamsData);
+      setMatches(matchesData);
+      setUsers(usersData);
+      setCompetition(competitionData);
+      setPredictions(predictionsData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
-    recalculatePoints();
-  }, [recalculatePoints]);
-  
-  const updateTeam = useCallback((teamId: string, updates: Partial<Team>) => {
-    setTeams((prev) => prev.map((team) => (team.id === teamId ? { ...team, ...updates } : team)));
-  }, []);
-  
-  const createTeam = useCallback((team: Omit<Team, 'id'>) => {
-    const newTeam: Team = {
-      ...team,
-      id: `team-${Date.now()}`,
-    };
-    setTeams((prev) => [...prev, newTeam]);
-  }, []);
-  
-  const updateMatch = useCallback((matchId: string, updates: Partial<Match>) => {
-    setMatches((prev) => prev.map((match) => (match.id === matchId ? { ...match, ...updates } : match)));
-    // Recalculate points after match update
-    setTimeout(() => recalculatePoints(), 100);
-  }, [recalculatePoints]);
-  
-  const createMatch = useCallback((match: Omit<Match, 'id'>) => {
-    const newMatch: Match = {
-      ...match,
-      id: `match-${Date.now()}`,
-    };
-    setMatches((prev) => [...prev, newMatch]);
-  }, []);
-  
-  const addPrediction = useCallback((prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => {
-    const newPrediction: Prediction = {
-      ...prediction,
-      id: `pred-${Date.now()}`,
-      points: 0,
-      createdAt: new Date().toISOString(),
-    };
-    setPredictions((prev) => [...prev, newPrediction]);
-  }, []);
-  
+    fetchCurrentUser();
+    fetchData();
+  }, [fetchCurrentUser, fetchData]);
+
+  const refreshData = useCallback(async () => {
+    await fetchData();
+  }, [fetchData]);
+
+  const updateTeam = useCallback(async (teamId: string, updates: Partial<Team>) => {
+    try {
+      const { players, ...teamUpdates } = updates;
+      const res = await fetch(`/api/teams/${teamId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...teamUpdates, players }),
+      });
+
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error updating team:', error);
+    }
+  }, [fetchData]);
+
+  const createTeam = useCallback(async (team: Omit<Team, 'id'>) => {
+    try {
+      const res = await fetch('/api/teams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(team),
+      });
+
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error creating team:', error);
+    }
+  }, [fetchData]);
+
+  const updateMatch = useCallback(async (matchId: string, updates: Partial<Match>) => {
+    try {
+      const res = await fetch(`/api/matches/${matchId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates),
+      });
+
+      if (res.ok) {
+        await fetchData();
+        // Recalculate points after match update
+        if (updates.status === 'finished') {
+          await fetch('/api/recalculate', { method: 'POST' });
+          await fetchData();
+        }
+      }
+    } catch (error) {
+      console.error('Error updating match:', error);
+    }
+  }, [fetchData]);
+
+  const createMatch = useCallback(async (match: Omit<Match, 'id'>) => {
+    try {
+      const res = await fetch('/api/matches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(match),
+      });
+
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error creating match:', error);
+    }
+  }, [fetchData]);
+
+  const addPrediction = useCallback(async (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => {
+    try {
+      const res = await fetch('/api/predictions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(prediction),
+      });
+
+      if (res.ok) {
+        await fetchData();
+      }
+    } catch (error) {
+      console.error('Error adding prediction:', error);
+      throw error;
+    }
+  }, [fetchData]);
+
+  const recalculatePoints = useCallback(async () => {
+    try {
+      await fetch('/api/recalculate', { method: 'POST' });
+      await fetchData();
+    } catch (error) {
+      console.error('Error recalculating points:', error);
+    }
+  }, [fetchData]);
+
   const getUserPredictionForMatch = useCallback((matchId: string) => {
-    return predictions.find((p) => p.userId === CURRENT_USER_ID && p.matchId === matchId);
-  }, [predictions]);
-  
+    if (!currentUser) return undefined;
+    return predictions.find((p) => p.userId === currentUser.id && p.matchId === matchId);
+  }, [predictions, currentUser]);
+
   return (
     <AppContext.Provider
       value={{
@@ -144,8 +195,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         matches,
         users,
         predictions,
-        competition,
+        competition: competition || {
+          id: 'default',
+          name: 'Sports Prediction Championship',
+          logo: '🏆',
+          startDate: new Date().toISOString(),
+          endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        },
         currentUser,
+        loading,
         updateTeam,
         createTeam,
         updateMatch,
@@ -153,6 +211,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         addPrediction,
         recalculatePoints,
         getUserPredictionForMatch,
+        refreshData,
       }}
     >
       {children}

@@ -2,13 +2,11 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { calculatePotentialPoints } from '@/utils/scoring';
-import { getPlayersByTeam } from '@/mocks/teams';
-
 export default function MatchDetailPage() {
   const params = useParams();
   const router = useRouter();
@@ -26,6 +24,24 @@ export default function MatchDetailPage() {
   const [winnerId, setWinnerId] = useState<string>(existingPrediction?.winnerId || '');
   const [manOfTheMatch, setManOfTheMatch] = useState<string>(existingPrediction?.manOfTheMatch || '');
   const [submitted, setSubmitted] = useState(false);
+  const [team1Players, setTeam1Players] = useState<any[]>([]);
+  const [team2Players, setTeam2Players] = useState<any[]>([]);
+  
+  const team1 = teams.find(t => t.id === match?.team1Id);
+  const team2 = teams.find(t => t.id === match?.team2Id);
+  
+  useEffect(() => {
+    if (team1?.id) {
+      fetch(`/api/players?teamId=${team1.id}`)
+        .then(res => res.json())
+        .then(data => setTeam1Players(data || []));
+    }
+    if (team2?.id) {
+      fetch(`/api/players?teamId=${team2.id}`)
+        .then(res => res.json())
+        .then(data => setTeam2Players(data || []));
+    }
+  }, [team1?.id, team2?.id]);
   
   if (!match) {
     return (
@@ -38,9 +54,6 @@ export default function MatchDetailPage() {
     );
   }
   
-  const team1 = teams.find(t => t.id === match.team1Id);
-  const team2 = teams.find(t => t.id === match.team2Id);
-  
   if (!team1 || !team2) return null;
   
   const isFinished = match.status === 'finished';
@@ -48,8 +61,6 @@ export default function MatchDetailPage() {
   const hasManOfTheMatch = manOfTheMatch.trim().length > 0;
   const potentialPoints = calculatePotentialPoints(predictionType, hasManOfTheMatch);
   
-  const team1Players = getPlayersByTeam(team1.id);
-  const team2Players = getPlayersByTeam(team2.id);
   const allPlayers = [...team1Players, ...team2Players];
   
   const handleSubmit = (e: React.FormEvent) => {
