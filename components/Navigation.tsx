@@ -245,8 +245,8 @@ export default function Navigation() {
       </nav>
 
       {/* Mobile Navigation - Bottom Bar (iOS Style - Floating) */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none pb-safe">
-        <div className="px-4 pb-4">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none" style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+        <div className="px-4">
           <div className="max-w-md mx-auto bg-bg-secondary/80 backdrop-blur-2xl rounded-3xl border border-border/50 shadow-2xl pointer-events-auto">
             <div className="flex items-center justify-around px-2 py-3">
               {bottomNavItems.map((item) => {
