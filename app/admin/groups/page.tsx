@@ -23,6 +23,7 @@ export default function AdminGroupsPage() {
   }
   
   const groups = ['A', 'B', 'C', 'D'] as const;
+  const unassignedTeams = teams.filter(t => !t.group);
   
   const handleGroupChange = (teamId: string, group: 'A' | 'B' | 'C' | 'D' | null) => {
     updateTeam(teamId, { group });
@@ -44,7 +45,6 @@ export default function AdminGroupsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {groups.map((group) => {
             const groupTeams = teams.filter(t => t.group === group);
-            const unassignedTeams = teams.filter(t => !t.group);
             
             return (
               <Card key={group} className="p-6">
