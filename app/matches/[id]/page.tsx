@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import TeamLogo from '@/components/TeamLogo';
 import { calculatePotentialPoints } from '@/utils/scoring';
 export default function MatchDetailPage() {
   const params = useParams();
@@ -118,7 +119,9 @@ export default function MatchDetailPage() {
           <div className="flex items-center justify-center gap-4 sm:gap-8 mb-4 sm:mb-6">
             {/* Team 1 */}
             <div className="text-center flex-1">
-              <div className="text-4xl sm:text-6xl mb-2 sm:mb-3">{team1.logo || team1.flag}</div>
+              <div className="mb-2 sm:mb-3 flex justify-center">
+                <TeamLogo logo={team1.logo} flag={team1.flag} name={team1.name} size="xl" />
+              </div>
               <div className="text-lg sm:text-xl font-semibold text-text-primary">{team1.name}</div>
               {isFinished && match.score1 !== undefined && (
                 <div className="text-3xl sm:text-4xl font-semibold mt-2 text-text-primary">{match.score1}</div>
@@ -129,7 +132,9 @@ export default function MatchDetailPage() {
             
             {/* Team 2 */}
             <div className="text-center flex-1">
-              <div className="text-4xl sm:text-6xl mb-2 sm:mb-3">{team2.logo || team2.flag}</div>
+              <div className="mb-2 sm:mb-3 flex justify-center">
+                <TeamLogo logo={team2.logo} flag={team2.flag} name={team2.name} size="xl" />
+              </div>
               <div className="text-lg sm:text-xl font-semibold text-text-primary">{team2.name}</div>
               {isFinished && match.score2 !== undefined && (
                 <div className="text-3xl sm:text-4xl font-semibold mt-2 text-text-primary">{match.score2}</div>

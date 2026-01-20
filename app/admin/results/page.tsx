@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import TeamLogo from '@/components/TeamLogo';
 export default function AdminResultsPage() {
   const { matches, teams, updateMatch, currentUser } = useApp();
   
@@ -140,12 +141,16 @@ export default function AdminResultsPage() {
                 <Card className="p-4 bg-bg-tertiary">
                   <div className="flex items-center justify-center gap-6">
                     <div className="text-center">
-                      <div className="text-4xl mb-2">{team1.logo || team1.flag}</div>
+                      <div className="mb-2 flex justify-center">
+                        <TeamLogo logo={team1.logo} flag={team1.flag} name={team1.name} size="lg" />
+                      </div>
                       <div className="font-medium text-text-primary">{team1.name}</div>
                     </div>
                     <div className="text-2xl text-text-secondary">vs</div>
                     <div className="text-center">
-                      <div className="text-4xl mb-2">{team2.logo || team2.flag}</div>
+                      <div className="mb-2 flex justify-center">
+                        <TeamLogo logo={team2.logo} flag={team2.flag} name={team2.name} size="lg" />
+                      </div>
                       <div className="font-medium text-text-primary">{team2.name}</div>
                     </div>
                   </div>
@@ -231,13 +236,13 @@ export default function AdminResultsPage() {
                   <Card key={match.id} className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <span className="text-xl">{t1?.logo || t1?.flag}</span>
+                        <TeamLogo logo={t1?.logo} flag={t1?.flag} name={t1?.name} size="md" />
                         <span className="font-medium text-text-primary">{t1?.name}</span>
                         <span className="font-semibold text-lg text-text-primary">{match.score1}</span>
                         <span className="text-text-secondary">-</span>
                         <span className="font-semibold text-lg text-text-primary">{match.score2}</span>
                         <span className="font-medium text-text-primary">{t2?.name}</span>
-                        <span className="text-xl">{t2?.logo || t2?.flag}</span>
+                        <TeamLogo logo={t2?.logo} flag={t2?.flag} name={t2?.name} size="md" />
                       </div>
                       {motmPlayer && (
                         <span className="text-sm text-text-secondary">

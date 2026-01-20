@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import TeamLogo from '@/components/TeamLogo';
 
 export default function AdminGroupsPage() {
   const { teams, updateTeam, currentUser } = useApp();
@@ -53,7 +54,7 @@ export default function AdminGroupsPage() {
                   {groupTeams.map((team) => (
                     <div key={team.id} className="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl">{team.logo || team.flag}</span>
+                        <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="md" />
                         <span className="font-medium text-text-primary">{team.name}</span>
                       </div>
                       <select
@@ -86,7 +87,7 @@ export default function AdminGroupsPage() {
               {unassignedTeams.map((team) => (
                 <div key={team.id} className="flex items-center justify-between p-3 bg-bg-tertiary rounded-lg">
                   <div className="flex items-center gap-2">
-                    <span className="text-xl">{team.logo || team.flag}</span>
+                    <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="md" />
                     <span className="font-medium text-sm text-text-primary">{team.name}</span>
                   </div>
                   <select

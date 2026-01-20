@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import TeamLogo from '@/components/TeamLogo';
 import { Match } from '@/types';
 
 export default function AdminMatchesPage() {
@@ -191,11 +192,11 @@ export default function AdminMatchesPage() {
               <Card key={match.id} className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <span className="text-2xl">{team1?.logo || team1?.flag}</span>
+                    <TeamLogo logo={team1?.logo} flag={team1?.flag} name={team1?.name} size="md" />
                     <span className="font-medium text-text-primary">{team1?.name}</span>
                     <span className="text-text-secondary">vs</span>
                     <span className="font-medium text-text-primary">{team2?.name}</span>
-                    <span className="text-2xl">{team2?.logo || team2?.flag}</span>
+                    <TeamLogo logo={team2?.logo} flag={team2?.flag} name={team2?.name} size="md" />
                     <span className="text-sm text-text-secondary">
                       {new Date(match.date).toLocaleDateString()} • {match.phase}
                     </span>

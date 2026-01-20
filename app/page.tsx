@@ -6,6 +6,7 @@ import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import MatchCard from '@/components/MatchCard';
+import TeamLogo from '@/components/TeamLogo';
 import Lottie from 'lottie-react';
 import { useEffect, useState } from 'react';
 
@@ -116,7 +117,7 @@ export default function Home() {
                   <div className="space-y-3">
                     {groupTeams.map((team) => (
                       <div key={team.id} className="flex items-center gap-3 hover:text-accent transition-colors duration-200">
-                        <span className="text-2xl">{team.logo || team.flag}</span>
+                        <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="md" />
                         <span className="font-medium text-text-primary text-sm truncate">{team.name}</span>
                       </div>
                     ))}

@@ -7,6 +7,7 @@ import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import ImageUpload from '@/components/ui/ImageUpload';
+import TeamLogo from '@/components/TeamLogo';
 import { Team, Player } from '@/types';
 
 export default function AdminTeamsPage() {
@@ -236,15 +237,7 @@ export default function AdminTeamsPage() {
             <Card key={team.id} className="p-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  {team.logo && team.logo.startsWith('data:image') ? (
-                    <img
-                      src={team.logo}
-                      alt={team.name}
-                      className="w-12 h-12 object-cover rounded-lg border border-border"
-                    />
-                  ) : (
-                    <span className="text-3xl">{team.logo || team.flag || '⚽'}</span>
-                  )}
+                  <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="lg" />
                   <div>
                     <h3 className="font-semibold text-lg text-text-primary">{team.name}</h3>
                     {team.group && <span className="text-sm text-text-secondary">Group {team.group}</span>}

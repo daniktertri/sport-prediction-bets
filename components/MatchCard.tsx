@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Match } from '@/types';
 import { useApp } from '@/context/AppContext';
+import TeamLogo from '@/components/TeamLogo';
 
 interface MatchCardProps {
   match: Match;
@@ -46,14 +47,14 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
             {/* Teams */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-xl">{team1.logo || team1.flag}</span>
+                <TeamLogo logo={team1.logo} flag={team1.flag} name={team1.name} size="md" />
                 <span className="text-sm font-medium text-text-primary truncate">{team1.name}</span>
                 {isFinished && match.score1 !== undefined && (
                   <span className="text-base font-semibold text-text-primary ml-auto">{match.score1}</span>
                 )}
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-xl">{team2.logo || team2.flag}</span>
+                <TeamLogo logo={team2.logo} flag={team2.flag} name={team2.name} size="md" />
                 <span className="text-sm font-medium text-text-primary truncate">{team2.name}</span>
                 {isFinished && match.score2 !== undefined && (
                   <span className="text-base font-semibold text-text-primary ml-auto">{match.score2}</span>
@@ -100,7 +101,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
         <div className="space-y-4 mb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 flex-1">
-              <span className="text-3xl">{team1.logo || team1.flag}</span>
+              <TeamLogo logo={team1.logo} flag={team1.flag} name={team1.name} size="lg" />
               <span className="font-semibold text-text-primary">{team1.name}</span>
             </div>
             {isFinished && match.score1 !== undefined && (
@@ -110,7 +111,7 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3 flex-1">
-              <span className="text-3xl">{team2.logo || team2.flag}</span>
+              <TeamLogo logo={team2.logo} flag={team2.flag} name={team2.name} size="lg" />
               <span className="font-semibold text-text-primary">{team2.name}</span>
             </div>
             {isFinished && match.score2 !== undefined && (
