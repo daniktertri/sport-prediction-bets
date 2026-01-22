@@ -130,8 +130,13 @@ export default function AdminTeamsPage() {
     const matchesSearch = !playerSearchQuery || 
       player.name.toLowerCase().includes(playerSearchQuery.toLowerCase()) ||
       player.position?.toLowerCase().includes(playerSearchQuery.toLowerCase());
-    const notInTeam = !formData.players.some(p => p.id === player.id);
-    return matchesSearch && notInTeam;
+    const notInCurrentTeam = !formData.players.some(p => p.id === player.id);
+    // Check if player is already assigned to another team
+    const playerTeamId = (player as any).teamId;
+    const isAssignedToOtherTeam = playerTeamId && playerTeamId !== editingTeam?.id;
+    // Only show players that are not assigned to any team, or assigned to the current team being edited
+    const isAvailable = !isAssignedToOtherTeam;
+    return matchesSearch && notInCurrentTeam && isAvailable;
   });
   
   return (
