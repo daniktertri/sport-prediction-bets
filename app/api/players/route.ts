@@ -70,18 +70,30 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Handle team_id - if not provided, we need to check if the schema allows NULL
+    // If schema requires NOT NULL, we'll need to make teamId optional in the schema
     const result = await pool.query(
       `INSERT INTO players (name, position, number, image, instagram, team_id)
        VALUES ($1, $2, $3, $4, $5, $6)
        RETURNING id, team_id as "teamId", name, position, number, image, instagram`,
-      [name.trim(), position || null, number || null, image || null, instagram || null, teamId || null]
+      [
+        name.trim(), 
+        position || null, 
+        number || null, 
+        image || null, 
+        instagram || null, 
+        teamId && teamId.trim() ? teamId : null
+      ]
     );
 
     return NextResponse.json(result.rows[0], { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating player:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { 
+        error: 'Internal server error',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined
+      },
       { status: 500 }
     );
   }

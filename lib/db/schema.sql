@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS teams (
 -- Players table
 CREATE TABLE IF NOT EXISTS players (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  team_id UUID NOT NULL REFERENCES teams(id) ON DELETE CASCADE,
+  team_id UUID REFERENCES teams(id) ON DELETE CASCADE,
   name VARCHAR(100) NOT NULL,
   position VARCHAR(50),
   number INTEGER,
