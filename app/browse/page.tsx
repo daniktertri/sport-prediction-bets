@@ -1,17 +1,34 @@
 // Browse page - View all teams and players (read-only)
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useApp } from '@/context/AppContext';
 import Card from '@/components/ui/Card';
 import TeamLogo from '@/components/TeamLogo';
-import { Team, Player } from '@/types';
+import { Team, Player, Match } from '@/types';
+
+interface TeamStats {
+  team: Team;
+  playerCount: number;
+  goalsScored: number;
+  wins: number;
+  losses: number;
+  winRate: number;
+}
+
+interface PlayerStats {
+  player: Player;
+  teamName: string;
+  teamId: string;
+  winRate: number;
+  goals: number; // Using Man of the Match count as proxy
+}
 
 export default function BrowsePage() {
-  const { teams, refreshData } = useApp();
-  const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const { teams, matches, refreshData } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<string>('all');
+  const [activeSection, setActiveSection] = useState<'teams' | 'players'>('teams');
   
   // Auto-refresh data periodically
   useEffect(() => {
@@ -22,8 +39,87 @@ export default function BrowsePage() {
     return () => clearInterval(interval);
   }, [refreshData]);
   
+  // Calculate team statistics
+  const teamStats = useMemo((): TeamStats[] => {
+    const finishedMatches = matches.filter(m => m.status === 'finished' && m.score1 !== undefined && m.score2 !== undefined);
+    
+    return teams.map(team => {
+      let goalsScored = 0;
+      let wins = 0;
+      let losses = 0;
+      
+      finishedMatches.forEach(match => {
+        if (match.team1Id === team.id) {
+          goalsScored += match.score1 || 0;
+          if (match.score1! > match.score2!) wins++;
+          else if (match.score1! < match.score2!) losses++;
+        } else if (match.team2Id === team.id) {
+          goalsScored += match.score2 || 0;
+          if (match.score2! > match.score1!) wins++;
+          else if (match.score2! < match.score1!) losses++;
+        }
+      });
+      
+      const totalMatches = wins + losses;
+      const winRate = totalMatches > 0 ? (wins / totalMatches) * 100 : 0;
+      
+      return {
+        team,
+        playerCount: team.players.length,
+        goalsScored,
+        wins,
+        losses,
+        winRate: Math.round(winRate * 10) / 10, // Round to 1 decimal
+      };
+    });
+  }, [teams, matches]);
+  
+  // Calculate player statistics
+  const playerStats = useMemo((): PlayerStats[] => {
+    const finishedMatches = matches.filter(m => m.status === 'finished' && m.score1 !== undefined && m.score2 !== undefined && m.manOfTheMatch);
+    
+    const statsMap = new Map<string, { wins: number; total: number }>();
+    
+    finishedMatches.forEach(match => {
+      if (!match.manOfTheMatch) return;
+      
+      const playerId = match.manOfTheMatch;
+      const current = statsMap.get(playerId) || { wins: 0, total: 0 };
+      current.total++;
+      
+      // Find which team the player belongs to
+      const playerTeam = teams.find(t => t.players.some(p => p.id === playerId));
+      if (playerTeam) {
+        const isTeam1 = match.team1Id === playerTeam.id;
+        const won = isTeam1 
+          ? (match.score1! > match.score2!)
+          : (match.score2! > match.score1!);
+        
+        if (won) current.wins++;
+      }
+      
+      statsMap.set(playerId, current);
+    });
+    
+    return teams.flatMap(team =>
+      team.players.map(player => {
+        const stats = statsMap.get(player.id) || { wins: 0, total: 0 };
+        const winRate = stats.total > 0 ? (stats.wins / stats.total) * 100 : 0;
+        
+        return {
+          player,
+          teamName: team.name,
+          teamId: team.id,
+          winRate: Math.round(winRate * 10) / 10, // Round to 1 decimal
+          goals: stats.total, // Using Man of the Match count
+        };
+      })
+    );
+  }, [teams, matches]);
+  
   // Filter teams
-  const filteredTeams = teams.filter(team => {
+  const filteredTeamStats = teamStats.filter(teamStat => {
+    const team = teamStat.team;
     const matchesSearch = !searchQuery || 
       team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       team.players.some(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -31,10 +127,17 @@ export default function BrowsePage() {
     return matchesSearch && matchesGroup;
   });
   
-  // Get all players from filtered teams
-  const allPlayers = filteredTeams.flatMap(team => 
-    team.players.map(player => ({ ...player, teamName: team.name, teamId: team.id }))
-  );
+  // Filter players
+  const filteredPlayerStats = playerStats.filter(playerStat => {
+    const matchesSearch = !searchQuery || 
+      playerStat.player.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      playerStat.teamName.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const team = teams.find(t => t.id === playerStat.teamId);
+    const matchesGroup = selectedGroup === 'all' || team?.group === selectedGroup;
+    
+    return matchesSearch && matchesGroup;
+  });
   
   const groups = ['A', 'B', 'C', 'D'] as const;
   
@@ -49,13 +152,37 @@ export default function BrowsePage() {
           </p>
         </div>
         
+        {/* Section Toggle */}
+        <div className="mb-6 flex gap-2">
+          <button
+            onClick={() => setActiveSection('teams')}
+            className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
+              activeSection === 'teams'
+                ? 'bg-accent text-white'
+                : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
+            }`}
+          >
+            Teams ({filteredTeamStats.length})
+          </button>
+          <button
+            onClick={() => setActiveSection('players')}
+            className={`px-6 py-3 rounded-lg text-sm font-medium transition-colors duration-200 ${
+              activeSection === 'players'
+                ? 'bg-accent text-white'
+                : 'bg-bg-secondary text-text-secondary hover:text-text-primary border border-border hover:border-accent'
+            }`}
+          >
+            Players ({filteredPlayerStats.length})
+          </button>
+        </div>
+        
         {/* Search and Filters */}
         <div className="mb-6 space-y-4">
           {/* Search Bar */}
           <div className="relative">
             <input
               type="text"
-              placeholder="Search teams or players..."
+              placeholder={activeSection === 'teams' ? "Search teams..." : "Search players..."}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full px-4 py-3 pl-10 border border-border rounded-lg bg-bg-secondary text-text-primary placeholder-text-secondary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
@@ -101,160 +228,118 @@ export default function BrowsePage() {
           </div>
         </div>
         
-        {/* Teams Grid */}
-        <div className="mb-8">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-text-primary">
-            Teams ({filteredTeams.length})
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {filteredTeams.map((team) => (
-              <Card
-                key={team.id}
-                className="p-4 sm:p-6 hover:bg-bg-tertiary transition-colors duration-200 cursor-pointer"
-                onClick={() => setSelectedTeam(selectedTeam?.id === team.id ? null : team)}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="mb-3">
-                    <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="xl" />
-                  </div>
-                  <h3 className="font-semibold text-base sm:text-lg text-text-primary mb-1">
-                    {team.name}
-                  </h3>
-                  {team.group && (
-                    <span className="text-xs sm:text-sm text-text-secondary mb-2">
-                      Group {team.group}
-                    </span>
-                  )}
-                  <div className="text-xs sm:text-sm text-text-secondary mt-2">
-                    {team.players.length} {team.players.length === 1 ? 'player' : 'players'}
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-        
-        {/* Selected Team Details */}
-        {selectedTeam && (
-          <div className="mb-8">
-            <Card className="p-6">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center gap-4">
-                  <TeamLogo logo={selectedTeam.logo} flag={selectedTeam.flag} name={selectedTeam.name} size="xl" />
-                  <div>
-                    <h2 className="text-xl sm:text-2xl font-semibold text-text-primary">
-                      {selectedTeam.name}
-                    </h2>
-                    {selectedTeam.group && (
-                      <span className="text-sm text-text-secondary">Group {selectedTeam.group}</span>
-                    )}
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelectedTeam(null)}
-                  className="text-text-secondary hover:text-text-primary transition-colors duration-200"
-                >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              
-              {selectedTeam.players.length > 0 ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-4 text-text-primary">
-                    Players ({selectedTeam.players.length})
-                  </h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedTeam.players.map((player) => (
-                      <Card key={player.id} className="p-4">
-                        <div className="flex items-center gap-4">
-                          {player.image ? (
-                            <img
-                              src={player.image}
-                              alt={player.name}
-                              className="w-16 h-16 rounded-lg object-cover border border-border"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 rounded-lg bg-bg-tertiary flex items-center justify-center border border-border">
-                              <span className="text-2xl">👤</span>
-                            </div>
-                          )}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-text-primary truncate">
-                              {player.name}
-                            </h4>
-                            {player.position && (
-                              <p className="text-sm text-text-secondary">{player.position}</p>
-                            )}
-                            {player.number && (
-                              <p className="text-xs text-text-secondary">#{player.number}</p>
-                            )}
-                            {player.instagram && (
-                              <a
-                                href={`https://instagram.com/${player.instagram.replace('@', '')}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="text-xs text-accent hover:text-accent-hover mt-1 inline-block"
-                              >
-                                @{player.instagram.replace('@', '')}
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <p className="text-text-secondary text-center py-8">
-                  No players added to this team yet.
-                </p>
-              )}
-            </Card>
-          </div>
-        )}
-        
-        {/* All Players View */}
-        {!selectedTeam && allPlayers.length > 0 && (
+        {/* Teams Section */}
+        {activeSection === 'teams' && (
           <div>
             <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-text-primary">
-              All Players ({allPlayers.length})
+              Teams ({filteredTeamStats.length})
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {allPlayers.map((player) => (
-                <Card key={`${player.teamId}-${player.id}`} className="p-4">
-                  <div className="flex items-center gap-3">
-                    {player.image ? (
-                      <img
-                        src={player.image}
-                        alt={player.name}
-                        className="w-12 h-12 rounded-lg object-cover border border-border"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-lg bg-bg-tertiary flex items-center justify-center border border-border">
-                        <span className="text-xl">👤</span>
+              {filteredTeamStats.map((teamStat) => {
+                const { team, playerCount, goalsScored, wins, losses, winRate } = teamStat;
+                return (
+                  <Card key={team.id} className="p-4 sm:p-6 hover:bg-bg-tertiary transition-colors duration-200">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="mb-3">
+                        <TeamLogo logo={team.logo} flag={team.flag} name={team.name} size="xl" />
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <h4 className="font-semibold text-sm text-text-primary truncate">
-                        {player.name}
-                      </h4>
-                      <p className="text-xs text-text-secondary truncate">{player.teamName}</p>
-                      {player.position && (
-                        <p className="text-xs text-text-secondary">{player.position}</p>
+                      <h3 className="font-semibold text-base sm:text-lg text-text-primary mb-1">
+                        {team.name}
+                      </h3>
+                      {team.group && (
+                        <span className="text-xs sm:text-sm text-text-secondary mb-3">
+                          Group {team.group}
+                        </span>
                       )}
+                      
+                      {/* Statistics */}
+                      <div className="w-full space-y-2 mt-2">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary">Players:</span>
+                          <span className="font-medium text-text-primary">{playerCount}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary">Goals:</span>
+                          <span className="font-medium text-text-primary">{goalsScored}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary">Record:</span>
+                          <span className="font-medium text-text-primary">{wins}W - {losses}L</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-text-secondary">Win Rate:</span>
+                          <span className="font-medium text-text-primary">{winRate}%</span>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </Card>
-              ))}
+                  </Card>
+                );
+              })}
             </div>
           </div>
         )}
         
-        {filteredTeams.length === 0 && (
+        {/* Players Section */}
+        {activeSection === 'players' && (
+          <div>
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-text-primary">
+              Players ({filteredPlayerStats.length})
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {filteredPlayerStats.map((playerStat) => {
+                const { player, teamName, winRate, goals } = playerStat;
+                return (
+                  <Card key={`${playerStat.teamId}-${player.id}`} className="p-4 hover:bg-bg-tertiary transition-colors duration-200">
+                    <div className="flex items-center gap-3 mb-3">
+                      {player.image ? (
+                        <img
+                          src={player.image}
+                          alt={player.name}
+                          className="w-12 h-12 rounded-lg object-cover border border-border"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-lg bg-bg-tertiary flex items-center justify-center border border-border">
+                          <span className="text-xl">👤</span>
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <h4 className="font-semibold text-sm text-text-primary truncate">
+                          {player.name}
+                        </h4>
+                        <p className="text-xs text-text-secondary truncate">{teamName}</p>
+                        {player.position && (
+                          <p className="text-xs text-text-secondary">{player.position}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Statistics */}
+                    <div className="space-y-2 pt-2 border-t border-border">
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-text-secondary">Win Rate:</span>
+                        <span className="font-medium text-text-primary">{winRate}%</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-text-secondary">Goals:</span>
+                        <span className="font-medium text-text-primary">{goals}</span>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+          </div>
+        )}
+        
+        {activeSection === 'teams' && filteredTeamStats.length === 0 && (
           <Card className="p-8 text-center">
             <p className="text-text-secondary">No teams found matching your search.</p>
+          </Card>
+        )}
+        
+        {activeSection === 'players' && filteredPlayerStats.length === 0 && (
+          <Card className="p-8 text-center">
+            <p className="text-text-secondary">No players found matching your search.</p>
           </Card>
         )}
       </div>
