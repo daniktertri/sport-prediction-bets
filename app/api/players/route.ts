@@ -47,9 +47,16 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       );
     }
-    if (!user.isAdmin) {
+    
+    // Verify admin status from database (in case JWT is outdated)
+    const userCheck = await pool.query(
+      'SELECT is_admin FROM users WHERE id = $1',
+      [user.userId]
+    );
+    
+    if (userCheck.rows.length === 0 || !userCheck.rows[0].is_admin) {
       return NextResponse.json(
-        { error: 'Admin access required' },
+        { error: 'Admin access required. If you were recently promoted to admin, please log out and log back in to refresh your session.' },
         { status: 403 }
       );
     }
