@@ -306,7 +306,7 @@ export default function AdminTeamsPage() {
                     ))
                   ) : (
                     <p className="text-center text-text-secondary py-4 text-sm">
-                      No players selected. Click "Select Players" to add players to this team.
+                      No players selected. Click &quot;Select Players&quot; to add players to this team.
                     </p>
                   )}
                 </div>
