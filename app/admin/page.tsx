@@ -48,15 +48,9 @@ export default function AdminPage() {
     },
     {
       title: t('admin.matchManagement'),
-      description: t('admin.matchManagementDesc'),
+      description: 'Create, edit matches and set results in one place',
       href: '/admin/matches',
       icon: '⚽',
-    },
-    {
-      title: t('admin.matchResults'),
-      description: t('admin.matchResultsDesc'),
-      href: '/admin/results',
-      icon: '📝',
     },
   ];
   
