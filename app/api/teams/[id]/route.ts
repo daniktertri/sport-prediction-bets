@@ -100,12 +100,19 @@ export async function PATCH(
 
     // Update players if provided
     if (players && Array.isArray(players)) {
-      // Delete existing players
-      await pool.query('DELETE FROM players WHERE team_id = $1', [params.id]);
+      // Remove all players from this team first
+      await pool.query('UPDATE players SET team_id = NULL WHERE team_id = $1', [params.id]);
 
-      // Insert new players
+      // Assign selected players to this team
       for (const player of players) {
-        if (player.name) {
+        if (player.id) {
+          // Update existing player's team_id
+          await pool.query(
+            `UPDATE players SET team_id = $1 WHERE id = $2`,
+            [params.id, player.id]
+          );
+        } else if (player.name) {
+          // Create new player (backward compatibility)
           await pool.query(
             `INSERT INTO players (team_id, name, position, number, image, instagram)
              VALUES ($1, $2, $3, $4, $5, $6)`,

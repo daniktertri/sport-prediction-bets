@@ -16,6 +16,9 @@ export default function AdminTeamsPage() {
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [allPlayers, setAllPlayers] = useState<Player[]>([]);
+  const [playerSearchQuery, setPlayerSearchQuery] = useState('');
+  const [showPlayerSelector, setShowPlayerSelector] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -23,6 +26,20 @@ export default function AdminTeamsPage() {
     group: '' as 'A' | 'B' | 'C' | 'D' | '',
     players: [] as Player[],
   });
+  
+  useEffect(() => {
+    fetchAllPlayers();
+  }, []);
+  
+  const fetchAllPlayers = async () => {
+    try {
+      const res = await fetch('/api/players');
+      const data = await res.json();
+      setAllPlayers(data);
+    } catch (err) {
+      console.error('Error fetching players:', err);
+    }
+  };
   
   if (!currentUser?.isAdmin) {
     return (
@@ -63,8 +80,11 @@ export default function AdminTeamsPage() {
       setFormData({ name: '', logo: '', group: '', players: [] });
       setEditingTeam(null);
       setShowForm(false);
+      setShowPlayerSelector(false);
+      setPlayerSearchQuery('');
       // Refresh data after update
       await refreshData();
+      await fetchAllPlayers();
     } catch (err: any) {
       setError(err.message || 'Failed to save team. Please try again.');
       console.error('Error saving team:', err);
@@ -82,27 +102,37 @@ export default function AdminTeamsPage() {
       players: team.players,
     });
     setShowForm(true);
+    setShowPlayerSelector(false);
+    setPlayerSearchQuery('');
   };
   
-  const addPlayer = () => {
+  const addPlayerToTeam = (player: Player) => {
+    // Check if player is already in the team
+    if (formData.players.some(p => p.id === player.id)) {
+      return;
+    }
     setFormData({
       ...formData,
-      players: [...formData.players, { id: `p-${Date.now()}`, name: '' }],
+      players: [...formData.players, player],
+    });
+    setShowPlayerSelector(false);
+    setPlayerSearchQuery('');
+  };
+  
+  const removePlayer = (playerId: string) => {
+    setFormData({
+      ...formData,
+      players: formData.players.filter(p => p.id !== playerId),
     });
   };
   
-  const updatePlayer = (index: number, updates: Partial<Player>) => {
-    const newPlayers = [...formData.players];
-    newPlayers[index] = { ...newPlayers[index], ...updates };
-    setFormData({ ...formData, players: newPlayers });
-  };
-  
-  const removePlayer = (index: number) => {
-    setFormData({
-      ...formData,
-      players: formData.players.filter((_, i) => i !== index),
-    });
-  };
+  const availablePlayers = allPlayers.filter(player => {
+    const matchesSearch = !playerSearchQuery || 
+      player.name.toLowerCase().includes(playerSearchQuery.toLowerCase()) ||
+      player.position?.toLowerCase().includes(playerSearchQuery.toLowerCase());
+    const notInTeam = !formData.players.some(p => p.id === player.id);
+    return matchesSearch && notInTeam;
+  });
   
   return (
     <div className="min-h-screen py-12 bg-bg-primary">
@@ -114,7 +144,13 @@ export default function AdminTeamsPage() {
             </Link>
             <h1 className="text-3xl font-semibold text-text-primary">Team Management</h1>
           </div>
-          <Button onClick={() => { setShowForm(true); setEditingTeam(null); setFormData({ name: '', logo: '', group: '', players: [] }); }}>
+          <Button onClick={() => { 
+            setShowForm(true); 
+            setEditingTeam(null); 
+            setFormData({ name: '', logo: '', group: '', players: [] });
+            setShowPlayerSelector(false);
+            setPlayerSearchQuery('');
+          }}>
             + New Team
           </Button>
         </div>
@@ -165,60 +201,114 @@ export default function AdminTeamsPage() {
               
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-sm font-medium text-text-primary">Players</label>
-                  <Button type="button" size="sm" onClick={addPlayer}>+ Add Player</Button>
+                  <label className="block text-sm font-medium text-text-primary">
+                    Players ({formData.players.length})
+                  </label>
+                  <Button 
+                    type="button" 
+                    size="sm" 
+                    onClick={() => setShowPlayerSelector(!showPlayerSelector)}
+                  >
+                    {showPlayerSelector ? 'Cancel Selection' : '+ Select Players'}
+                  </Button>
                 </div>
-                <div className="space-y-4">
-                  {formData.players.map((player, index) => (
-                    <Card key={index} className="p-4">
-                      <div className="space-y-3">
-                        <div className="flex gap-2">
-                          <input
-                            type="text"
-                            placeholder="Player name"
-                            value={player.name}
-                            onChange={(e) => updatePlayer(index, { name: e.target.value })}
-                            className="flex-1 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                          />
-                          <input
-                            type="text"
-                            placeholder="Position"
-                            value={player.position || ''}
-                            onChange={(e) => updatePlayer(index, { position: e.target.value })}
-                            className="w-32 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                          />
-                          <input
-                            type="number"
-                            placeholder="Number"
-                            value={player.number || ''}
-                            onChange={(e) => updatePlayer(index, { number: parseInt(e.target.value) || undefined })}
-                            className="w-24 px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                          />
-                          <Button type="button" variant="danger" size="sm" onClick={() => removePlayer(index)}>
+                
+                {/* Player Selector */}
+                {showPlayerSelector && (
+                  <Card className="p-4 mb-4 border-2 border-accent/30">
+                    <div className="mb-3">
+                      <input
+                        type="text"
+                        placeholder="Search players..."
+                        value={playerSearchQuery}
+                        onChange={(e) => setPlayerSearchQuery(e.target.value)}
+                        className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary placeholder-text-secondary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                      />
+                    </div>
+                    <div className="max-h-64 overflow-y-auto space-y-2">
+                      {availablePlayers.length > 0 ? (
+                        availablePlayers.map((player) => (
+                          <div
+                            key={player.id}
+                            onClick={() => addPlayerToTeam(player)}
+                            className="flex items-center gap-3 p-3 bg-bg-secondary hover:bg-bg-tertiary rounded-lg cursor-pointer transition-colors duration-200 border border-border hover:border-accent"
+                          >
+                            {player.image ? (
+                              <img
+                                src={player.image}
+                                alt={player.name}
+                                className="w-10 h-10 rounded-lg object-cover border border-border"
+                              />
+                            ) : (
+                              <div className="w-10 h-10 rounded-lg bg-bg-tertiary flex items-center justify-center border border-border">
+                                <span className="text-lg">👤</span>
+                              </div>
+                            )}
+                            <div className="flex-1 min-w-0">
+                              <p className="font-medium text-text-primary truncate">{player.name}</p>
+                              {player.position && (
+                                <p className="text-xs text-text-secondary">{player.position}</p>
+                              )}
+                            </div>
+                            <Button size="sm" type="button">Add</Button>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-center text-text-secondary py-4">
+                          {playerSearchQuery ? 'No players found' : 'No available players. Create players first in the Players section.'}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-3 text-xs text-text-secondary">
+                      <Link href="/admin/players" className="text-accent hover:text-accent-hover">
+                        → Go to Players Management to create new players
+                      </Link>
+                    </div>
+                  </Card>
+                )}
+                
+                {/* Selected Players */}
+                <div className="space-y-3">
+                  {formData.players.length > 0 ? (
+                    formData.players.map((player) => (
+                      <Card key={player.id} className="p-4">
+                        <div className="flex items-center gap-4">
+                          {player.image ? (
+                            <img
+                              src={player.image}
+                              alt={player.name}
+                              className="w-12 h-12 rounded-lg object-cover border border-border"
+                            />
+                          ) : (
+                            <div className="w-12 h-12 rounded-lg bg-bg-tertiary flex items-center justify-center border border-border">
+                              <span className="text-xl">👤</span>
+                            </div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-text-primary truncate">{player.name}</h4>
+                            {player.position && (
+                              <p className="text-sm text-text-secondary">{player.position}</p>
+                            )}
+                            {player.number && (
+                              <p className="text-xs text-text-secondary">#{player.number}</p>
+                            )}
+                          </div>
+                          <Button 
+                            type="button" 
+                            variant="danger" 
+                            size="sm" 
+                            onClick={() => removePlayer(player.id)}
+                          >
                             Remove
                           </Button>
                         </div>
-                        <ImageUpload
-                          currentImage={player.image || undefined}
-                          onImageChange={(base64) => updatePlayer(index, { image: base64 || undefined })}
-                          label="Player Image"
-                          maxSizeMB={10}
-                        />
-                        <div>
-                          <label className="block text-sm font-medium mb-1 text-text-primary">
-                            Instagram Handle
-                          </label>
-                          <input
-                            type="text"
-                            placeholder="@username"
-                            value={player.instagram || ''}
-                            onChange={(e) => updatePlayer(index, { instagram: e.target.value || undefined })}
-                            className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                          />
-                        </div>
-                      </div>
-                    </Card>
-                  ))}
+                      </Card>
+                    ))
+                  ) : (
+                    <p className="text-center text-text-secondary py-4 text-sm">
+                      No players selected. Click "Select Players" to add players to this team.
+                    </p>
+                  )}
                 </div>
               </div>
               
@@ -226,7 +316,18 @@ export default function AdminTeamsPage() {
                 <Button type="submit" disabled={loading}>
                   {loading ? 'Saving...' : editingTeam ? 'Update' : 'Create'}
                 </Button>
-                <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditingTeam(null); setError(null); }} disabled={loading}>
+                <Button 
+                  type="button" 
+                  variant="outline" 
+                  onClick={() => { 
+                    setShowForm(false); 
+                    setEditingTeam(null); 
+                    setError(null);
+                    setShowPlayerSelector(false);
+                    setPlayerSearchQuery('');
+                  }} 
+                  disabled={loading}
+                >
                   Cancel
                 </Button>
               </div>

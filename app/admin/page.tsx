@@ -35,6 +35,12 @@ export default function AdminPage() {
       icon: '👥',
     },
     {
+      title: 'Player Management',
+      description: 'Create and manage players independently',
+      href: '/admin/players',
+      icon: '🏃',
+    },
+    {
       title: t('admin.groupAssignment'),
       description: t('admin.groupAssignmentDesc'),
       href: '/admin/groups',
