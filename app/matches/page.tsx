@@ -40,8 +40,14 @@ export default function MatchesPage() {
   const { upcomingMatches, pastMatches, liveMatches } = useMemo(() => {
     const now = new Date();
     return {
-      upcomingMatches: matches.filter(m => m.status === 'upcoming' || (m.status !== 'finished' && new Date(m.date) > now)),
-      pastMatches: matches.filter(m => m.status === 'finished'),
+      // Upcoming: status is upcoming AND date is in the future
+      upcomingMatches: matches.filter(m => m.status === 'upcoming' && new Date(m.date) > now),
+      // Past: finished matches OR past matches (even if status is upcoming but date passed)
+      pastMatches: matches.filter(m => {
+        const isFinished = m.status === 'finished';
+        const isPast = new Date(m.date) < now;
+        return isFinished || (m.status === 'upcoming' && isPast);
+      }),
       liveMatches: matches.filter(m => m.status === 'live'),
     };
   }, [matches]);
@@ -189,14 +195,20 @@ export default function MatchesPage() {
             <div className="divide-y divide-border">
               {filteredMatches
                 .sort((a, b) => {
-                  // Sort: live first, then upcoming by date, then past by date (recent first)
+                  // Sort: live first, then upcoming by date, then past/calculating by date (recent first)
+                  const now = new Date();
+                  const aIsPast = new Date(a.date) < now;
+                  const aIsCalculating = (a.status === 'upcoming' && aIsPast) || (a.status === 'finished' && (!a.score1 || !a.score2));
+                  const bIsPast = new Date(b.date) < now;
+                  const bIsCalculating = (b.status === 'upcoming' && bIsPast) || (b.status === 'finished' && (!b.score1 || !b.score2));
+                  
                   if (a.status === 'live' && b.status !== 'live') return -1;
                   if (b.status === 'live' && a.status !== 'live') return 1;
-                  if (a.status === 'upcoming' && b.status === 'finished') return -1;
-                  if (b.status === 'upcoming' && a.status === 'finished') return 1;
+                  if (a.status === 'upcoming' && !aIsPast && (b.status === 'finished' || bIsCalculating)) return -1;
+                  if (b.status === 'upcoming' && !bIsPast && (a.status === 'finished' || aIsCalculating)) return 1;
                   const dateA = new Date(a.date).getTime();
                   const dateB = new Date(b.date).getTime();
-                  return a.status === 'finished' ? dateB - dateA : dateA - dateB;
+                  return (a.status === 'finished' || aIsCalculating) ? dateB - dateA : dateA - dateB;
                 })
                 .map((match) => (
                   <MatchCard key={match.id} match={match} compact />

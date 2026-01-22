@@ -12,7 +12,7 @@ interface MatchCardProps {
 }
 
 export default function MatchCard({ match, compact = false }: MatchCardProps) {
-  const { teams } = useApp();
+  const { teams, getUserPredictionForMatch } = useApp();
   const { t } = useLanguage();
   const team1 = teams.find(t => t.id === match.team1Id);
   const team2 = teams.find(t => t.id === match.team2Id);
@@ -23,6 +23,10 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
   const isFinished = match.status === 'finished';
   const isUpcoming = match.status === 'upcoming';
   const isLive = match.status === 'live';
+  const isPast = matchDate < new Date();
+  const hasNoScore = isFinished && (match.score1 === undefined || match.score2 === undefined || match.score1 === null || match.score2 === null);
+  const isCalculating = (isPast && isUpcoming) || hasNoScore;
+  const hasPrediction = getUserPredictionForMatch(match.id) !== undefined;
   
   // Determine winner
   const getWinner = () => {
@@ -43,19 +47,23 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
       <Link href={`/matches/${match.id}`}>
         <div className={`bg-bg-secondary border-b border-border hover:bg-bg-tertiary transition-all duration-200 ${
           isFinished && winner && winner !== 'draw' ? 'border-l-4 border-l-success' : ''
-        } ${isLive ? 'border-l-4 border-l-danger animate-pulse' : ''}`}>
+        } ${isLive ? 'border-l-4 border-l-danger animate-pulse' : ''} ${
+          isCalculating ? 'border-l-4 border-l-orange-500 bg-orange-500/5' : ''
+        }`}>
           <div className="px-4 py-4 flex items-center gap-4">
             {/* Status Badge */}
             <div className={`
               text-xs px-3 py-1.5 rounded font-medium whitespace-nowrap
-              ${isFinished 
+              ${isCalculating
+                ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
+                : isFinished 
                 ? 'bg-success/10 text-success border border-success/20' 
                 : isLive
                 ? 'bg-danger/10 text-danger border border-danger/20 animate-pulse'
                 : 'bg-bg-tertiary text-text-secondary border border-border'
               }
             `}>
-              {isFinished ? 'FT' : isLive ? `🔴 ${t('common.live')}` : formatTime(matchDate)}
+              {isCalculating ? 'Calculating' : isFinished ? 'FT' : isLive ? `🔴 ${t('common.live')}` : formatTime(matchDate)}
             </div>
             
             {/* Teams */}
@@ -103,12 +111,19 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
             </div>
             
             {/* Action */}
-            {isUpcoming && (
-              <div className="text-xs text-accent font-medium whitespace-nowrap">
-                {t('common.predict')}
+            {isUpcoming && !isPast && (
+              <div className={`text-xs font-medium whitespace-nowrap ${
+                hasPrediction ? 'text-success' : 'text-accent'
+              }`}>
+                {hasPrediction ? 'Done' : t('common.predict')}
               </div>
             )}
-            {isFinished && winner === 'draw' && (
+            {isCalculating && (
+              <div className="text-xs text-orange-500 font-medium whitespace-nowrap">
+                Calculating
+              </div>
+            )}
+            {isFinished && !isCalculating && winner === 'draw' && (
               <div className="text-xs text-text-secondary font-medium whitespace-nowrap">
                 {t('common.draw')}
               </div>
@@ -122,7 +137,9 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
   return (
     <Link href={`/matches/${match.id}`}>
       <div className={`bg-bg-secondary border rounded-lg p-5 hover:bg-bg-tertiary transition-all duration-200 cursor-pointer ${
-        isFinished && winner && winner !== 'draw' 
+        isCalculating
+          ? 'border-orange-500/30 shadow-lg shadow-orange-500/5 bg-orange-500/5'
+          : isFinished && winner && winner !== 'draw' 
           ? 'border-success/30 shadow-lg shadow-success/5' 
           : isLive
           ? 'border-danger/30 shadow-lg shadow-danger/5 animate-pulse'
@@ -137,14 +154,16 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           </div>
           <div className={`
             text-xs px-3 py-1.5 rounded font-medium
-            ${isFinished 
+            ${isCalculating
+              ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20'
+              : isFinished 
               ? 'bg-success/10 text-success border border-success/20' 
               : isLive
               ? 'bg-danger/10 text-danger border border-danger/20 animate-pulse'
               : 'bg-bg-tertiary text-text-secondary border border-border'
             }
           `}>
-            {isFinished ? t('common.finished') : isLive ? `🔴 ${t('common.live')}` : t('common.upcoming')}
+            {isCalculating ? 'Calculating' : isFinished ? t('common.finished') : isLive ? `🔴 ${t('common.live')}` : t('common.upcoming')}
           </div>
         </div>
         
@@ -212,12 +231,19 @@ export default function MatchCard({ match, compact = false }: MatchCardProps) {
           <div className="text-xs text-text-secondary">
             {matchDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} • {formatTime(matchDate)}
           </div>
-          {isUpcoming && (
-            <span className="text-xs font-medium text-accent">
-              {t('common.predict')}
+          {isUpcoming && !isPast && (
+            <span className={`text-xs font-medium ${
+              hasPrediction ? 'text-success' : 'text-accent'
+            }`}>
+              {hasPrediction ? 'Done' : t('common.predict')}
             </span>
           )}
-          {isFinished && match.manOfTheMatch && (
+          {isCalculating && (
+            <span className="text-xs font-medium text-orange-500">
+              Calculating
+            </span>
+          )}
+          {isFinished && !isCalculating && match.manOfTheMatch && (
             <span className="text-xs text-text-secondary">
               ⭐ MOTM
             </span>

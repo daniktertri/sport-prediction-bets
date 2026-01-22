@@ -180,8 +180,13 @@ export default function MatchDetailPage() {
                 <p className="text-text-secondary text-xs sm:text-sm mt-2">{t('matchDetail.redirecting')}</p>
               </div>
             ) : existingPrediction ? (
-              <div className="bg-accent/10 border border-accent/20 rounded-lg p-4 sm:p-6">
-                <p className="text-accent font-medium mb-3 text-sm sm:text-base">
+              <div className="bg-success/10 border border-success/20 rounded-lg p-4 sm:p-6 text-center">
+                <div className="mb-3">
+                  <span className="text-success font-semibold text-base sm:text-lg">
+                    ✓ Done
+                  </span>
+                </div>
+                <p className="text-text-secondary text-xs sm:text-sm mb-3">
                   {t('matchDetail.existingPrediction')}
                 </p>
                 {existingPrediction.type === 'exact_score' && (
