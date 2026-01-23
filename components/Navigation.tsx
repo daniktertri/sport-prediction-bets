@@ -139,10 +139,10 @@ export default function Navigation() {
     navItems.push({ href: '/admin', label: t('common.admin'), icon: AdminIcon });
   }
   
-  // Add profile to bottom nav if user is logged in
+  // Add profile to bottom nav if user is logged in, or login if not
   const bottomNavItems = currentUser
     ? [...navItems, { href: '/profile', label: t('common.profile'), icon: ProfileIcon }]
-    : navItems;
+    : [...navItems, { href: '/login', label: t('common.login'), icon: ProfileIcon }];
   
   const handleLogout = async () => {
     setLoggingOut(true);

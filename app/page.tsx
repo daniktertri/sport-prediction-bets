@@ -12,7 +12,7 @@ import Lottie from 'lottie-react';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const { teams, matches, competition } = useApp();
+  const { teams, matches, competition, currentUser } = useApp();
   const { t } = useLanguage();
   const [tropheeAnimation, setTropheeAnimation] = useState(null);
   
@@ -75,17 +75,39 @@ export default function Home() {
               {t('home.predictAndCompete')}
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Link href="/matches">
-                <Button variant="primary" size="lg" className="w-full sm:w-auto">
-                  {t('home.viewMatches')}
-                </Button>
-              </Link>
-              <Link href="/leaderboard">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                  {t('common.leaderboard')}
-                </Button>
-              </Link>
+              {currentUser ? (
+                <>
+                  <Link href="/matches">
+                    <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                      {t('home.viewMatches')}
+                    </Button>
+                  </Link>
+                  <Link href="/leaderboard">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                      {t('common.leaderboard')}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/login">
+                    <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                      {t('home.createAccount')}
+                    </Button>
+                  </Link>
+                  <Link href="/matches">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                      {t('home.viewMatches')}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
+            {!currentUser && (
+              <p className="text-sm text-text-secondary mt-4 px-4 max-w-xl mx-auto">
+                {t('home.createAccountDesc')}
+              </p>
+            )}
           </div>
         </div>
       </div>

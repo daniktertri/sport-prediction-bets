@@ -40,12 +40,16 @@ export type TranslationKey =
   | 'common.grid'
   | 'common.noMatchesFound'
   | 'common.browseAndPredict'
+  | 'common.createAccountToPredict'
+  | 'common.loginToPredict'
   // Home
   | 'home.championship'
   | 'home.predictAndCompete'
   | 'home.viewMatches'
   | 'home.upcomingMatches'
   | 'home.groups'
+  | 'home.createAccount'
+  | 'home.createAccountDesc'
   // Login
   | 'login.title'
   | 'login.registerTitle'
@@ -97,6 +101,8 @@ export type TranslationKey =
   | 'matchDetail.enterBothScores'
   | 'matchDetail.selectWinner'
   | 'matchDetail.motmLabel'
+  | 'matchDetail.loginRequired'
+  | 'matchDetail.loginToPredict'
   // Leaderboard
   | 'leaderboard.title'
   | 'leaderboard.rankings'
@@ -186,12 +192,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'common.grid': 'Grille',
     'common.noMatchesFound': 'Aucun match trouvé pour les filtres sélectionnés.',
     'common.browseAndPredict': 'Parcourir et prédire les résultats des matchs',
+    'common.createAccountToPredict': 'Créez un compte pour commencer à parier',
+    'common.loginToPredict': 'Connectez-vous pour faire vos prédictions',
     // Home
     'home.championship': 'Championnat de Prédictions Sportives',
     'home.predictAndCompete': 'Prédisez les résultats des matchs et devenez le plus malicieux',
     'home.viewMatches': 'Voir les Matchs',
     'home.upcomingMatches': 'Matchs à Venir',
     'home.groups': 'Groupes',
+    'home.createAccount': 'Créer un Compte',
+    'home.createAccountDesc': 'Inscrivez-vous pour commencer à faire vos prédictions et participer au classement',
     // Login
     'login.title': 'Connexion',
     'login.registerTitle': 'Inscription',
@@ -242,6 +252,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.matchStarted': 'Ce match a déjà commencé. Les prédictions sont fermées.',
     'matchDetail.enterBothScores': 'Veuillez entrer les deux scores',
     'matchDetail.motmLabel': 'Joueur du match',
+    'matchDetail.loginRequired': 'Connexion Requise',
+    'matchDetail.loginToPredict': 'Vous devez être connecté pour faire une prédiction. Créez un compte ou connectez-vous pour continuer.',
     // Leaderboard
     'leaderboard.title': 'Classement',
     'leaderboard.rankings': 'Classements basés sur les points totaux gagnés',
@@ -330,12 +342,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'common.grid': 'Grid',
     'common.noMatchesFound': 'No matches found for the selected filters.',
     'common.browseAndPredict': 'Browse and predict match results',
+    'common.createAccountToPredict': 'Create an account to start betting',
+    'common.loginToPredict': 'Log in to make your predictions',
     // Home
     'home.championship': 'Sports Prediction Championship',
     'home.predictAndCompete': 'Predict match results and compete for points',
     'home.viewMatches': 'View Matches',
     'home.upcomingMatches': 'Upcoming Matches',
     'home.groups': 'Groups',
+    'home.createAccount': 'Create Account',
+    'home.createAccountDesc': 'Sign up to start making predictions and join the leaderboard',
     // Login
     'login.title': 'Login',
     'login.registerTitle': 'Register',
@@ -386,6 +402,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.matchStarted': 'This match has already started. Predictions are closed.',
     'matchDetail.enterBothScores': 'Please enter both scores',
     'matchDetail.motmLabel': 'Man of the Match',
+    'matchDetail.loginRequired': 'Login Required',
+    'matchDetail.loginToPredict': 'You must be logged in to make a prediction. Create an account or log in to continue.',
     // Leaderboard
     'leaderboard.title': 'Leaderboard',
     'leaderboard.rankings': 'Rankings based on total points earned',

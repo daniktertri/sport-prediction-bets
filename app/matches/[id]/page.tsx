@@ -3,6 +3,7 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useApp } from '@/context/AppContext';
 import { useLanguage } from '@/context/LanguageContext';
 import Card from '@/components/ui/Card';
@@ -68,6 +69,11 @@ export default function MatchDetailPage() {
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!currentUser) {
+      router.push('/login');
+      return;
+    }
     
     if (new Date(match.date) < new Date()) {
       alert(t('matchDetail.matchStarted'));
@@ -172,7 +178,26 @@ export default function MatchDetailPage() {
           <Card className="p-6 sm:p-8">
             <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-text-primary">{t('matchDetail.makePrediction')}</h2>
             
-            {submitted ? (
+            {!currentUser ? (
+              <div className="bg-bg-secondary border border-border rounded-lg p-6 sm:p-8 text-center">
+                <h3 className="text-lg sm:text-xl font-semibold mb-2 text-text-primary">{t('matchDetail.loginRequired')}</h3>
+                <p className="text-sm sm:text-base text-text-secondary mb-6">
+                  {t('matchDetail.loginToPredict')}
+                </p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <Link href="/login">
+                    <Button variant="primary" size="lg" className="w-full sm:w-auto">
+                      {t('common.login')}
+                    </Button>
+                  </Link>
+                  <Link href="/login">
+                    <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                      {t('common.register')}
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            ) : submitted ? (
               <div className="bg-success/10 border border-success/20 rounded-lg p-4 sm:p-6 text-center">
                 <p className="text-success font-medium text-base sm:text-lg">
                   ✓ {t('matchDetail.predictionSubmitted')}
