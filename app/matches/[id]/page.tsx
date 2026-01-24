@@ -62,8 +62,8 @@ export default function MatchDetailPage() {
   }, [team1?.id, team2?.id]);
 
   useEffect(() => {
-    if (!match) return;
-    fetch(`/api/predictions/stats?matchId=${match.id}`)
+    if (!matchId) return;
+    fetch(`/api/predictions/stats?matchId=${matchId}`)
       .then(res => (res.ok ? res.json() : null))
       .then(data => {
         if (data) {
@@ -75,7 +75,7 @@ export default function MatchDetailPage() {
       .catch(() => {
         setOutcomeStats(null);
       });
-  }, [match?.id]);
+  }, [matchId]);
   
   if (!match) {
     return (
