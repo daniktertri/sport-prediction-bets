@@ -149,8 +149,9 @@ export default function AdminMatchesPage() {
     const isEditingScore = editingScore === match.id;
     const matchPlayers = getMatchPlayers(match);
     const isMatchPast = new Date(match.date) < new Date();
-    const canSetScore = match.status === 'finished' && (!match.score1 || !match.score2) || 
-                       (match.status === 'upcoming' && isMatchPast);
+    const hasScore = match.score1 !== undefined && match.score1 !== null &&
+                     match.score2 !== undefined && match.score2 !== null;
+    const canSetScore = (!hasScore && (match.status === 'finished' || (match.status === 'upcoming' && isMatchPast)));
     
     return (
       <tr key={match.id} className="border-b border-border hover:bg-bg-tertiary transition-colors duration-200">
@@ -258,20 +259,24 @@ export default function AdminMatchesPage() {
         </td>
         <td className="px-4 py-3">
           <div className="flex gap-2">
-            {canSetScore && (
-              <Button size="sm" onClick={() => startScoreEdit(match)}>
-                Set Score
-              </Button>
-            )}
-            {match.status === 'upcoming' && !isMatchPast && (
-              <Button size="sm" variant="outline" onClick={() => startEdit(match)}>
-                Edit
-              </Button>
-            )}
-            {match.status === 'finished' && match.score1 !== undefined && match.score2 !== undefined && (
-              <Button size="sm" variant="outline" onClick={() => startScoreEdit(match)}>
-                Edit Score
-              </Button>
+            {!isEditingScore && (
+              <>
+                {canSetScore && (
+                  <Button size="sm" onClick={() => startScoreEdit(match)}>
+                    Set Score
+                  </Button>
+                )}
+                {match.status === 'upcoming' && !isMatchPast && (
+                  <Button size="sm" variant="outline" onClick={() => startEdit(match)}>
+                    Edit
+                  </Button>
+                )}
+                {match.status === 'finished' && hasScore && (
+                  <Button size="sm" variant="outline" onClick={() => startScoreEdit(match)}>
+                    Edit Score
+                  </Button>
+                )}
+              </>
             )}
           </div>
         </td>
