@@ -76,11 +76,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       const [teamsRes, matchesRes, usersRes, competitionRes, predictionsRes] = await Promise.all([
-        fetch('/api/teams'),
-        fetch('/api/matches'),
-        fetch('/api/users'),
-        fetch('/api/competition'),
-        fetch('/api/predictions'),
+        fetch('/api/teams', { cache: 'no-store' }),
+        fetch('/api/matches', { cache: 'no-store' }),
+        fetch('/api/users', { cache: 'no-store' }),
+        fetch('/api/competition', { cache: 'no-store' }),
+        fetch('/api/predictions', { cache: 'no-store' }),
       ]);
 
       const teamsData = await teamsRes.json();
