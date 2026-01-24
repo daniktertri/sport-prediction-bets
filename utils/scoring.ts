@@ -4,7 +4,14 @@
 import { Prediction, Match, PredictionOutcome } from '@/types';
 
 export const calculatePoints = (prediction: Prediction, match: Match): number => {
-  if (match.status !== 'finished' || !match.score1 || !match.score2) {
+  // Require finished status and defined scores (0 is allowed)
+  if (
+    match.status !== 'finished' ||
+    match.score1 === undefined ||
+    match.score1 === null ||
+    match.score2 === undefined ||
+    match.score2 === null
+  ) {
     return 0;
   }
   

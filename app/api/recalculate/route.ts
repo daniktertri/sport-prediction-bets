@@ -19,15 +19,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get all finished matches
+    // Get all finished matches with teams and MOTM
     const matchesResult = await pool.query(
-      'SELECT id, score1, score2, status FROM matches WHERE status = $1',
+      `SELECT 
+         id,
+         team1_id as "team1Id",
+         team2_id as "team2Id",
+         score1,
+         score2,
+         status,
+         man_of_the_match as "manOfTheMatch"
+       FROM matches
+       WHERE status = $1`,
       ['finished']
     );
 
-    // Get all predictions
+    // Get all predictions including outcome
     const predictionsResult = await pool.query(`
-      SELECT id, match_id, type, score1, score2, winner_id, man_of_the_match
+      SELECT 
+        id,
+        match_id,
+        type,
+        score1,
+        score2,
+        winner_id,
+        man_of_the_match,
+        outcome
       FROM predictions
     `);
 
@@ -37,13 +54,17 @@ export async function POST(request: NextRequest) {
       if (match && match.status === 'finished') {
         const points = calculatePoints(
           {
+            id: prediction.id,
+            userId: '', // not needed for scoring
+            matchId: prediction.match_id,
             type: prediction.type,
             score1: prediction.score1,
             score2: prediction.score2,
             winnerId: prediction.winner_id,
             manOfTheMatch: prediction.man_of_the_match,
+            outcome: prediction.outcome,
           } as any,
-          match
+          match as any
         );
 
         await pool.query(
