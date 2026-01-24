@@ -103,6 +103,8 @@ export type TranslationKey =
   | 'matchDetail.motmLabel'
   | 'matchDetail.loginRequired'
   | 'matchDetail.loginToPredict'
+  | 'matchDetail.betDistribution'
+  | 'matchDetail.noBetsYet'
   // Leaderboard
   | 'leaderboard.title'
   | 'leaderboard.rankings'
@@ -254,6 +256,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.motmLabel': 'Joueur du match',
     'matchDetail.loginRequired': 'Connexion Requise',
     'matchDetail.loginToPredict': 'Vous devez être connecté pour faire une prédiction. Créez un compte ou connectez-vous pour continuer.',
+    'matchDetail.betDistribution': 'Répartition des paris (1/N/2)',
+    'matchDetail.noBetsYet': 'Aucun pari sur ce match pour le moment.',
     // Leaderboard
     'leaderboard.title': 'Classement',
     'leaderboard.rankings': 'Classements basés sur les points totaux gagnés',
@@ -404,6 +408,8 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.motmLabel': 'Man of the Match',
     'matchDetail.loginRequired': 'Login Required',
     'matchDetail.loginToPredict': 'You must be logged in to make a prediction. Create an account or log in to continue.',
+    'matchDetail.betDistribution': 'Bet distribution (1/X/2)',
+    'matchDetail.noBetsYet': 'No bets on this match yet.',
     // Leaderboard
     'leaderboard.title': 'Leaderboard',
     'leaderboard.rankings': 'Rankings based on total points earned',

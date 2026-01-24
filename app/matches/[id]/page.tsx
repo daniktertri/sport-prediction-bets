@@ -25,11 +25,25 @@ export default function MatchDetailPage() {
   );
   const [score1, setScore1] = useState<string>(existingPrediction?.score1?.toString() || '');
   const [score2, setScore2] = useState<string>(existingPrediction?.score2?.toString() || '');
-  const [winnerId, setWinnerId] = useState<string>(existingPrediction?.winnerId || '');
+  const [outcome, setOutcome] = useState<'team1' | 'team2' | 'draw' | ''>(
+    existingPrediction?.outcome
+      ? existingPrediction.outcome
+      : existingPrediction?.winnerId === (teams.find(t => t.id === match?.team1Id)?.id)
+      ? 'team1'
+      : existingPrediction?.winnerId === (teams.find(t => t.id === match?.team2Id)?.id)
+      ? 'team2'
+      : ''
+  );
   const [manOfTheMatch, setManOfTheMatch] = useState<string>(existingPrediction?.manOfTheMatch || '');
   const [submitted, setSubmitted] = useState(false);
   const [team1Players, setTeam1Players] = useState<any[]>([]);
   const [team2Players, setTeam2Players] = useState<any[]>([]);
+  const [outcomeStats, setOutcomeStats] = useState<{
+    total: number;
+    team1: number;
+    team2: number;
+    draw: number;
+  } | null>(null);
   
   const team1 = teams.find(t => t.id === match?.team1Id);
   const team2 = teams.find(t => t.id === match?.team2Id);
@@ -46,6 +60,22 @@ export default function MatchDetailPage() {
         .then(data => setTeam2Players(data || []));
     }
   }, [team1?.id, team2?.id]);
+
+  useEffect(() => {
+    if (!match) return;
+    fetch(`/api/predictions/stats?matchId=${match.id}`)
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (data) {
+          setOutcomeStats(data);
+        } else {
+          setOutcomeStats(null);
+        }
+      })
+      .catch(() => {
+        setOutcomeStats(null);
+      });
+  }, [match?.id]);
   
   if (!match) {
     return (
@@ -94,7 +124,7 @@ export default function MatchDetailPage() {
         manOfTheMatch: manOfTheMatch || undefined,
       });
     } else {
-      if (!winnerId) {
+      if (!outcome) {
         alert(t('matchDetail.selectWinner'));
         return;
       }
@@ -102,7 +132,7 @@ export default function MatchDetailPage() {
         userId: currentUser?.id || '',
         matchId: match.id,
         type: 'winner_only',
-        winnerId,
+        outcome,
         manOfTheMatch: manOfTheMatch || undefined,
       });
     }
@@ -172,6 +202,78 @@ export default function MatchDetailPage() {
             )}
           </div>
         </Card>
+
+        {/* Outcome Distribution (win/draw/lose) */}
+        {outcomeStats && (
+          <Card className="p-4 sm:p-5 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm sm:text-base font-semibold text-text-primary">
+                {t('matchDetail.betDistribution')}
+              </h3>
+              <span className="text-xs text-text-secondary">
+                {t('common.total')}: {outcomeStats.total}
+              </span>
+            </div>
+            {outcomeStats.total === 0 ? (
+              <p className="text-xs sm:text-sm text-text-secondary">
+                {t('matchDetail.noBetsYet')}
+              </p>
+            ) : (
+              <>
+                {(() => {
+                  const total = outcomeStats.total || 1;
+                  const team1Pct = Math.round((outcomeStats.team1 / total) * 100);
+                  const drawPct = Math.round((outcomeStats.draw / total) * 100);
+                  const team2Pct = 100 - team1Pct - drawPct;
+                  return (
+                    <>
+                      <div className="h-3 w-full rounded-full bg-bg-secondary overflow-hidden flex">
+                        <div
+                          className="h-full bg-success"
+                          style={{ width: `${team1Pct}%` }}
+                        />
+                        <div
+                          className="h-full bg-text-secondary/40"
+                          style={{ width: `${drawPct}%` }}
+                        />
+                        <div
+                          className="h-full bg-accent"
+                          style={{ width: `${team2Pct}%` }}
+                        />
+                      </div>
+                      <div className="mt-3 grid grid-cols-3 gap-2 text-xs sm:text-sm">
+                        <div className="text-left">
+                          <div className="font-medium text-text-primary truncate">
+                            {team1.name}
+                          </div>
+                          <div className="text-text-secondary">
+                            {team1Pct}% ({outcomeStats.team1})
+                          </div>
+                        </div>
+                        <div className="text-center">
+                          <div className="font-medium text-text-primary">
+                            {t('common.draw')}
+                          </div>
+                          <div className="text-text-secondary">
+                            {drawPct}% ({outcomeStats.draw})
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <div className="font-medium text-text-primary truncate">
+                            {team2.name}
+                          </div>
+                          <div className="text-text-secondary">
+                            {team2Pct}% ({outcomeStats.team2})
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
+              </>
+            )}
+          </Card>
+        )}
         
         {/* Prediction Form */}
         {!isFinished && (
@@ -219,9 +321,20 @@ export default function MatchDetailPage() {
                     {t('matchDetail.score')}: <span className="text-accent font-medium">{existingPrediction.score1} - {existingPrediction.score2}</span>
                   </p>
                 )}
-                {existingPrediction.winnerId && (
+                {existingPrediction.type === 'winner_only' && (
                   <p className="text-xs sm:text-sm text-text-secondary mb-1">
-                    {t('matchDetail.winner')}: <span className="text-accent font-medium">{teams.find(t => t.id === existingPrediction.winnerId)?.name}</span>
+                    {t('matchDetail.winner')}:{' '}
+                    <span className="text-accent font-medium">
+                      {existingPrediction.outcome === 'team1'
+                        ? team1.name
+                        : existingPrediction.outcome === 'team2'
+                        ? team2.name
+                        : existingPrediction.outcome === 'draw'
+                        ? t('common.draw')
+                        : existingPrediction.winnerId
+                        ? teams.find(t => t.id === existingPrediction.winnerId)?.name
+                        : ''}
+                    </span>
                   </p>
                 )}
                 {existingPrediction.manOfTheMatch && (
@@ -312,14 +425,15 @@ export default function MatchDetailPage() {
                       {t('matchDetail.predictedWinner')}
                     </label>
                     <select
-                      value={winnerId}
-                      onChange={(e) => setWinnerId(e.target.value)}
+                      value={outcome}
+                      onChange={(e) => setOutcome(e.target.value as any)}
                       className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 text-sm sm:text-base transition-colors duration-200"
                       required
                     >
                       <option value="">{t('matchDetail.selectWinner')}</option>
-                      <option value={team1.id}>{team1.name}</option>
-                      <option value={team2.id}>{team2.name}</option>
+                      <option value="team1">{team1.name}</option>
+                      <option value="draw">{t('common.draw')}</option>
+                      <option value="team2">{team2.name}</option>
                     </select>
                   </div>
                 )}

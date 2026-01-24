@@ -23,6 +23,8 @@ export type MatchStatus = 'upcoming' | 'finished' | 'live';
 
 export type MatchPhase = 'group' | 'round16' | 'quarter' | 'semi' | 'final';
 
+export type PredictionOutcome = 'team1' | 'team2' | 'draw';
+
 export type Match = {
   id: string;
   team1Id: string;
@@ -45,7 +47,8 @@ export type Prediction = {
   type: PredictionType;
   score1?: number; // predicted score for team1
   score2?: number; // predicted score for team2
-  winnerId?: string; // predicted winner team id (for winner_only type)
+  winnerId?: string; // predicted winner team id (legacy, for winner_only type)
+  outcome?: PredictionOutcome; // predicted outcome for 1X2 bets
   manOfTheMatch?: string; // predicted man of the match (player id)
   points?: number; // calculated points for this prediction
   createdAt?: string;

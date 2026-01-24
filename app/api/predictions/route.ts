@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
         p.score2,
         p.winner_id as "winnerId",
         p.man_of_the_match as "manOfTheMatch",
+        p.outcome,
         p.points,
         p.created_at as "createdAt"
       FROM predictions p
@@ -61,7 +62,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { matchId, type, score1, score2, winnerId, manOfTheMatch } = await request.json();
+    const { matchId, type, score1, score2, winnerId, manOfTheMatch, outcome } = await request.json();
 
     // Check if prediction already exists
     const existing = await pool.query(
@@ -78,12 +79,23 @@ export async function POST(request: NextRequest) {
 
     // Get match to calculate points if finished
     const matchResult = await pool.query(
-      'SELECT status, score1, score2 FROM matches WHERE id = $1',
+      'SELECT id, status, score1, score2, team1_id as "team1Id", team2_id as "team2Id" FROM matches WHERE id = $1',
       [matchId]
     );
 
     const match = matchResult.rows[0];
     let points = 0;
+
+    // Determine normalized outcome for winner_only predictions (team1, team2, draw)
+    let normalizedOutcome = outcome as 'team1' | 'team2' | 'draw' | undefined;
+
+    if (type === 'winner_only') {
+      // If outcome not provided, infer from winnerId for backward compatibility
+      if (!normalizedOutcome && winnerId && match) {
+        if (winnerId === match.team1Id) normalizedOutcome = 'team1';
+        else if (winnerId === match.team2Id) normalizedOutcome = 'team2';
+      }
+    }
 
     if (match && match.status === 'finished') {
       const prediction = {
@@ -92,15 +104,24 @@ export async function POST(request: NextRequest) {
         score2,
         winnerId,
         manOfTheMatch,
+        outcome: normalizedOutcome,
       };
       points = calculatePoints(prediction as any, match);
     }
 
+    // Map outcome to winner_id for storage (team references) when relevant
+    let storedWinnerId = winnerId || null;
+    if (type === 'winner_only' && match) {
+      if (normalizedOutcome === 'team1') storedWinnerId = match.team1Id;
+      else if (normalizedOutcome === 'team2') storedWinnerId = match.team2Id;
+      else if (normalizedOutcome === 'draw') storedWinnerId = null;
+    }
+
     const result = await pool.query(
-      `INSERT INTO predictions (user_id, match_id, type, score1, score2, winner_id, man_of_the_match, points)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-       RETURNING id, user_id as "userId", match_id as "matchId", type, score1, score2, winner_id as "winnerId", man_of_the_match as "manOfTheMatch", points, created_at as "createdAt"`,
-      [user.userId, matchId, type, score1 || null, score2 || null, winnerId || null, manOfTheMatch || null, points]
+      `INSERT INTO predictions (user_id, match_id, type, score1, score2, winner_id, man_of_the_match, points, outcome)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING id, user_id as "userId", match_id as "matchId", type, score1, score2, winner_id as "winnerId", man_of_the_match as "manOfTheMatch", outcome, points, created_at as "createdAt"`,
+      [user.userId, matchId, type, score1 || null, score2 || null, storedWinnerId, manOfTheMatch || null, points, normalizedOutcome || null]
     );
 
     return NextResponse.json(result.rows[0], { status: 201 });

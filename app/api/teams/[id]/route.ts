@@ -3,7 +3,6 @@ import pool from '@/lib/db';
 import { getAuthUser } from '@/lib/middleware';
 
 export async function GET(
-  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -125,6 +124,65 @@ export async function PATCH(
     return NextResponse.json(result.rows[0]);
   } catch (error) {
     console.error('Error updating team:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const user = await getAuthUser(request);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'You must be logged in to perform this action' },
+        { status: 401 }
+      );
+    }
+    if (!user.isAdmin) {
+      return NextResponse.json(
+        { error: 'Admin access required. If you were recently promoted to admin, please log out and log back in to refresh your session.' },
+        { status: 403 }
+      );
+    }
+
+    // Check if team is used in any matches
+    const matchesResult = await pool.query(
+      `SELECT COUNT(*)::int AS count
+       FROM matches
+       WHERE team1_id = $1 OR team2_id = $1`,
+      [params.id]
+    );
+
+    const matchCount = matchesResult.rows[0]?.count ?? 0;
+
+    if (matchCount > 0) {
+      return NextResponse.json(
+        { error: 'Cannot delete team that is used in matches. Please update or remove those matches first.' },
+        { status: 400 }
+      );
+    }
+
+    // Delete team (players will be detached or removed according to foreign key rules)
+    const deleteResult = await pool.query(
+      'DELETE FROM teams WHERE id = $1 RETURNING id',
+      [params.id]
+    );
+
+    if (deleteResult.rows.length === 0) {
+      return NextResponse.json(
+        { error: 'Team not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting team:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

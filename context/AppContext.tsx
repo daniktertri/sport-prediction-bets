@@ -17,6 +17,7 @@ interface AppContextType {
   // Actions
   updateTeam: (teamId: string, updates: Partial<Team>) => Promise<void>;
   createTeam: (team: Omit<Team, 'id'>) => Promise<void>;
+  deleteTeam: (teamId: string) => Promise<void>;
   updateMatch: (matchId: string, updates: Partial<Match>) => Promise<void>;
   createMatch: (match: Omit<Match, 'id'>) => Promise<void>;
   addPrediction: (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => Promise<void>;
@@ -144,6 +145,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     await fetchData();
   }, [fetchData]);
 
+  const deleteTeam = useCallback(async (teamId: string) => {
+    const res = await fetch(`/api/teams/${teamId}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `Failed to delete team: ${res.statusText}`);
+    }
+
+    await fetchData();
+  }, [fetchData]);
+
   const createTeam = useCallback(async (team: Omit<Team, 'id'>) => {
     const res = await fetch('/api/teams', {
       method: 'POST',
@@ -245,6 +259,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         loading,
         updateTeam,
         createTeam,
+        deleteTeam,
         updateMatch,
         createMatch,
         addPrediction,

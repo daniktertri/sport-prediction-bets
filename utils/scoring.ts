@@ -1,7 +1,7 @@
 // Scoring calculation logic
 // TODO: Move this to a Supabase Edge Function or database trigger
 
-import { Prediction, Match } from '@/types';
+import { Prediction, Match, PredictionOutcome } from '@/types';
 
 export const calculatePoints = (prediction: Prediction, match: Match): number => {
   if (match.status !== 'finished' || !match.score1 || !match.score2) {
@@ -29,10 +29,23 @@ export const calculatePoints = (prediction: Prediction, match: Match): number =>
   }
   
   // Check winner-only prediction
-  if (prediction.type === 'winner_only' && prediction.winnerId) {
-    const actualWinner = match.score1 > match.score2 ? match.team1Id : 
-                        match.score1 < match.score2 ? match.team2Id : null;
-    if (prediction.winnerId === actualWinner && actualWinner !== null) {
+  if (prediction.type === 'winner_only') {
+    let predictedOutcome: PredictionOutcome | null = null;
+
+    // Prefer explicit outcome if present
+    if ((prediction as any).outcome) {
+      predictedOutcome = (prediction as any).outcome as PredictionOutcome;
+    } else if (prediction.winnerId) {
+      if (prediction.winnerId === match.team1Id) predictedOutcome = 'team1';
+      else if (prediction.winnerId === match.team2Id) predictedOutcome = 'team2';
+    }
+
+    let actualOutcome: PredictionOutcome;
+    if (match.score1 > match.score2) actualOutcome = 'team1';
+    else if (match.score1 < match.score2) actualOutcome = 'team2';
+    else actualOutcome = 'draw';
+
+    if (predictedOutcome && predictedOutcome === actualOutcome) {
       points += 3;
     }
   }

@@ -11,7 +11,7 @@ import TeamLogo from '@/components/TeamLogo';
 import { Team, Player } from '@/types';
 
 export default function AdminTeamsPage() {
-  const { teams, createTeam, updateTeam, currentUser, refreshData } = useApp();
+  const { teams, createTeam, updateTeam, deleteTeam, currentUser, refreshData } = useApp();
   const [editingTeam, setEditingTeam] = useState<Team | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -351,7 +351,25 @@ export default function AdminTeamsPage() {
                     {team.group && <span className="text-sm text-text-secondary">Group {team.group}</span>}
                   </div>
                 </div>
-                <Button size="sm" onClick={() => startEdit(team)}>Edit</Button>
+                <div className="flex gap-2">
+                  <Button size="sm" onClick={() => startEdit(team)}>Edit</Button>
+                  <Button
+                    size="sm"
+                    variant="danger"
+                    onClick={async () => {
+                      const confirmed = window.confirm('Are you sure you want to delete this team? This cannot be undone.');
+                      if (!confirmed) return;
+                      try {
+                        await deleteTeam(team.id);
+                        await refreshData();
+                      } catch (err: any) {
+                        alert(err.message || 'Failed to delete team. Make sure it is not used in any matches.');
+                      }
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </div>
               </div>
               <div className="text-sm text-text-secondary">
                 {team.players.length} players
