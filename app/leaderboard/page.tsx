@@ -4,6 +4,7 @@
 import { useApp } from '@/context/AppContext';
 import { useLanguage } from '@/context/LanguageContext';
 import Card from '@/components/ui/Card';
+import { useEffect } from 'react';
 
 const formatInstagramUrl = (instagram: string | undefined) => {
   if (!instagram) return null;
@@ -14,8 +15,13 @@ const formatInstagramUrl = (instagram: string | undefined) => {
 };
 
 export default function LeaderboardPage() {
-  const { users, currentUser } = useApp();
+  const { users, currentUser, refreshData } = useApp();
   const { t } = useLanguage();
+  
+  // Always refresh leaderboard data when visiting this page
+  useEffect(() => {
+    refreshData();
+  }, [refreshData]);
   
   const getRankEmoji = (rank: number) => {
     if (rank === 1) return '🥇';
