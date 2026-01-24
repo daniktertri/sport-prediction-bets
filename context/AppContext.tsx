@@ -86,7 +86,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const matchesData = await matchesRes.json();
       const usersData = await usersRes.json();
       const competitionData = await competitionRes.json();
-      const predictionsData = await predictionsRes.json();
+
+      let predictionsData: Prediction[] = [];
+      if (predictionsRes.ok) {
+        const raw = await predictionsRes.json();
+        // Ensure we always store an array in state
+        predictionsData = Array.isArray(raw) ? raw : [];
+      } else if (predictionsRes.status === 401) {
+        // Not authenticated yet – treat as no predictions
+        predictionsData = [];
+      } else {
+        console.error('Error fetching predictions:', predictionsRes.status, predictionsRes.statusText);
+      }
 
       setTeams(teamsData);
       setMatches(matchesData);
@@ -95,6 +106,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setPredictions(predictionsData);
     } catch (error) {
       console.error('Error fetching data:', error);
+      // On any unexpected error, keep existing predictions array as-is
     } finally {
       setLoading(false);
     }
