@@ -4,8 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useApp } from '@/context/AppContext';
 import { useLanguage } from '@/context/LanguageContext';
-import { useState, useEffect } from 'react';
-import Lottie from 'lottie-react';
+import { useState } from 'react';
 import { clearUserCache } from '@/utils/cache';
 
 // Icon components for bottom navigation
@@ -136,14 +135,6 @@ export default function Navigation() {
   const { currentUser } = useApp();
   const { t } = useLanguage();
   const [loggingOut, setLoggingOut] = useState(false);
-  const [footballAnimation, setFootballAnimation] = useState(null);
-  
-  useEffect(() => {
-    fetch('/lottie/football.json')
-      .then(response => response.json())
-      .then(data => setFootballAnimation(data))
-      .catch(error => console.error('Error loading Lottie animation:', error));
-  }, []);
   
   const isActive = (path: string) => pathname === path;
   
@@ -213,18 +204,18 @@ export default function Navigation() {
               href="/" 
               className="flex items-center space-x-2 sm:space-x-3"
             >
-              <div className="w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
-                {footballAnimation ? (
-                  <Lottie animationData={footballAnimation} loop={true} />
-                ) : (
-                  <span className="text-xl sm:text-2xl">⚽</span>
-                )}
+              <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg overflow-hidden bg-white shadow-sm border border-border">
+                <img 
+                  src="/images/logo.png" 
+                  alt="AS Dauphine" 
+                  className="w-full h-full object-contain p-0.5"
+                />
               </div>
               <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
-                {t('common.sportsPredictions')}
+                AS Dauphine
               </span>
               <span className="font-semibold text-lg text-text-primary sm:hidden">
-                {t('common.predictions')}
+                AS Dauphine
               </span>
             </Link>
             

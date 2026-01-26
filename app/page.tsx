@@ -59,12 +59,21 @@ export default function Home() {
         {/* Hero Content */}
         <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16" style={{ zIndex: 2 }}>
           <div className="text-center">
-            <div className="flex justify-center mb-6">
-              <div className="w-24 h-24 sm:w-32 sm:h-32">
+            <div className="flex justify-center items-center gap-4 mb-6">
+              {/* AS Dauphine Logo */}
+              <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white shadow-lg border-2 border-white/20">
+                <img 
+                  src="/images/logo.png" 
+                  alt="AS Dauphine" 
+                  className="w-full h-full object-contain p-2"
+                />
+              </div>
+              {/* Trophy Animation */}
+              <div className="w-16 h-16 sm:w-24 sm:h-24">
                 {tropheeAnimation ? (
                   <Lottie animationData={tropheeAnimation} loop={true} />
                 ) : (
-                  <div className="text-5xl sm:text-6xl">🏆</div>
+                  <div className="text-4xl sm:text-5xl">🏆</div>
                 )}
               </div>
             </div>

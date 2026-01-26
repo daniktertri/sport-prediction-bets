@@ -67,6 +67,16 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-bg-primary py-12 px-4 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md p-8">
         <div className="text-center mb-8">
+          {/* AS Dauphine Logo */}
+          <div className="flex justify-center mb-4">
+            <div className="w-20 h-20 rounded-xl overflow-hidden bg-white shadow-md border border-border">
+              <img 
+                src="/images/logo.png" 
+                alt="AS Dauphine" 
+                className="w-full h-full object-contain p-2"
+              />
+            </div>
+          </div>
           <h1 className="text-3xl font-semibold text-text-primary mb-2">
             {isLogin ? t('login.title') : t('login.registerTitle')}
           </h1>
