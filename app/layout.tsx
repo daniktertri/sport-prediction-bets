@@ -3,6 +3,7 @@ import "./globals.css";
 import { AppProvider } from "@/context/AppContext";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Navigation from "@/components/Navigation";
+import Signature from "@/components/Signature";
 
 export const metadata: Metadata = {
   title: "Sports Prediction Game",
@@ -21,6 +22,7 @@ export default function RootLayout({
           <LanguageProvider>
             <Navigation />
             <main className="pb-20 md:pb-0">{children}</main>
+            <Signature />
           </LanguageProvider>
         </AppProvider>
       </body>
