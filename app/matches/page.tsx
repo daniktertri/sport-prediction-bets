@@ -6,6 +6,7 @@ import { useApp } from '@/context/AppContext';
 import { useLanguage } from '@/context/LanguageContext';
 import MatchCard from '@/components/MatchCard';
 import Card from '@/components/ui/Card';
+import Lottie from 'lottie-react';
 
 const phaseOrder: Array<'group' | 'round16' | 'quarter' | 'semi' | 'final'> = [
   'group',
@@ -18,6 +19,14 @@ const phaseOrder: Array<'group' | 'round16' | 'quarter' | 'semi' | 'final'> = [
 export default function MatchesPage() {
   const { matches, refreshData } = useApp();
   const { t } = useLanguage();
+  const [footballAnimation, setFootballAnimation] = useState<any>(null);
+  
+  useEffect(() => {
+    fetch('/lottie/football.json')
+      .then(response => response.json())
+      .then(data => setFootballAnimation(data))
+      .catch(error => console.error('Error loading Lottie animation:', error));
+  }, []);
   
   const phaseLabels: Record<string, string> = {
     group: t('matches.phase.group'),
@@ -79,11 +88,21 @@ export default function MatchesPage() {
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary">{t('matches.title')}</h1>
-              <p className="text-sm text-text-secondary mt-1">
-                {t('common.browseAndPredict')}
-              </p>
+            <div className="flex items-center gap-3">
+              {/* Football Animation */}
+              <div className="w-12 h-12 sm:w-14 sm:h-14 flex-shrink-0">
+                {footballAnimation ? (
+                  <Lottie animationData={footballAnimation} loop={true} />
+                ) : (
+                  <span className="text-3xl sm:text-4xl">⚽</span>
+                )}
+              </div>
+              <div>
+                <h1 className="text-2xl sm:text-3xl font-semibold text-text-primary">{t('matches.title')}</h1>
+                <p className="text-sm text-text-secondary mt-1">
+                  {t('common.browseAndPredict')}
+                </p>
+              </div>
             </div>
             
             {/* View Toggle - Mobile Hidden */}
