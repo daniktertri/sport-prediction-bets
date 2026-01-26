@@ -71,7 +71,7 @@ export default function LoginPage() {
           <div className="flex justify-center mb-4">
             <div className="w-20 h-20 rounded-xl overflow-hidden bg-white shadow-md border border-border">
               <img 
-                src="/images/logo.JPG" 
+                src="/images/logo.png" 
                 alt="AS Dauphine" 
                 className="w-full h-full object-contain p-2"
                 style={{ clipPath: 'inset(0 0 0 3%)' }}
