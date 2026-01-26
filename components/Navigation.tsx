@@ -111,6 +111,25 @@ const ProfileIcon = ({ isActive }: { isActive: boolean }) => (
   </svg>
 );
 
+const BetsIcon = ({ isActive }: { isActive: boolean }) => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke={isActive ? '#3B82F6' : '#FFFFFF'}
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+    <polyline points="14 2 14 8 20 8" />
+    <line x1="16" y1="13" x2="8" y2="13" />
+    <line x1="16" y1="17" x2="8" y2="17" />
+    <polyline points="10 9 9 9 8 9" />
+  </svg>
+);
+
 export default function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
@@ -128,6 +147,7 @@ export default function Navigation() {
   
   const isActive = (path: string) => pathname === path;
   
+  // Desktop navigation items
   const navItems = [
     { href: '/', label: t('common.home'), icon: HomeIcon },
     { href: '/matches', label: t('common.matches'), icon: MatchesIcon },
@@ -135,11 +155,33 @@ export default function Navigation() {
     { href: '/leaderboard', label: t('common.leaderboard'), icon: LeaderboardIcon },
   ];
   
+  // Add My Bets for logged-in users
+  if (currentUser) {
+    navItems.push({ href: '/my-bets', label: t('common.myBets'), icon: BetsIcon });
+  }
+  
   if (currentUser?.isAdmin) {
     navItems.push({ href: '/admin', label: t('common.admin'), icon: AdminIcon });
   }
   
-  // Add profile to bottom nav if user is logged in, or login if not
+  // Mobile bottom nav - limited to 5 items for better UX
+  const mobileNavItems = currentUser
+    ? [
+        { href: '/', label: t('common.home'), icon: HomeIcon },
+        { href: '/matches', label: t('common.matches'), icon: MatchesIcon },
+        { href: '/my-bets', label: t('common.myBets'), icon: BetsIcon },
+        { href: '/leaderboard', label: t('common.leaderboard'), icon: LeaderboardIcon },
+        { href: '/profile', label: t('common.profile'), icon: ProfileIcon },
+      ]
+    : [
+        { href: '/', label: t('common.home'), icon: HomeIcon },
+        { href: '/matches', label: t('common.matches'), icon: MatchesIcon },
+        { href: '/browse', label: t('common.browse'), icon: BrowseIcon },
+        { href: '/leaderboard', label: t('common.leaderboard'), icon: LeaderboardIcon },
+        { href: '/login', label: t('common.login'), icon: ProfileIcon },
+      ];
+  
+  // Desktop bottom nav (not used anymore, keeping for reference)
   const bottomNavItems = currentUser
     ? [...navItems, { href: '/profile', label: t('common.profile'), icon: ProfileIcon }]
     : [...navItems, { href: '/login', label: t('common.login'), icon: ProfileIcon }];
@@ -251,7 +293,7 @@ export default function Navigation() {
         <div className="px-4">
           <div className="max-w-md mx-auto bg-bg-secondary/80 backdrop-blur-2xl rounded-3xl border border-border/50 shadow-2xl pointer-events-auto">
             <div className="flex items-center justify-around px-2 py-3">
-              {bottomNavItems.map((item) => {
+              {mobileNavItems.map((item) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 
@@ -260,8 +302,8 @@ export default function Navigation() {
                     key={item.href}
                     href={item.href}
                     className={`
-                      flex flex-col items-center justify-center gap-1 px-4 py-2 rounded-2xl
-                      transition-all duration-200 min-w-[60px] relative
+                      flex flex-col items-center justify-center gap-0.5 px-3 py-2 rounded-2xl
+                      transition-all duration-200 min-w-[52px] relative
                       ${active
                         ? 'bg-bg-tertiary/70 text-accent'
                         : 'text-text-primary active:opacity-70'

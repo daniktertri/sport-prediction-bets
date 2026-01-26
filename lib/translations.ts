@@ -105,6 +105,16 @@ export type TranslationKey =
   | 'matchDetail.loginToPredict'
   | 'matchDetail.betDistribution'
   | 'matchDetail.noBetsYet'
+  | 'matchDetail.yourBetResult'
+  | 'matchDetail.youWon'
+  | 'matchDetail.youLost'
+  | 'matchDetail.yourPrediction'
+  | 'matchDetail.actualResult'
+  | 'matchDetail.yourMotmPrediction'
+  | 'matchDetail.actualMotm'
+  | 'matchDetail.matchFinished'
+  | 'matchDetail.loginToSeeStats'
+  | 'matchDetail.noPredictionMade'
   // Leaderboard
   | 'leaderboard.title'
   | 'leaderboard.rankings'
@@ -153,7 +163,17 @@ export type TranslationKey =
   | 'admin.matchManagement'
   | 'admin.matchManagementDesc'
   | 'admin.matchResults'
-  | 'admin.matchResultsDesc';
+  | 'admin.matchResultsDesc'
+  // My Bets
+  | 'common.myBets'
+  | 'myBets.title'
+  | 'myBets.subtitle'
+  | 'myBets.totalBets'
+  | 'myBets.won'
+  | 'myBets.lost'
+  | 'myBets.noBets'
+  | 'myBets.browsMatches'
+  | 'myBets.result';
 
 export const translations: Record<Language, Record<TranslationKey, string>> = {
   fr: {
@@ -258,6 +278,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.loginToPredict': 'Vous devez être connecté pour faire une prédiction. Créez un compte ou connectez-vous pour continuer.',
     'matchDetail.betDistribution': 'Répartition des paris (1/N/2)',
     'matchDetail.noBetsYet': 'Aucun pari sur ce match pour le moment.',
+    'matchDetail.yourBetResult': 'Résultat de votre pari',
+    'matchDetail.youWon': 'Vous avez gagné !',
+    'matchDetail.youLost': 'Perdu...',
+    'matchDetail.yourPrediction': 'Votre prédiction',
+    'matchDetail.actualResult': 'Résultat réel',
+    'matchDetail.yourMotmPrediction': 'Votre joueur du match',
+    'matchDetail.actualMotm': 'Joueur du match',
+    'matchDetail.matchFinished': 'Match terminé',
+    'matchDetail.loginToSeeStats': 'Connectez-vous pour voir vos statistiques de paris.',
+    'matchDetail.noPredictionMade': 'Vous n\'avez pas fait de prédiction pour ce match.',
     // Leaderboard
     'leaderboard.title': 'Classement',
     'leaderboard.rankings': 'Classements basés sur les points totaux gagnés',
@@ -307,6 +337,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'admin.matchManagementDesc': 'Créer et modifier les matchs',
     'admin.matchResults': 'Résultats des Matchs',
     'admin.matchResultsDesc': 'Définir les scores finaux et le joueur du match',
+    // My Bets
+    'common.myBets': 'Mes Paris',
+    'myBets.title': 'Mes Paris',
+    'myBets.subtitle': 'Historique de tous vos paris et prédictions',
+    'myBets.totalBets': 'Total Paris',
+    'myBets.won': 'Gagnés',
+    'myBets.lost': 'Perdus',
+    'myBets.noBets': 'Vous n\'avez pas encore fait de paris. Commencez à parier sur les matchs !',
+    'myBets.browsMatches': 'Voir les Matchs',
+    'myBets.result': 'Résultat',
   },
   en: {
     // Common
@@ -410,6 +450,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'matchDetail.loginToPredict': 'You must be logged in to make a prediction. Create an account or log in to continue.',
     'matchDetail.betDistribution': 'Bet distribution (1/X/2)',
     'matchDetail.noBetsYet': 'No bets on this match yet.',
+    'matchDetail.yourBetResult': 'Your Bet Result',
+    'matchDetail.youWon': 'You won!',
+    'matchDetail.youLost': 'You lost...',
+    'matchDetail.yourPrediction': 'Your prediction',
+    'matchDetail.actualResult': 'Actual result',
+    'matchDetail.yourMotmPrediction': 'Your MOTM pick',
+    'matchDetail.actualMotm': 'Actual MOTM',
+    'matchDetail.matchFinished': 'Match Finished',
+    'matchDetail.loginToSeeStats': 'Log in to see your betting stats.',
+    'matchDetail.noPredictionMade': 'You didn\'t make a prediction for this match.',
     // Leaderboard
     'leaderboard.title': 'Leaderboard',
     'leaderboard.rankings': 'Rankings based on total points earned',
@@ -459,6 +509,16 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'admin.matchManagementDesc': 'Create and edit matches',
     'admin.matchResults': 'Match Results',
     'admin.matchResultsDesc': 'Set final scores and man of the match',
+    // My Bets
+    'common.myBets': 'My Bets',
+    'myBets.title': 'My Bets',
+    'myBets.subtitle': 'History of all your bets and predictions',
+    'myBets.totalBets': 'Total Bets',
+    'myBets.won': 'Won',
+    'myBets.lost': 'Lost',
+    'myBets.noBets': 'You haven\'t placed any bets yet. Start betting on matches!',
+    'myBets.browsMatches': 'Browse Matches',
+    'myBets.result': 'Result',
   },
 };
 

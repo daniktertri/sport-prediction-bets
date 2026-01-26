@@ -16,18 +16,44 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Get match info to know team IDs for legacy winnerId mapping
+    const matchResult = await pool.query(
+      'SELECT team1_id, team2_id FROM matches WHERE id = $1',
+      [matchId]
+    );
+    
+    if (matchResult.rows.length === 0) {
+      return NextResponse.json({ total: 0, team1: 0, team2: 0, draw: 0 });
+    }
+    
+    const { team1_id, team2_id } = matchResult.rows[0];
+
+    // Count all predictions and derive outcome from:
+    // 1. explicit outcome field
+    // 2. legacy winnerId field (for winner_only)
+    // 3. score1 vs score2 (for exact_score)
     const result = await pool.query(
       `
       SELECT
         COUNT(*)::int AS total,
-        COUNT(*) FILTER (WHERE outcome = 'team1')::int AS team1,
-        COUNT(*) FILTER (WHERE outcome = 'team2')::int AS team2,
-        COUNT(*) FILTER (WHERE outcome = 'draw')::int AS draw
+        COUNT(*) FILTER (WHERE 
+          outcome = 'team1' 
+          OR (outcome IS NULL AND winner_id = $2)
+          OR (type = 'exact_score' AND score1 > score2)
+        )::int AS team1,
+        COUNT(*) FILTER (WHERE 
+          outcome = 'team2' 
+          OR (outcome IS NULL AND winner_id = $3)
+          OR (type = 'exact_score' AND score2 > score1)
+        )::int AS team2,
+        COUNT(*) FILTER (WHERE 
+          outcome = 'draw'
+          OR (type = 'exact_score' AND score1 = score2 AND score1 IS NOT NULL)
+        )::int AS draw
       FROM predictions
       WHERE match_id = $1
-        AND type = 'winner_only'
       `,
-      [matchId]
+      [matchId, team1_id, team2_id]
     );
 
     const row = result.rows[0] || {

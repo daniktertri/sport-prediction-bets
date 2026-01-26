@@ -275,6 +275,124 @@ export default function MatchDetailPage() {
           </Card>
         )}
         
+        {/* Your Bet Result - Show when match is finished and user has a prediction */}
+        {isFinished && currentUser && existingPrediction && (
+          <Card className="p-6 sm:p-8 mb-6">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-text-primary">
+              {t('matchDetail.yourBetResult')}
+            </h2>
+            
+            {(() => {
+              const pointsEarned = existingPrediction.points || 0;
+              const isWinner = pointsEarned > 0;
+              
+              // Determine what was predicted
+              let predictedLabel = '';
+              if (existingPrediction.type === 'exact_score') {
+                predictedLabel = `${existingPrediction.score1} - ${existingPrediction.score2}`;
+              } else {
+                if (existingPrediction.outcome === 'team1') predictedLabel = team1.name;
+                else if (existingPrediction.outcome === 'team2') predictedLabel = team2.name;
+                else if (existingPrediction.outcome === 'draw') predictedLabel = t('common.draw');
+                else if (existingPrediction.winnerId) {
+                  predictedLabel = teams.find(t => t.id === existingPrediction.winnerId)?.name || '';
+                }
+              }
+              
+              // Determine actual result
+              const actualScore = `${match.score1} - ${match.score2}`;
+              let actualWinner = '';
+              if (match.score1 !== undefined && match.score2 !== undefined) {
+                if (match.score1 > match.score2) actualWinner = team1.name;
+                else if (match.score2 > match.score1) actualWinner = team2.name;
+                else actualWinner = t('common.draw');
+              }
+              
+              return (
+                <div className={`rounded-lg p-4 sm:p-6 border-2 ${
+                  isWinner 
+                    ? 'bg-success/10 border-success/30' 
+                    : 'bg-danger/10 border-danger/30'
+                }`}>
+                  {/* Result Status */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className={`text-lg sm:text-xl font-semibold ${isWinner ? 'text-success' : 'text-danger'}`}>
+                      {isWinner ? `🎉 ${t('matchDetail.youWon')}` : `😔 ${t('matchDetail.youLost')}`}
+                    </div>
+                    <div className={`text-2xl sm:text-3xl font-bold ${isWinner ? 'text-success' : 'text-danger'}`}>
+                      +{pointsEarned} <span className="text-sm font-normal">{t('common.points')}</span>
+                    </div>
+                  </div>
+                  
+                  {/* Details Grid */}
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="bg-bg-primary/50 rounded-lg p-3">
+                      <div className="text-text-secondary text-xs mb-1">{t('matchDetail.yourPrediction')}</div>
+                      <div className="font-semibold text-text-primary">
+                        {existingPrediction.type === 'exact_score' 
+                          ? `${t('matchDetail.exactScore')}: ${predictedLabel}`
+                          : `${t('matchDetail.winnerOnly')}: ${predictedLabel}`
+                        }
+                      </div>
+                    </div>
+                    <div className="bg-bg-primary/50 rounded-lg p-3">
+                      <div className="text-text-secondary text-xs mb-1">{t('matchDetail.actualResult')}</div>
+                      <div className="font-semibold text-text-primary">
+                        {actualScore} ({actualWinner})
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Man of the Match prediction if any */}
+                  {existingPrediction.manOfTheMatch && (
+                    <div className="mt-4 pt-4 border-t border-border/50">
+                      <div className="flex items-center justify-between text-sm">
+                        <div>
+                          <span className="text-text-secondary">{t('matchDetail.yourMotmPrediction')}: </span>
+                          <span className="font-medium text-text-primary">
+                            {allPlayers.find(p => p.id === existingPrediction.manOfTheMatch)?.name || '-'}
+                          </span>
+                        </div>
+                        {match.manOfTheMatch && (
+                          <div>
+                            <span className="text-text-secondary">{t('matchDetail.actualMotm')}: </span>
+                            <span className={`font-medium ${
+                              existingPrediction.manOfTheMatch === match.manOfTheMatch 
+                                ? 'text-success' 
+                                : 'text-text-primary'
+                            }`}>
+                              {allPlayers.find(p => p.id === match.manOfTheMatch)?.name || '-'}
+                              {existingPrediction.manOfTheMatch === match.manOfTheMatch && ' ✓'}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+          </Card>
+        )}
+
+        {/* Show message for finished match if user not logged in or has no prediction */}
+        {isFinished && (!currentUser || !existingPrediction) && (
+          <Card className="p-6 sm:p-8 mb-6">
+            <div className="text-center">
+              <div className="text-4xl mb-3">📊</div>
+              <h2 className="text-lg sm:text-xl font-semibold mb-2 text-text-primary">
+                {t('matchDetail.matchFinished')}
+              </h2>
+              <p className="text-sm text-text-secondary">
+                {!currentUser 
+                  ? t('matchDetail.loginToSeeStats')
+                  : t('matchDetail.noPredictionMade')
+                }
+              </p>
+            </div>
+          </Card>
+        )}
+
         {/* Prediction Form */}
         {!isFinished && (
           <Card className="p-6 sm:p-8">
