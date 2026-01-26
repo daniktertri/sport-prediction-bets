@@ -63,10 +63,9 @@ export default function Home() {
               {/* AS Dauphine Logo */}
               <div className="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl overflow-hidden bg-white shadow-lg border-2 border-white/20">
                 <img 
-                  src="/images/logo.png" 
-                  alt="AS Dauphine" 
-                  className="w-full h-full object-contain p-2"
-                  style={{ clipPath: 'inset(0 0 0 3%)' }}
+                  src="/images/newlogo.png" 
+                  alt="Dauphine League" 
+                  className="w-full h-full object-contain"
                 />
               </div>
               {/* Trophy Animation */}

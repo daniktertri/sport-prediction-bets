@@ -206,10 +206,9 @@ export default function Navigation() {
             >
               <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg overflow-hidden bg-white shadow-sm border border-border">
                 <img 
-                  src="/images/logo.png" 
-                  alt="AS Dauphine" 
-                  className="w-full h-full object-contain p-0.5"
-                  style={{ clipPath: 'inset(0 0 0 3%)' }}
+                  src="/images/newlogo.png" 
+                  alt="Dauphine League" 
+                  className="w-full h-full object-contain"
                 />
               </div>
               <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
