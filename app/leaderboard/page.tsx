@@ -29,9 +29,29 @@ export default function LeaderboardPage() {
     if (rank === 3) return '🥉';
     return `#${rank}`;
   };
+
+  const getShameEmoji = (rank: number) => {
+    if (rank === 1) return '🤡';
+    if (rank === 2) return '💀';
+    if (rank === 3) return '😭';
+    return `#${rank}`;
+  };
+
+  // Hall of Shame: users who made bets but have low points (minimum 1 bet)
+  const shameUsers = [...users]
+    .filter(u => (u.totalBets || 0) >= 1) // Only users who have made at least 1 bet
+    .sort((a, b) => {
+      // Sort by points per bet ratio (ascending) - lower is worse
+      const ratioA = a.totalPoints / Math.max(1, a.totalBets || 1);
+      const ratioB = b.totalPoints / Math.max(1, b.totalBets || 1);
+      if (ratioA !== ratioB) return ratioA - ratioB;
+      // If same ratio, more bets = more shame
+      return (b.totalBets || 0) - (a.totalBets || 0);
+    })
+    .slice(0, 5); // Top 5 worst
   
   return (
-    <div className="min-h-screen py-6 sm:py-12 bg-bg-primary">
+    <div className="min-h-screen py-6 sm:py-12 bg-bg-primary pb-24 md:pb-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-6 sm:mb-8">
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mb-2 text-text-primary">{t('leaderboard.title')}</h1>
@@ -194,6 +214,168 @@ export default function LeaderboardPage() {
           </div>
         </Card>
         
+        {/* Hall of Shame */}
+        {shameUsers.length > 0 && (
+          <div className="mt-8 sm:mt-12">
+            <div className="mb-4 sm:mb-6">
+              <h2 className="text-xl sm:text-2xl font-semibold text-text-primary flex items-center gap-2">
+                <span>🏚️</span> {t('leaderboard.hallOfShame')}
+              </h2>
+              <p className="text-xs sm:text-sm text-text-secondary mt-1">
+                {t('leaderboard.shameDescription')}
+              </p>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="sm:hidden space-y-3">
+              {shameUsers.map((user, index) => {
+                const rank = index + 1;
+                const isCurrentUser = user.id === currentUser?.id;
+                const ratio = user.totalPoints / Math.max(1, user.totalBets || 1);
+                
+                return (
+                  <Card 
+                    key={user.id} 
+                    className={`${isCurrentUser ? 'border-danger' : 'border-danger/20'} bg-danger/5`}
+                    hover
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 flex-1 min-w-0">
+                        <span className="text-lg font-medium text-text-primary flex-shrink-0">
+                          {getShameEmoji(rank)}
+                        </span>
+                        {user.avatar ? (
+                          <img
+                            src={user.avatar}
+                            alt={user.name}
+                            className="w-10 h-10 rounded-full object-cover border border-border flex-shrink-0 grayscale"
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full bg-danger/20 flex items-center justify-center text-danger font-semibold text-sm border border-danger/30 flex-shrink-0">
+                            {user.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`font-medium ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
+                              {user.name}
+                            </span>
+                            {isCurrentUser && (
+                              <span className="text-xs bg-danger/10 text-danger px-2 py-0.5 rounded border border-danger/20 flex-shrink-0">
+                                {t('common.you')}
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-text-secondary">
+                            {user.totalBets || 0} {t('leaderboard.bets')} • {ratio.toFixed(1)} {t('leaderboard.ptsPerBet')}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0 ml-3">
+                        <div className={`text-lg font-semibold ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
+                          {user.totalPoints}
+                        </div>
+                        <div className="text-xs text-text-secondary">{t('common.points')}</div>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
+
+            {/* Desktop Table View */}
+            <Card className="hidden sm:block overflow-hidden border-danger/20 bg-danger/5" padding="none">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead className="bg-danger/10 border-b border-danger/20">
+                    <tr>
+                      <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-danger uppercase tracking-wider">
+                        {t('leaderboard.rank')}
+                      </th>
+                      <th className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-danger uppercase tracking-wider">
+                        {t('leaderboard.player')}
+                      </th>
+                      <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-danger uppercase tracking-wider">
+                        {t('leaderboard.bets')}
+                      </th>
+                      <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-danger uppercase tracking-wider">
+                        {t('leaderboard.ptsPerBet')}
+                      </th>
+                      <th className="px-4 lg:px-6 py-3 text-right text-xs font-medium text-danger uppercase tracking-wider">
+                        {t('common.points')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-danger/10">
+                    {shameUsers.map((user, index) => {
+                      const rank = index + 1;
+                      const isCurrentUser = user.id === currentUser?.id;
+                      const ratio = user.totalPoints / Math.max(1, user.totalBets || 1);
+                      
+                      return (
+                        <tr
+                          key={user.id}
+                          className={`transition-colors duration-200 ${
+                            isCurrentUser 
+                              ? 'bg-danger/10 hover:bg-danger/15' 
+                              : 'hover:bg-danger/5'
+                          }`}
+                        >
+                          <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
+                            <span className="text-sm font-medium text-text-primary">
+                              {getShameEmoji(rank)}
+                            </span>
+                          </td>
+                          <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center gap-3">
+                              {user.avatar ? (
+                                <img
+                                  src={user.avatar}
+                                  alt={user.name}
+                                  className="w-10 h-10 rounded-full object-cover border border-border grayscale"
+                                />
+                              ) : (
+                                <div className="w-10 h-10 rounded-full bg-danger/20 flex items-center justify-center text-danger font-semibold text-sm border border-danger/30">
+                                  {user.name.charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                              <div className="flex items-center gap-2">
+                                <span className={`text-sm font-medium ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
+                                  {user.name}
+                                </span>
+                                {isCurrentUser && (
+                                  <span className="text-xs bg-danger/10 text-danger px-2 py-1 rounded border border-danger/20">
+                                    {t('common.you')}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-center">
+                            <span className="text-sm text-text-secondary">
+                              {user.totalBets || 0}
+                            </span>
+                          </td>
+                          <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-center">
+                            <span className="text-sm text-danger font-medium">
+                              {ratio.toFixed(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-right">
+                            <span className={`text-sm font-semibold ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
+                              {user.totalPoints}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </div>
+        )}
+
         {/* Scoring Rules */}
         <Card className="mt-6 sm:mt-8">
           <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-text-primary">{t('leaderboard.scoringRules')}</h2>

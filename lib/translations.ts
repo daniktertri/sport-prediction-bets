@@ -129,6 +129,10 @@ export type TranslationKey =
   | 'leaderboard.bonus'
   | 'leaderboard.wrong'
   | 'leaderboard.pts'
+  | 'leaderboard.hallOfShame'
+  | 'leaderboard.shameDescription'
+  | 'leaderboard.bets'
+  | 'leaderboard.ptsPerBet'
   // Profile
   | 'profile.title'
   | 'profile.editProfile'
@@ -302,6 +306,10 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'leaderboard.bonus': '(bonus)',
     'leaderboard.wrong': 'Incorrect',
     'leaderboard.pts': 'pts',
+    'leaderboard.hallOfShame': 'Mur de la Honte',
+    'leaderboard.shameDescription': 'Les parieurs les moins inspirés... mais au moins ils essaient !',
+    'leaderboard.bets': 'paris',
+    'leaderboard.ptsPerBet': 'pts/pari',
     // Profile
     'profile.title': 'Mon Profil',
     'profile.editProfile': 'Modifier le Profil',
@@ -474,6 +482,10 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'leaderboard.bonus': '(bonus)',
     'leaderboard.wrong': 'Wrong',
     'leaderboard.pts': 'pts',
+    'leaderboard.hallOfShame': 'Hall of Shame',
+    'leaderboard.shameDescription': 'The least inspired bettors... but at least they\'re trying!',
+    'leaderboard.bets': 'bets',
+    'leaderboard.ptsPerBet': 'pts/bet',
     // Profile
     'profile.title': 'My Profile',
     'profile.editProfile': 'Edit Profile',

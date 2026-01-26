@@ -63,6 +63,7 @@ export type User = {
   instagram?: string;
   language?: 'fr' | 'en'; // User's preferred language, default is 'fr'
   totalPoints: number;
+  totalBets: number; // count of all bets made
   exactScores: number; // count of correct exact scores
   winnerOnly: number; // count of correct winner-only predictions
   isAdmin?: boolean;

@@ -19,6 +19,7 @@ export async function GET() {
         u.is_admin as "isAdmin",
         u.language,
         COALESCE(SUM(p.points), 0) as "totalPoints",
+        COUNT(p.id) as "totalBets",
         COUNT(CASE WHEN p.type = 'exact_score' AND p.points >= 10 THEN 1 END) as "exactScores",
         COUNT(CASE WHEN p.type = 'winner_only' AND p.points >= 3 THEN 1 END) as "winnerOnly"
       FROM users u
@@ -37,6 +38,7 @@ export async function GET() {
       isAdmin: row.isAdmin,
       language: row.language || 'fr',
       totalPoints: parseInt(row.totalPoints) || 0,
+      totalBets: parseInt(row.totalBets) || 0,
       exactScores: parseInt(row.exactScores) || 0,
       winnerOnly: parseInt(row.winnerOnly) || 0,
     }));
