@@ -306,7 +306,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'leaderboard.bonus': '(bonus)',
     'leaderboard.wrong': 'Incorrect',
     'leaderboard.pts': 'pts',
-    'leaderboard.hallOfShame': 'Mur de la Honte',
+    'leaderboard.hallOfShame': 'Parieurs avec la pire vista',
     'leaderboard.shameDescription': 'Les parieurs les moins inspirés... mais au moins ils essaient !',
     'leaderboard.bets': 'paris',
     'leaderboard.ptsPerBet': 'pts/pari',
