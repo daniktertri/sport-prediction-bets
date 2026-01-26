@@ -3,6 +3,10 @@ import pool from '@/lib/db';
 import { getAuthUser } from '@/lib/middleware';
 import { calculatePoints } from '@/utils/scoring';
 
+// Disable Vercel edge caching - always fetch fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET(request: NextRequest) {
   try {
     const user = await getAuthUser(request);
