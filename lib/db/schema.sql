@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(100) NOT NULL,
   first_name VARCHAR(100),
   last_name VARCHAR(100),
-  email VARCHAR(255),
+  email VARCHAR(255) NOT NULL,
   avatar TEXT,
   instagram VARCHAR(255),
   is_admin BOOLEAN DEFAULT FALSE,

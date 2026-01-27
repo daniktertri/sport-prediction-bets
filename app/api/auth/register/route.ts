@@ -22,6 +22,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (!email) {
+      return NextResponse.json(
+        { error: 'Email is required' },
+        { status: 400 }
+      );
+    }
+
     // Check if username already exists
     const existingUser = await getUserByUsername(username);
     if (existingUser) {
@@ -31,7 +38,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user
+    // Create user (email is now required)
     const user = await createUser(username, password, name, email, firstName, lastName);
 
     // Create JWT token

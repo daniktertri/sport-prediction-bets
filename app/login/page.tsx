@@ -154,13 +154,14 @@ export default function LoginPage() {
           {!isLogin && (
             <div>
               <label className="block text-sm font-medium mb-1 text-text-primary">
-                {t('login.emailOptional')}
+                {t('login.email')}
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                required={!isLogin}
               />
             </div>
           )}
