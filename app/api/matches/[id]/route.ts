@@ -115,3 +115,45 @@ export async function PATCH(
     );
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const user = await getAuthUser(request);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'You must be logged in to perform this action' },
+        { status: 401 }
+      );
+    }
+    if (!user.isAdmin) {
+      return NextResponse.json(
+        { error: 'Admin access required. If you were recently promoted to admin, please log out and log back in to refresh your session.' },
+        { status: 403 }
+      );
+    }
+
+    // Delete the match (predictions will be cascade deleted due to ON DELETE CASCADE)
+    const result = await pool.query(
+      'DELETE FROM matches WHERE id = $1 RETURNING id',
+      [params.id]
+    );
+
+    if (result.rows.length === 0) {
+      return NextResponse.json(
+        { error: 'Match not found' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ success: true, message: 'Match deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting match:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

@@ -10,7 +10,7 @@ import TeamLogo from '@/components/TeamLogo';
 import { Match } from '@/types';
 
 export default function AdminMatchesPage() {
-  const { teams, matches, createMatch, updateMatch, currentUser, refreshData } = useApp();
+  const { teams, matches, createMatch, updateMatch, deleteMatch, currentUser, refreshData } = useApp();
   const [editingMatch, setEditingMatch] = useState<Match | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingScore, setEditingScore] = useState<string | null>(null);
@@ -133,6 +133,20 @@ export default function AdminMatchesPage() {
     setScore1(match.score1?.toString() || '');
     setScore2(match.score2?.toString() || '');
     setManOfTheMatch(match.manOfTheMatch || '');
+  };
+  
+  const handleDelete = async (matchId: string) => {
+    if (!confirm('Are you sure you want to delete this match? This will also delete all predictions for this match.')) {
+      return;
+    }
+    
+    try {
+      await deleteMatch(matchId);
+      await refreshData();
+    } catch (error) {
+      console.error('Error deleting match:', error);
+      alert('Failed to delete match. Please try again.');
+    }
   };
   
   const getMatchPlayers = (match: Match) => {
@@ -276,6 +290,13 @@ export default function AdminMatchesPage() {
                     Edit Score
                   </Button>
                 )}
+                <Button 
+                  size="sm" 
+                  variant="danger" 
+                  onClick={() => handleDelete(match.id)}
+                >
+                  Delete
+                </Button>
               </>
             )}
           </div>

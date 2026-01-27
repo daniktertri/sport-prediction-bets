@@ -52,6 +52,12 @@ export default function AdminPage() {
       href: '/admin/matches',
       icon: '⚽',
     },
+    {
+      title: 'Users Management',
+      description: 'View all users and their contact information',
+      href: '/admin/users',
+      icon: '👥',
+    },
   ];
   
   return (

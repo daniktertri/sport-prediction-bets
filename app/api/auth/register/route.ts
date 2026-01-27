@@ -6,11 +6,18 @@ const secret = new TextEncoder().encode(process.env.JWT_SECRET || 'your-secret-k
 
 export async function POST(request: NextRequest) {
   try {
-    const { username, password, name, email } = await request.json();
+    const { username, password, name, email, firstName, lastName } = await request.json();
 
     if (!username || !password || !name) {
       return NextResponse.json(
         { error: 'Username, password, and name are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!firstName || !lastName) {
+      return NextResponse.json(
+        { error: 'First name and last name are required' },
         { status: 400 }
       );
     }
@@ -25,7 +32,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create user
-    const user = await createUser(username, password, name, email);
+    const user = await createUser(username, password, name, email, firstName, lastName);
 
     // Create JWT token
     const token = await new SignJWT({

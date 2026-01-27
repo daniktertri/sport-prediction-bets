@@ -7,6 +7,8 @@ CREATE TABLE IF NOT EXISTS users (
   username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
   name VARCHAR(100) NOT NULL,
+  first_name VARCHAR(100),
+  last_name VARCHAR(100),
   email VARCHAR(255),
   avatar TEXT,
   instagram VARCHAR(255),

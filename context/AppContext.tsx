@@ -20,6 +20,7 @@ interface AppContextType {
   deleteTeam: (teamId: string) => Promise<void>;
   updateMatch: (matchId: string, updates: Partial<Match>) => Promise<void>;
   createMatch: (match: Omit<Match, 'id'>) => Promise<void>;
+  deleteMatch: (matchId: string) => Promise<void>;
   addPrediction: (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => Promise<void>;
   recalculatePoints: () => Promise<void>;
   getUserPredictionForMatch: (matchId: string) => Prediction | undefined;
@@ -210,6 +211,19 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, [fetchData]);
 
+  const deleteMatch = useCallback(async (matchId: string) => {
+    const res = await fetch(`/api/matches/${matchId}`, {
+      method: 'DELETE',
+    });
+
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || `Failed to delete match: ${res.statusText}`);
+    }
+
+    await fetchData();
+  }, [fetchData]);
+
   const addPrediction = useCallback(async (prediction: Omit<Prediction, 'id' | 'points' | 'createdAt'>) => {
     try {
       const res = await fetch('/api/predictions', {
@@ -262,6 +276,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         deleteTeam,
         updateMatch,
         createMatch,
+        deleteMatch,
         addPrediction,
         recalculatePoints,
         getUserPredictionForMatch,

@@ -9,13 +9,13 @@ export async function verifyPassword(password: string, hash: string): Promise<bo
   return bcrypt.compare(password, hash);
 }
 
-export async function createUser(username: string, password: string, name: string, email?: string) {
+export async function createUser(username: string, password: string, name: string, email?: string, firstName?: string, lastName?: string) {
   const passwordHash = await hashPassword(password);
   const result = await pool.query(
-    `INSERT INTO users (username, password_hash, name, email) 
-     VALUES ($1, $2, $3, $4) 
-     RETURNING id, username, name, email, avatar, is_admin, created_at`,
-    [username, passwordHash, name, email || null]
+    `INSERT INTO users (username, password_hash, name, email, first_name, last_name) 
+     VALUES ($1, $2, $3, $4, $5, $6) 
+     RETURNING id, username, name, email, avatar, is_admin, created_at, first_name, last_name`,
+    [username, passwordHash, name, email || null, firstName || null, lastName || null]
   );
   return result.rows[0];
 }

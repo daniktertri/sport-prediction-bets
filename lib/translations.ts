@@ -56,6 +56,8 @@ export type TranslationKey =
   | 'login.signIn'
   | 'login.createAccount'
   | 'login.name'
+  | 'login.firstName'
+  | 'login.lastName'
   | 'login.username'
   | 'login.email'
   | 'login.emailOptional'
@@ -233,7 +235,9 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'login.registerTitle': 'Inscription',
     'login.signIn': 'Connectez-vous à votre compte',
     'login.createAccount': 'Créez un nouveau compte pour commencer la malice',
-    'login.name': 'Nom',
+    'login.name': 'Nom d\'affichage',
+    'login.firstName': 'Prénom',
+    'login.lastName': 'Nom',
     'login.username': 'Nom d\'utilisateur',
     'login.email': 'Email',
     'login.emailOptional': 'Email (optionnel)',
@@ -409,7 +413,9 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'login.registerTitle': 'Register',
     'login.signIn': 'Sign in to your account',
     'login.createAccount': 'Create a new account to start predicting',
-    'login.name': 'Name',
+    'login.name': 'Display Name',
+    'login.firstName': 'First Name',
+    'login.lastName': 'Last Name',
     'login.username': 'Username',
     'login.email': 'Email',
     'login.emailOptional': 'Email (optional)',

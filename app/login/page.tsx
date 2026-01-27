@@ -17,6 +17,8 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -30,7 +32,7 @@ export default function LoginPage() {
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
       const body = isLogin
         ? { username, password }
-        : { username, password, name, email };
+        : { username, password, name, email, firstName, lastName };
 
       const response = await fetch(endpoint, {
         method: 'POST',
@@ -95,18 +97,45 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {!isLogin && (
-            <div>
-              <label className="block text-sm font-medium mb-1 text-text-primary">
-                {t('login.name')}
-              </label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
-                required={!isLogin}
-              />
-            </div>
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-text-primary">
+                  {t('login.firstName')}
+                </label>
+                <input
+                  type="text"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                  required={!isLogin}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-text-primary">
+                  {t('login.lastName')}
+                </label>
+                <input
+                  type="text"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                  required={!isLogin}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium mb-1 text-text-primary">
+                  {t('login.name')}
+                </label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full px-4 py-2 border border-border rounded-lg bg-bg-primary text-text-primary focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20 transition-colors duration-200"
+                  required={!isLogin}
+                  placeholder="Display name"
+                />
+              </div>
+            </>
           )}
 
           <div>

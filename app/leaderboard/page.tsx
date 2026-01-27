@@ -121,7 +121,7 @@ export default function LeaderboardPage() {
                       )}
                       <div className="mt-2 text-center">
                         <div className={`font-semibold ${getTextSize(originalRank)} ${isCurrentUser ? 'text-accent' : 'text-text-primary'} flex items-center gap-1 justify-center`}>
-                          {user.name}
+                          {user.username || user.name}
                           {user.instagram && (
                             <a
                               href={formatInstagramUrl(user.instagram) || '#'}
@@ -189,7 +189,7 @@ export default function LeaderboardPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className={`font-medium ${isCurrentUser ? 'text-accent' : 'text-text-primary'}`}>
-                          {user.name}
+                          {user.username || user.name}
                         </span>
                         {isCurrentUser && (
                           <span className="text-xs bg-accent/10 text-accent px-2 py-0.5 rounded border border-accent/20 flex-shrink-0">
@@ -276,7 +276,7 @@ export default function LeaderboardPage() {
                           )}
                           <div className="flex items-center gap-2">
                             <span className={`text-sm font-medium ${isCurrentUser ? 'text-accent' : 'text-text-primary'}`}>
-                              {user.name}
+                              {user.username || user.name}
                             </span>
                             {isCurrentUser && (
                               <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded border border-accent/20">
@@ -358,7 +358,7 @@ export default function LeaderboardPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
                             <span className={`font-medium ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
-                              {user.name}
+                              {user.username || user.name}
                             </span>
                             {isCurrentUser && (
                               <span className="text-xs bg-danger/10 text-danger px-2 py-0.5 rounded border border-danger/20 flex-shrink-0">
@@ -441,7 +441,7 @@ export default function LeaderboardPage() {
                               )}
                               <div className="flex items-center gap-2">
                                 <span className={`text-sm font-medium ${isCurrentUser ? 'text-danger' : 'text-text-primary'}`}>
-                                  {user.name}
+                                  {user.username || user.name}
                                 </span>
                                 {isCurrentUser && (
                                   <span className="text-xs bg-danger/10 text-danger px-2 py-1 rounded border border-danger/20">
