@@ -76,3 +76,25 @@ export type Competition = {
   startDate: string;
   endDate: string;
 };
+
+export type GroupStanding = {
+  teamId: string;
+  group: 'A' | 'B' | 'C' | 'D';
+  points: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  matchesPlayed: number;
+  goalDiff: number; // goalsFor - goalsAgainst, computed
+};
+
+export type StandingsByGroup = Record<'A' | 'B' | 'C' | 'D', Array<{
+  teamId: string;
+  teamName: string;
+  logo?: string;
+  flag?: string;
+  points: number;
+  goalsFor: number;
+  goalsAgainst: number;
+  matchesPlayed: number;
+  goalDiff: number;
+}>>;

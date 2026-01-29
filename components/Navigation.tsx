@@ -142,6 +142,7 @@ export default function Navigation() {
   const navItems = [
     { href: '/', label: t('common.home'), icon: HomeIcon },
     { href: '/matches', label: t('common.matches'), icon: MatchesIcon },
+    { href: '/classification', label: t('common.classification'), icon: LeaderboardIcon },
     { href: '/browse', label: t('common.browse'), icon: BrowseIcon },
     { href: '/leaderboard', label: t('common.leaderboard'), icon: LeaderboardIcon },
   ];

@@ -13,6 +13,7 @@ export type TranslationKey =
   | 'common.home'
   | 'common.matches'
   | 'common.browse'
+  | 'common.classification'
   | 'common.leaderboard'
   | 'common.profile'
   | 'common.admin'
@@ -193,6 +194,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'common.home': 'Accueil',
     'common.matches': 'Matchs',
     'common.browse': 'Parcourir',
+    'common.classification': 'Classification',
     'common.leaderboard': 'Classement',
     'common.profile': 'Profil',
     'common.admin': 'Admin',
@@ -371,6 +373,7 @@ export const translations: Record<Language, Record<TranslationKey, string>> = {
     'common.home': 'Home',
     'common.matches': 'Matches',
     'common.browse': 'Browse',
+    'common.classification': 'Classification',
     'common.leaderboard': 'Leaderboard',
     'common.profile': 'Profile',
     'common.admin': 'Admin',

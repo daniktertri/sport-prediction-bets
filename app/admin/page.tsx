@@ -47,6 +47,12 @@ export default function AdminPage() {
       icon: '📊',
     },
     {
+      title: 'Classification',
+      description: 'Poules : points, buts, écarts. Éliminatoires : quarts, demis, finale.',
+      href: '/admin/classification',
+      icon: '🏆',
+    },
+    {
       title: t('admin.matchManagement'),
       description: 'Create, edit matches and set results in one place',
       href: '/admin/matches',

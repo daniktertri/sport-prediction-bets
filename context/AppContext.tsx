@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { Team, Match, User, Prediction, Competition } from '@/types';
+import { Team, Match, User, Prediction, Competition, StandingsByGroup } from '@/types';
 import { getUserFromCache, setUserCache, clearUserCache } from '@/utils/cache';
 
 interface AppContextType {
@@ -11,10 +11,12 @@ interface AppContextType {
   users: User[];
   predictions: Prediction[];
   competition: Competition | null;
+  standings: StandingsByGroup | null;
   currentUser: User | undefined;
   loading: boolean;
   
   // Actions
+  updateStanding: (teamId: string, group: 'A' | 'B' | 'C' | 'D', data: { points?: number; goalsFor?: number; goalsAgainst?: number; matchesPlayed?: number }) => Promise<void>;
   updateTeam: (teamId: string, updates: Partial<Team>) => Promise<void>;
   createTeam: (team: Omit<Team, 'id'>) => Promise<void>;
   deleteTeam: (teamId: string) => Promise<void>;
@@ -36,6 +38,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
   const [predictions, setPredictions] = useState<Prediction[]>([]);
   const [competition, setCompetition] = useState<Competition | null>(null);
+  const [standings, setStandings] = useState<StandingsByGroup | null>(null);
   // Initialize with cached user for instant UI
   const [currentUser, setCurrentUser] = useState<User | undefined>(() => {
     if (typeof window !== 'undefined') {
@@ -76,18 +79,20 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const [teamsRes, matchesRes, usersRes, competitionRes, predictionsRes] = await Promise.all([
+      const [teamsRes, matchesRes, usersRes, competitionRes, predictionsRes, standingsRes] = await Promise.all([
         fetch('/api/teams', { cache: 'no-store' }),
         fetch('/api/matches', { cache: 'no-store' }),
         fetch('/api/users', { cache: 'no-store' }),
         fetch('/api/competition', { cache: 'no-store' }),
         fetch('/api/predictions', { cache: 'no-store' }),
+        fetch('/api/standings', { cache: 'no-store' }),
       ]);
 
       const teamsData = await teamsRes.json();
       const matchesData = await matchesRes.json();
       const usersData = await usersRes.json();
       const competitionData = await competitionRes.json();
+      const standingsData = standingsRes.ok ? await standingsRes.json() : { A: [], B: [], C: [], D: [] };
 
       let predictionsData: Prediction[] = [];
       if (predictionsRes.ok) {
@@ -105,6 +110,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setMatches(matchesData);
       setUsers(usersData);
       setCompetition(competitionData);
+      setStandings(standingsData);
       setPredictions(predictionsData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -127,6 +133,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, [fetchCurrentUser, fetchData]);
 
   const refreshData = useCallback(async () => {
+    await fetchData();
+  }, [fetchData]);
+
+  const updateStanding = useCallback(async (
+    teamId: string,
+    group: 'A' | 'B' | 'C' | 'D',
+    data: { points?: number; goalsFor?: number; goalsAgainst?: number; matchesPlayed?: number }
+  ) => {
+    const res = await fetch('/api/standings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ teamId, group, ...data }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update standing');
+    }
     await fetchData();
   }, [fetchData]);
 
@@ -262,6 +285,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         matches,
         users,
         predictions,
+        standings,
+        updateStanding,
         competition: competition || {
           id: 'default',
           name: 'Sports Prediction Championship',
