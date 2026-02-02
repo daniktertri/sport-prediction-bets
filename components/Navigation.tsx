@@ -208,15 +208,15 @@ export default function Navigation() {
               <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg overflow-hidden bg-white shadow-sm border border-border">
                 <img 
                   src="/images/logo.png" 
-                  alt="AS Dauphine" 
+                  alt="Dans L'respect" 
                   className="w-full h-full object-contain p-0.5"
                 />
               </div>
               <span className="font-semibold text-lg sm:text-xl text-text-primary hidden sm:inline">
-                AS Dauphine
+                Dans L'respect
               </span>
               <span className="font-semibold text-lg text-text-primary sm:hidden">
-                AS Dauphine
+                Dans L'respect
               </span>
             </Link>
             
