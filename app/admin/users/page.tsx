@@ -81,7 +81,7 @@ export default function AdminUsersPage() {
                       Points
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-text-secondary uppercase tracking-wider">
-                      Bets
+                      Predictions
                     </th>
                     <th className="px-4 lg:px-6 py-3 text-center text-xs font-medium text-text-secondary uppercase tracking-wider">
                       Admin
